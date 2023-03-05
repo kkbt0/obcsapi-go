@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"testing"
 
 	"github.com/spf13/viper"
 )
 
-func main() {
-	viper.SetConfigFile("../config.yaml")
+func TestSmtpMain(t *testing.T) {
+	viper.SetConfigFile("config.yaml")
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -20,4 +21,10 @@ func main() {
 	fmt.Println(mail_config["username"])
 	fmt.Println(mail_config["password"])
 	// TODO: 发送邮件
+}
+
+func TestRomanTokne(t *testing.T) {
+	token := GengerateToken2(99)
+	fmt.Println(len(token))
+	fmt.Println(token)
 }
