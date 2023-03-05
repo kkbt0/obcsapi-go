@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/fs"
 	"math/rand"
 	"net"
 	"os"
@@ -18,6 +17,7 @@ const allowChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
 
 // 生成随机 token
 func GengerateToken(n int) string {
+	rand.Seed(time.Now().Unix()) // 保证每秒生成不同的随机 token  , unix 时间戳，秒
 	ans := make([]byte, n)
 	for i := range ans {
 		ans[i] = allowChars[rand.Intn(len(allowChars))]
@@ -31,7 +31,7 @@ func ModTokenFile(new_token Token, path string, token_class string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(path+token_class, data, fs.FileMode(os.O_CREATE))
+	return os.WriteFile(path+token_class, data, 0666)
 }
 
 // 获取 token token_class 传入 token1(全权限，有效期) or token2（只能发送） 从而获取本地存储的 token 文件内容
