@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"io/fs"
 	"math/rand"
 	"net"
@@ -8,10 +9,15 @@ import (
 	"time"
 )
 
+type Token struct {
+	TokenString  string `json:"token"`
+	GenerateTime string `json:"generate_time"`
+}
+
 const allowChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// 生成随机 token2 只发送 token
-func GengerateToken2(n int) string {
+// 生成随机 token
+func GengerateToken(n int) string {
 	ans := make([]byte, n)
 	for i := range ans {
 		ans[i] = allowChars[rand.Intn(len(allowChars))]
@@ -20,17 +26,27 @@ func GengerateToken2(n int) string {
 }
 
 // 更新 Token File
-func ModTokenFile(new_token string, path string, token_class string) error {
-	return os.WriteFile(path+token_class, []byte(new_token), fs.FileMode(os.O_WRONLY))
+func ModTokenFile(new_token Token, path string, token_class string) error {
+	data, err := json.Marshal(&new_token)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path+token_class, data, fs.FileMode(os.O_CREATE))
 }
 
 // 获取 token token_class 传入 token1(全权限，有效期) or token2（只能发送） 从而获取本地存储的 token 文件内容
-func GetToken(path string, token_class string) ([]byte, error) {
-	tokenFile, err := os.ReadFile(path + token_class)
+func GetToken(path string, token_class string) (Token, error) {
+	tokenBytes, err := os.ReadFile(path + token_class)
 	if err != nil {
-		return nil, err
+		return Token{}, err
 	}
-	return tokenFile, nil
+	token := Token{}
+	err = json.Unmarshal(tokenBytes, &token)
+	if err != nil {
+		return Token{}, err
+	} else {
+		return token, nil
+	}
 }
 
 // Time fmt eg 2006-01-02 15:04:05
