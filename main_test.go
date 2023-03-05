@@ -24,7 +24,14 @@ func TestSmtpMain(t *testing.T) {
 }
 
 func TestRomanTokne(t *testing.T) {
-	token := GengerateToken2(99)
+	token := GengerateToken(99)
 	fmt.Println(len(token))
 	fmt.Println(token)
+}
+
+func TestModToken(t *testing.T) {
+	token1 := Token{TokenString: GengerateToken(10), GenerateTime: GengerateToken(20)}
+	ModTokenFile(token1, "./token/", "token1")
+	token2 := Token{TokenString: GengerateToken(10), GenerateTime: GengerateToken(20)}
+	ModTokenFile(token2, "./token/", "token2")
 }

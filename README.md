@@ -10,3 +10,10 @@
 两种 token 
 1. 全权限 token 包括增删改查 （有效期内可用，配置中写明邮件，发送到邮箱从而获取有效 token）
 2. 只能发送信息的 token (只要不改一直有效)
+
+
+## tests commands
+
+```bash
+go test -v tools.go main_test.go 
+```
