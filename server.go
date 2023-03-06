@@ -21,7 +21,8 @@ func setupCORS(w *http.ResponseWriter) {
 func main() {
 	ShowConfig() // 打印基础消息
 
-	http.HandleFunc("/", BaseHandler)                                             // 404
+	http.Handle("/", http.FileServer(http.Dir("./template")))
+	http.HandleFunc("/404", BaseHandler)                                          // 404
 	http.HandleFunc("/token", VerifyToken1Handler)                                // Token 验证
 	http.HandleFunc("/api/wechat", wechatmpfunc)                                  // wecheet 机器人 用于公众测试号
 	http.HandleFunc("/ob/today", ob_today)                                        // Obsidian Token1

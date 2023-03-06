@@ -1,13 +1,387 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ .Title }}</title>
-    </head>
-    <body>
-        <p>Hi {{ .Content }}</p>
-        {{.}}
-    </body>
+<html lang="zh-CN" style="--siteFont:PT Sans; --defaultTheme:dark; --codeFontFamily:Roboto Mono, Monaco, courier, monospace; --bodyFontSize:17px; --accent:#42b983; --toogleBackground:#ffffff; --background:#091a28; --textColor:#b4b4b4; --codeTextColor:#ffffff; --codeBackgroundColor:#0e2233; --borderColor:#0d2538; --blockQuoteColor:#858585; --highlightColor:#d22778; --sidebarSublink:#b4b4b4; --codeTypeColor:#ffffff; --coverBackground:linear-gradient(to left bottom, hsl(118, 100%, 85%) 0%,hsl(181, 100%, 85%) 100%);">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>笔记</title>
+    <style>
+        .items {
+            padding: 0px 10px 0px 10px;
+            background: var(--codeBackgroundColor);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .items-img img {
+            width: 30%;
+        }
+        .send-button {
+            width: 80px;
+            height: 50px;
+            border-radius: 5px;
+            float: right;
+            border-color: transparent;
+            background: rgba(255, 255, 255, 0.01)
+        }
+        /*  此页不需要工具栏 */
+        .footer-c {
+            display: none;
+        }
+        .container {
+            width: 100%;
+            min-height: 75px;
+            border-radius: 5px;
+            font-size: 20px;
+            line-height: 30px;
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.05);
+            -webkit-user-modify: read-write-plaintext-only;
+        }
+        .textarea {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--textColor);
+        }
+        .textarea {
+            border: none;
+            outline: none;
+            appearance: none;
+            padding: 12px;
+            box-sizing: border-box;
+            height: 200px;
+            border-radius: 3px;
+            width: 100%;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.05)
+        }
+    </style>
+</head>
+
+<body style="background: var(--background);color: var(--textColor);">
+    <div id="box">
+        <h5>{{ topDataTile }} localStorage {{ version }}</h5>
+        <div v-if="mConfig.canPreview" v-html="previewHtml" style="min-height: 75px;"></div>
+        <div id="inputTextId" class="container plaintext-only" contenteditable="true" ref="edit"
+            v-on:input="inputTextChange" placeholder="这一刻的想法..."></div>
+        <div style="height:50px">
+            <button type="button" @click="clickSend" :disabled="!inputText" class="send-button">📝发送</button>
+            <button type="button" @click="forwardStep" :disabled="!circularQueue.allowForwad()"
+                class="send-button">➡️</button>
+            <button type="button" @click="backStep" :disabled="!circularQueue.allowBack()" class="send-button">⬅️</button>
+            <button type="button" @click="mConfig.configBar=!mConfig.configBar" class="send-button"
+                style="float:left;">⚙️</button>
+        </div>
+        <div v-if="mConfig.configBar">
+            <input type="checkbox" v-model="mConfig.showDebug"><a href="#/ZK/202209050658?id=debug">Debug</a>
+            <input type="checkbox" v-model="mConfig.canPreview" @click="clickForPreview">预览模式
+            <textarea id="mdSourceInput" v-model="mdSource" placeholder="盯←_←" class="textarea"></textarea>
+            <button type="button" @click="confirmPostAllMdSource(mdSource)" class="send-button">💾保存</button>
+            <button @click="canShowMainList=!canShowMainList">隐藏</button>
+        </div><br>
+        <div id="ltop"></div>
+        <div v-show="!canShowMainList" v-for="(item,index) in mainList" :key="index">
+            <div class="items items-img" v-html="item" ref="mit" @click="clickChangePicWidth(index)"></div>
+        </div>
+        <div v-if="mConfig.showDebug" id="debug">
+            <details open>
+                <summary>Debug</summary>
+                <a href="#/ZK/202209050658?id=ltop">跳转到list隐藏锚点</a><br>
+                <input type="text" v-model="apiUrl">
+                <input type="text" v-model="token">
+                <br>{{ debugMessageList }}<br>
+                <button type="button" @click="clickShowConfig">showConfig</button>
+                <button type="button" @click="clickUpdateConfig">updateConfig</button>
+                <button type="button" @click="clickInitConfig">initConfig</button>
+                <button type="button" @click="clickGetTodayData">获取今日数据</button>
+                <span>撤销恢复Debug-循环队列-</span>{{ circularQueue }}
+            </details>
+        </div>
+    </div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/axios@0.27.2/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/marked@3/marked.min.js"></script>
+<script>
+    class CircularQueue {
+        constructor(k) {
+            //用来保存数据长度为k的数据结构
+            this.list = Array(k).fill("")
+            this.allowforwad = 0// 允许前进数
+            this.allowback = 0 // 允许后退数 可通过检测list[0]判断是否套圈。套圈后此值可通过max-allowforwad 获取 实际上使用栈更好写一点 暂时未考虑套圈
+            this.rear = 0 //当前元素指针
+            this.max = k //队列的长度
+            this.allowAdd = 0 //豁免入队列次数 因为撤销重做操作触发入队列
+        }
+        addQueue(addstr) { //新增内容
+            if (this.allowAdd != 0) { return; }
+            this.rear = (this.rear + 1) % this.max
+            this.list[this.rear] = addstr
+            this.allowback += 1
+            this.allowforwad = 0
+        }
+        back() { // 指针往后 撤销操作
+            this.rear -= 1
+            if (this.rear < 0) { this.rear = this.max - 1 }
+            this.allowback -= 1
+            this.allowforwad += 1
+            return this.list[this.rear]
+        }
+        forward() { // 指针往前 恢复操作
+            this.rear += 1
+            if (this.rear > this.max) { this.rear = 0 }
+            this.allowback += 1
+            this.allowforwad -= 1
+            return this.list[this.rear]
+        }
+        allowBack() { return (this.allowback > 0) ? true : false }
+        allowForwad() { return (this.allowforwad > 0) ? true : false }
+    }
+    var allMdArr = new Array()
+    var vm = new Vue({
+        el: '#box',
+        data: {
+            version: '2.4',
+            mConfig: null,
+            apiUrl: "", token: "",
+            inputText: "",
+            mainList: null,
+            debugMessageList: ["两个输入框，第一个是后端api。第二个是 token。api填写类似 api.ftls.xyz/ob ，不需要协议头和尾部斜杠。另外token将加入到和后端 api 的 headers 中 Token 字段。填写完成后，点击 updateConfig 按钮并刷新页面"],
+            previewHtml: '',
+            stepTimer: null,
+            circularQueue: null,
+            mdSource: "",
+            canShowMainList: false,
+        },
+        created() {
+            if (!localStorage.hasOwnProperty("mConfig")) {
+                console.log("没有配置，初始化")
+                this.clickInitConfig()
+            }
+            else {
+                this.mConfig = JSON.parse(localStorage.getItem("mConfig"))
+            }
+            if (this.getQueryString("backend_address") != null) {
+                this.mConfig.apiUrl = this.getQueryString("backend_address")
+            }
+            if (this.getQueryString("token") != null) {
+                this.mConfig.token = this.getQueryString("token")
+            }
+            this.topDataTile = (new Date()).toDateString()
+            this.inputText = localStorage.getItem('inputTextCache')
+            this.moveFocurToEnd("inputTextId")
+            this.circularQueue = new CircularQueue(200);
+            if (localStorage.hasOwnProperty('mainListCache')) {
+                this.mainList = JSON.parse(localStorage.getItem('mainListCache'))
+         //       allMdArr = respCache.data
+      //          this.mainAllListUpdate()
+            }
+            this.getData('/recent').then(function (response) {
+                allMdArr = response.data; // 长度为3的数组
+                vm.mainAllListUpdate()
+            })
+        },
+        mounted() {
+            this.$refs.edit.innerHTML = this.inputText
+        },
+        beforeDestroy() {
+            clearTimeout(this.stepTimer);
+        },
+        watch: {
+            inputText(val, oldVal) {
+                clearTimeout(this.stepTimer);
+                this.stepTimer = setTimeout(function () {
+                    //console.log(val) 
+                    if (vm.circularQueue.allowAdd != 0) {
+                        vm.circularQueue.allowAdd -= 1
+                    }
+                    else {
+                        vm.storageStep(val)
+                        localStorage.setItem('inputTextCache', val)
+                    }
+                }, 300);
+                if (vm.mConfig.canPreview) { vm.previewHtml = marked(val || '', { breaks: true }); }
+            },
+            mConfig: {
+                handler(val, oldVal) {
+                    localStorage.setItem('mConfig', JSON.stringify(val))
+                },
+                deep: true
+            }
+        },
+        methods: {
+            addDebugList(text) {
+                //   console.log(text)
+                this.debugMessageList.push(text)
+            },
+            mainAllListUpdate() {
+                var val = allMdArr
+                this.addDebugList("触发三天json更新")
+                this.mdSource = val[val.length - 1].data
+                var allHtmlArr = new Array()
+                val.forEach(item => {
+                    // console.log(item.data)
+                    allHtmlArr.push(this.dealDayRaw(item.data, item.date))
+                })
+                var allItem = []
+                for (var i = 0; i < allHtmlArr.length; i++) {
+                    for (var j = 0; j < allHtmlArr[i].length; j++)
+                        allItem.push(allHtmlArr[i][j])
+                }
+                this.mainList = allItem.reverse()
+localStorage.setItem('mainListCache', JSON.stringify(this.mainList))
+            },
+            async getData(partUrlPath) {
+                let rData;
+                url = "//" + this.mConfig.apiUrl + partUrlPath
+                let req = axios.create({
+                    headers: {
+                        Token: this.mConfig.token,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                await req.get(url).then(function (response) {
+                    vm.addDebugList("Successfully Get")
+                    rData = response
+                    localStorage.setItem('getDataCache', JSON.stringify(response)) //缓存到本地
+                }).catch(function (error) {
+                    vm.addDebugList("Get Error:")
+                    vm.addDebugList(error)
+                })
+                return rData // raw response
+            },
+            async postData(text, partUrlPath) {
+                let rData;
+                url = "//" + this.mConfig.apiUrl + partUrlPath
+                let req = axios.create({
+                    headers: {
+                        Token: this.mConfig.token,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                await req.post(url, JSON.stringify({ "content": text })).then(function (response) {
+                    vm.addDebugList("Successfully Post")
+                    rData = response
+                }).catch(function (error) {
+                    vm.addDebugList(error)
+                })
+                return rData
+            },
+            dealDayRaw(oneDayRaw, date) {
+                var data_pre = oneDayRaw // 一天md数据 md 内容的 str 
+                // console.log(data_pre) 
+                data_pre = data_pre.replace(/\!\[(http.*?)\]\((.*?)\)/g, "![$2]($1)")
+                data_pre = data_pre.split("\n-")
+                // datamd = marked( data_pre || '', { sanitize: true });
+                data_pre = data_pre.map(item => {
+                    item = item.replace(/(\s\[.\]\s)*([0-2][0-9]\:[0-5][0-9])\s(.*)/g, "$1 <small>" + date + " $2</small><br>$3").replace(/(\s*\[.\])/g, "-$1")
+                    item = marked(item || '', { breaks: true });
+                    item = item.replace(/<p>(.*)<\/p>/g, "$1")
+                    return item
+                })
+                return data_pre
+            },
+            clickSend() {
+                vm.addDebugList("send 触发")
+                var tem = this
+                this.postData(this.inputText, '/today').then(function (res) {
+                    vm.addDebugList("send 触发post完成")
+                    vm.setPostText('')
+                    vm.moveFocurToEnd("inputTextId")
+                    vm.circularQueue.allowback = 0 // 允许后退撤销数 0发送后可以撤销回到最后 -1发送后禁用撤销
+                    vm.getData('/today').then(function (response) {
+                        vm.addDebugList("send 触发get完成")
+                        allMdArr[allMdArr.length - 1] = response.data[0]
+                        vm.mainAllListUpdate()
+                    })
+                })
+            },
+            clickGetTodayData() {
+                var tem = this
+                vm.getData('/today').then(function (response) {
+                    allMdArr[allMdArr.length - 1] = response.data[0]
+                    vm.mainAllListUpdate()
+                })
+            },
+            confirmPostAllMdSource(mdSource) {
+                if (confirm('更新源码?❗️')) {
+                    vm.postData(mdSource, '/today/all').then(function (res) {
+                        vm.getData('/today').then(function (response) {
+                            allMdArr[allMdArr.length - 1] = response.data[0]
+                            vm.mainAllListUpdate()
+                        })
+                    })
+                }
+            },
+            clickShowConfig() {
+                vm.addDebugList(this.mConfig)
+            },
+            clickUpdateConfig() {
+                this.mConfig.apiUrl = this.apiUrl
+                this.mConfig.token = this.token
+            },
+            clickInitConfig() {
+                tem = {
+                    apiUrl: "api.ftls.xyz/ob", token: "yourtoken",
+                    preview: false, configBar: false, showDebug: false, canPreview: false
+                }
+                localStorage.setItem('mConfig', JSON.stringify(tem))
+            },
+            clickForPreview() {
+                this.previewHtml = marked(this.inputText || '', { breaks: true });
+                vm.mConfig.canPreview = !vm.mConfig.canPreview
+            },
+            storageStep(addstr) {
+                this.circularQueue.addQueue(addstr)
+            },
+            backStep() {
+                this.circularQueue.allowAdd += 1
+                this.setPostText(this.circularQueue.back())
+                this.moveFocurToEnd("inputTextId")
+            },
+            forwardStep() {
+                this.circularQueue.allowAdd += 1
+                this.setPostText(this.circularQueue.forward())
+                this.moveFocurToEnd("inputTextId")
+            },
+            setPostText(instr) {
+                this.inputText = instr
+                this.$refs.edit.innerHTML = instr
+            },
+            inputTextChange() {
+                this.inputText = this.$refs.edit.innerHTML
+            },
+            clickChangePicWidth(obj) {
+                this.$nextTick(() => {
+                    this.$refs.mit[obj].classList.toggle('items-img')
+                });
+            },
+            moveFocurToEnd(id) {
+                this.$nextTick(() => {
+                    let notesDom = document.getElementById(id);
+                    if (window.getSelection) {
+                        let range = window.getSelection(); // 创建range
+                        range.selectAllChildren(notesDom); // range 选择notesDom下所有子内容
+                        range.collapseToEnd(); // 光标移至最后
+                    } else if (document.selection) {
+                        let range = document.selection.createRange(); // 创建选择对象
+                        range.moveToElementText(notesDom); // range定位到notesDom
+                        range.collapse(false); // 光标移至最后
+                        range.select();
+                    }
+                });
+            },
+            getQueryString(name) {
+                var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    return unescape(r[2]);
+                }
+                return null;
+            }
+        }
+    })
+</script>
+
 </html>

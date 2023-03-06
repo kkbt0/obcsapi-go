@@ -15,7 +15,7 @@ func greet(w http.ResponseWriter, r *http.Request) {
 
 func BaseHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.RequestURI)
-	tpl, err := template.ParseFiles("./template/index.html")
+	tpl, err := template.ParseFiles("./template/404.html")
 	if err != nil {
 		log.Panicln("Template File Error:", err)
 		return

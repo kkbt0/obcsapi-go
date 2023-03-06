@@ -1,10 +1,12 @@
 # emailSendToken
-GET http://172.22.248.11:9000/api/sendtoken2mail HTTP/ 1.1
+GET http://172.22.248.11:8900/api/sendtoken2mail HTTP/ 1.1
 ###
 # Token Test
-POST http://172.22.248.11:9000/token  HTTP/ 1.1
+POST http://172.22.248.11:8900/token  HTTP/ 1.1
 Content-Type: application/json
 
 {
     "token": "g8BVPFLWeY9qiwF2oOVxM5QPMen1xVHT"
 }
+###
+GET http://172.22.248.11:8900/index.html HTTP/ 1.1
