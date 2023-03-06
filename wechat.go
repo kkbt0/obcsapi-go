@@ -30,7 +30,7 @@ func wechatmpfunc(w http.ResponseWriter, r *http.Request) {
 		mp.ReplyTextMsg(w, r_str)
 	} else if mp.Request.MsgType == weixinmp.MsgTypeImage { // 图片消息
 		fileby, _ := downloader(mp.Request.PicUrl)
-		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", timeFmt("200601"), timeFmt("200601021504"))
+		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", timeFmt("200601"), timeFmt("20060102150405"))
 		store(client, file_key, fileby)
 		append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
 		mp.ReplyTextMsg(w, r_str)
