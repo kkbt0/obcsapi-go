@@ -27,7 +27,8 @@ func emailSendToken() error {
 	content2 := fmt.Sprintf("<a href=\"%s\">%s</a>", login_address, login_address)
 	token1_info := fmt.Sprintf("<br>Token1 全权限: %s ,生成时间 %s , 设定有效期: %s <br>", token1.TokenString, token1.GenerateTime, viper.GetString("token1_live_time"))
 	token2_info := fmt.Sprintf("<br>Token2 只发送: %s ,生成时间 %s , 设定有效期: 无限 <br>", token2.TokenString, token2.GenerateTime)
-	sendMail("ObCSAPI 登录链接", content1+content2+"<br>"+token1_info+token2_info)
+	update_url := fmt.Sprintf("更新 token 链接 <a href=\"http://%s/api/sendtoken2mail\">%s</a><br>或<a href=\"https://%s/api/sendtoken2mail\">%s</a><br>", ConfigGetString("backend_url"), ConfigGetString("backend_url"), ConfigGetString("backend_url"), ConfigGetString("backend_url"))
+	sendMail("ObCSAPI 登录链接", content1+content2+"<br>"+token1_info+token2_info+update_url)
 	return nil
 }
 
