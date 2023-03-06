@@ -25,6 +25,15 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, indexInfo)
 }
 
+func Config() {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
+	}
+}
+
 func main() {
 	// Read configuration
 	viper.SetConfigFile("config.yaml")
