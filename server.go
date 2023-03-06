@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/spf13/viper"
+	"golang.org/x/time/rate"
 )
 
 type IndexInfo struct {
@@ -53,5 +54,19 @@ func main() {
 	log.Printf("LocalIp http://%s:%s\n", local_ip[0], viper.GetString("port"))
 
 	http.HandleFunc("/", HelloHandler)
+	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 对请求将 token发送到 email 速率进行限制
 	http.ListenAndServe(fmt.Sprintf("%s:%s", viper.GetString("host"), viper.GetString("port")), nil)
+}
+
+var limiter = rate.NewLimiter(0.3, 1)
+
+// 短时间多次请求限制
+func limit(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !limiter.Allow() {
+			http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }

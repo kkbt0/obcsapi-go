@@ -16,6 +16,7 @@ func TestSmtpMain(t *testing.T) {
 	}
 	mail_config := viper.GetStringMap("smtp_mail")
 	fmt.Println(mail_config)
+	// 测试发送含有登录链接和两种 Token 信息的 email
 	err = emailSendToken()
 	if err != nil {
 		fmt.Println(err)
