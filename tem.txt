@@ -1,0 +1,17 @@
+
+- 07:54 前端需要 获取 backend url backend token ，需要一个发送邮件的 url 。并且此方法需要限定时间执行次数
+- 13:54 123
+- 13:58 试试
+- 13:58 【收到不支持的消息类型，暂无法显示】
+- 13:58 ![](日志/附件/202303/202303061358.jpg)
+- 16:44 null
+- ![](https://cdn.ftls.xyz/images/2022/12/Snipaste_2023-03-06_17-01-17.png)
+- 17:07 ![](日志/附件/202303/202303061707.jpg)
+- 17:08 ![](日志/附件/202303/202303061708.jpg)
+- 17:09 ![](日志/附件/202303/202303061709.jpg)
+- 17:11 ![](日志/附件/202303/202303061711.jpg)
+- 17:12 ![](日志/附件/202303/202303061712.jpg)
+- 17:16 ![](日志/附件/202303/20230306171641.jpg)
+- 17:16 ![](日志/附件/202303/20230306171645.jpg)
+- 17:16 ![http://mmbiz.qpic.cn/mmbiz_jpg/GAMiaHwPVETboZIG6OHGicX1opUt7KibEM8jWzia34W3fkbJgp0ibJ1hea11UEKdJ8EMrwaOQNnxXuymD8tUQJIhqibQ/0](日志/附件/202303/20230306171651.jpg)
+- 17:16 ![http://mmbiz.qpic.cn/mmbiz_jpg/GAMiaHwPVETboZIG6OHGicX1opUt7KibEM8FwbjeYIvKYqLdh1eKlHibCTZqXdY2AT5bibfgZiarhZpnyINGcZeyQvzQ/0](日志/附件/202303/20230306171656.jpg)

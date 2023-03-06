@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -58,7 +60,8 @@ func get_object(sess *session.Session, file_key string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return buf, nil
+	// 对图片 url 进行预签名
+	return replace_md_url2pre_url(sess, buf), nil
 }
 
 // """直接上传存储,可能覆盖"""
@@ -184,4 +187,22 @@ func getPreSignURL(sess *session.Session, file_key string) (string, error) {
 		return "", err
 	}
 	return urlStr, nil
+}
+
+// md text img url to preSigned url ![](a.jpg) -> ![](a.jpg&signed)
+func replace_md_url2pre_url(sess *session.Session, in_md []byte) []byte {
+	pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
+	replaceFunc := func(match []byte) []byte {
+		// 获取匹配到的链接 并转为 预签名 url
+		description := pattern.ReplaceAllString(string(match), "$1")
+		link := pattern.ReplaceAllString(string(match), "$2")
+		link2, err := getPreSignURL(sess, link)
+		if err != nil {
+			log.Println(err)
+		}
+		fmt.Println(link2)
+		// 替换链接为临时鉴权链接
+		return []byte(fmt.Sprintf("![%s](%s)", description, link2))
+	}
+	return pattern.ReplaceAllFunc(in_md, replaceFunc)
 }
