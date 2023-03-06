@@ -32,7 +32,9 @@ func wechatmpfunc(w http.ResponseWriter, r *http.Request) {
 		fileby, _ := downloader(mp.Request.PicUrl)
 		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", timeFmt("200601"), timeFmt("20060102150405"))
 		store(client, file_key, fileby)
-		append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
+		// 前端会监测 ![https://..](..) 将 http:// 放到 后面 ![..](https://..)
+		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
+		append_memos_in_daily(client, fmt.Sprintf("![](%s)", file_key))
 		mp.ReplyTextMsg(w, r_str)
 	} else if mp.Request.MsgType == weixinmp.MsgTypeVoice { // 语言消息
 		append_memos_in_daily(client, fmt.Sprintf("语音: %s", mp.Request.Recognition))
