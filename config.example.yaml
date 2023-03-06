@@ -8,7 +8,7 @@ token1_live_time: 24h
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
-backend_url: api.ftls.xyz/ob
+backend_url: api.ftls.xyz
 
 # S3 配置
 access_key: xxxxxxxxxxxxxx

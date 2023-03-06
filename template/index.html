@@ -163,7 +163,7 @@
                 this.mConfig = JSON.parse(localStorage.getItem("mConfig"))
             }
             if (this.getQueryString("backend_address") != null) {
-                this.mConfig.apiUrl = this.getQueryString("backend_address")
+                this.mConfig.apiUrl = this.getQueryString("backend_address") + "/ob"
             }
             if (this.getQueryString("token") != null) {
                 this.mConfig.token = this.getQueryString("token")
