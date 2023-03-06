@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"golang.org/x/time/rate"
@@ -15,12 +14,17 @@ type IndexInfo struct {
 
 func main() {
 	ShowConfig() // 打印基础消息
-	local_ip, _ := LocalIPv4s()
-	log.Printf("LocalIp http://%s:%s\n", local_ip[0], ConfigGetString("port"))
 
-	http.HandleFunc("/", BaseHandler)
-	http.HandleFunc("/token", VerifyToken1Handler)
-	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 对请求将 token发送到 email 速率进行限制
+	http.HandleFunc("/", BaseHandler)                                             // 404
+	http.HandleFunc("/token", VerifyToken1Handler)                                // Token 验证
+	http.HandleFunc("/api/wechat", wechatmpfunc)                                  // wecheet 机器人 用于公众测试号
+	http.HandleFunc("/ob/today", ob_today)                                        // Obsidian Token1
+	http.HandleFunc("/ob/today/all", ob_today_all)                                // Obsidian Token1
+	http.HandleFunc("/ob/recent", get_3_day)                                      // Obsidian Token1
+	http.HandleFunc("/ob/moonreader", moodreader)                                 // Obsidian Token2
+	http.HandleFunc("/ob/fv", fvHandler)                                          // Obsidian Token2
+	http.HandleFunc("/time", greet)                                               // 打招呼 测试使用
+	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 请求将 token发送到 email
 	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
 }
 

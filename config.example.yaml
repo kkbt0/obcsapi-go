@@ -1,5 +1,5 @@
 name: obcsapi-go
-version: v1.0.0
+version: v1.0.1
 description: by kkbt
 host: 0.0.0.0
 port: 9000
@@ -9,6 +9,19 @@ token1_live_time: 24h
 # 前端地址 纯静态文件 可以使用
 front_url: https://ftls.xyz/test2.html
 backend_url: http://127.0.0.1:8080
+
+# S3 配置
+access_key: xxxxxxxxxxxxxx
+secret_key: xxxxxxxxxxxxxx
+end_point: https://cos.ap-beijing.myqcloud.com
+region: ap-beijing
+bucket: obsidion-xxxxxxxxxxxxxx
+
+# wechat 测试号/公众号
+wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
+wechat_appid: xxxxxxxxxxxxxx # 微信公众平台的AppID
+wechat_secret: xxxxxxxxxxxxxx # 微信公众平台的AppSecret
+wechat_openid: xxxxxxxxxxxxxx # OpenID
 
 # smtp 邮箱服务
 smtp_mail:
@@ -20,4 +33,3 @@ smtp_mail:
   mail_sender_address: no-reply@mail.ftls.xyz
   mail_sender_name: "ObCSAPI"
   mail_send_to: snowandocean@foxmail.com
-  

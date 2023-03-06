@@ -55,7 +55,7 @@ func GetToken(token_class string) (Token, error) {
 	}
 }
 
-func VerifyToken1(inToken TokenFromJSON) bool {
+func VerifyToken1(inToken string) bool {
 	rightToken, err := GetToken("token1")
 	if err != nil {
 		log.Println("Token Get Error:", err)
@@ -74,20 +74,20 @@ func VerifyToken1(inToken TokenFromJSON) bool {
 	liveTime, _ := time.ParseDuration(ConfigGetString("token1_live_time"))
 	log.Println(nowTime, rightTokenTime.Add(liveTime))
 	// 验证 Token 相符合 且 现在时间 < 生成时间 + 存活时间
-	if inToken.TokenString == rightToken.TokenString && nowTime.Before(rightTokenTime.Add(liveTime)) {
+	if inToken == rightToken.TokenString && nowTime.Before(rightTokenTime.Add(liveTime)) {
 		return true
 	}
 	return false
 }
 
-func VerifyToken2(inToken TokenFromJSON) bool {
+func VerifyToken2(inToken string) bool {
 	rightToken, err := GetToken("token2")
 	if err != nil {
 		log.Println("Token Get Error:", err)
 		return false
 	}
 	// 验证 Token 相符合
-	if inToken.TokenString == rightToken.TokenString {
+	if inToken == rightToken.TokenString {
 		return true
 	}
 	return false

@@ -6,7 +6,12 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 )
+
+func greet(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello World! %s", time.Now())
+}
 
 func BaseHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.RequestURI)
@@ -42,7 +47,7 @@ func VerifyToken1Handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("JSON Decoder Error:", err)
 	}
-	if VerifyToken1(tokenFromJSON) {
+	if VerifyToken1(tokenFromJSON.TokenString) {
 		fmt.Fprintf(w, "a right Token")
 	} else {
 		fmt.Fprintf(w, "a error Token")
