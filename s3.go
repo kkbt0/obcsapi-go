@@ -171,3 +171,17 @@ func downloader(url string) ([]byte, error) {
 	}
 	return buf, nil
 }
+
+// 获取文件预先签名 5 min 有效期 即使 file 不存在也会返回 URL
+func getPreSignURL(sess *session.Session, file_key string) (string, error) {
+	svc := s3.New(sess)
+	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
+		Bucket: aws.String(ConfigGetString("bucket")),
+		Key:    aws.String(file_key),
+	})
+	urlStr, err := req.Presign(5 * time.Minute)
+	if err != nil {
+		return "", err
+	}
+	return urlStr, nil
+}

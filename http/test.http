@@ -10,3 +10,5 @@ Content-Type: application/json
 }
 ###
 GET http://172.22.248.11:8900/index.html HTTP/ 1.1
+###
+GET http://172.18.69.9:8900/time HTTP/ 1.1
