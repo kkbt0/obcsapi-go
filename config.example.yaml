@@ -15,7 +15,7 @@ smtp_mail:
   smtp_host: smtpdm.aliyun.com
   port: 80
   username: no-reply@mail.ftls.xyz
-  password: a4dsa4A3sadCFk2sjaD
+  password: xxxxxxxxxxxxxx
   # 以下一个是发送者 一个是接受者
   mail_sender_address: no-reply@mail.ftls.xyz
   mail_sender_name: "ObCSAPI"
