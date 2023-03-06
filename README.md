@@ -17,3 +17,15 @@
 ```bash
 go test -v tools.go main_test.go 
 ```
+
+http://127.0.0.1:8080/index.html?backend_address=http://127.0.0.1:8080&token=u80ZNcx1JzvIffo3CTWtFR11yhpgDyC9
+
+
+            getQueryString(name) {
+                var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    return unescape(r[2]);
+                }
+                return null;
+            }

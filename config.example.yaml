@@ -6,9 +6,9 @@ port: 9000
 token_path: ./token/
 token1_live_time: 24h
 
-# 前端地址 纯静态文件 可以使用
-front_url: https://ftls.xyz/test2.html
-backend_url: http://127.0.0.1:8080
+# 前端后地址 邮件中登录链接会用到
+front_url: http://127.0.0.1:8080/index.html
+backend_url: api.ftls.xyz/ob
 
 # S3 配置
 access_key: xxxxxxxxxxxxxx
