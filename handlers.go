@@ -5,10 +5,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 )
 
-type Captcha struct {
-	Captcha string
+func BaseHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Method, r.RequestURI)
+	tpl, err := template.ParseFiles("./template/index.html")
+	if err != nil {
+		log.Panicln("Template File Error:", err)
+		return
+	}
+	indexInfo := IndexInfo{Title: "404", Content: "404 Not Found"}
+	tpl.Execute(w, indexInfo)
 }
 
 // NewCaptcha 生成或更新 token 邮件发送登录链接 直接附带 token
@@ -38,20 +46,5 @@ func VerifyToken1Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "a right Token")
 	} else {
 		fmt.Fprintf(w, "a error Token")
-	}
-}
-
-// !!!deprecated!!! 弃用 邮件获取的验证码 前端输入 提交处理
-func VerifyCaptchaHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
-	// 对传入的 token json 解析判断
-	decoder := json.NewDecoder(r.Body)
-	var captcha Captcha
-	err := decoder.Decode(&captcha)
-	if err != nil {
-		fmt.Println(err)
-	}
-	if captcha.Captcha == "right_Captcha" {
-		fmt.Fprintf(w, "a Tem Token")
 	}
 }
