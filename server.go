@@ -35,7 +35,7 @@ func main() {
 	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
 }
 
-var limiter = rate.NewLimiter(0.3, 1)
+var limiter = rate.NewLimiter(0.00001, 1)
 
 // 短时间多次请求限制
 func limit(next http.Handler) http.Handler {
