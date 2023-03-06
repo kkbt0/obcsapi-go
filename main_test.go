@@ -13,7 +13,7 @@ func TestRomanTokne(t *testing.T) {
 
 func TestModToken(t *testing.T) {
 	token1 := Token{TokenString: GengerateToken(10), GenerateTime: GengerateToken(20)}
-	ModTokenFile(token1, "./token/", "token1")
-	token2, _ := GetToken("./token/", "token1")
+	ModTokenFile(token1, "token1")
+	token2, _ := GetToken("token1")
 	fmt.Println(token1, token2)
 }

@@ -1,52 +1,39 @@
 package main
 
 import (
-	"encoding/json"
-	"math/rand"
+	"fmt"
+	"log"
 	"net"
-	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
-type Token struct {
-	TokenString  string `json:"token"`
-	GenerateTime string `json:"generate_time"`
+func ShowConfig() {
+	// Read configuration
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
+	}
+
+	// output configuration
+	log.Println(viper.GetString("name"), viper.GetString("version"), viper.GetString("description"))
+	log.Println("Server Time:", timeFmt("2006-01-02 15:04"))
+	log.Println("Tokne File Path:", viper.GetString("token_path"))
+	log.Println("Run on", viper.GetString("host"))
 }
 
-const allowChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-// 生成随机 token
-func GengerateToken(n int) string {
-	rand.Seed(time.Now().Unix()) // 保证每秒生成不同的随机 token  , unix 时间戳，秒
-	ans := make([]byte, n)
-	for i := range ans {
-		ans[i] = allowChars[rand.Intn(len(allowChars))]
-	}
-	return string(ans)
-}
-
-// 更新 Token File
-func ModTokenFile(new_token Token, path string, token_class string) error {
-	data, err := json.Marshal(&new_token)
+// 从配置中获取 参数
+func ConfigGetString(parm string) string {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
 	if err != nil {
-		return err
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
 	}
-	return os.WriteFile(path+token_class, data, 0666)
-}
-
-// 获取 token token_class 传入 token1(全权限，有效期) or token2（只能发送） 从而获取本地存储的 token 文件内容
-func GetToken(path string, token_class string) (Token, error) {
-	tokenBytes, err := os.ReadFile(path + token_class)
-	if err != nil {
-		return Token{}, err
-	}
-	token := Token{}
-	err = json.Unmarshal(tokenBytes, &token)
-	if err != nil {
-		return Token{}, err
-	} else {
-		return token, nil
-	}
+	return viper.GetString(parm)
 }
 
 // Time fmt eg 2006-01-02 15:04:05

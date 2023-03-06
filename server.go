@@ -36,26 +36,14 @@ func Config() {
 }
 
 func main() {
-	// Read configuration
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
-
-	// output configuration
-	log.Println(viper.GetString("name"), viper.GetString("version"), viper.GetString("description"))
-	log.Println("Server Time:", timeFmt("2006-01-02 15:04"))
-	log.Println("Tokne File Path:", viper.GetString("token_path"))
-	log.Println("Run on", viper.GetString("host"))
-
+	ShowConfig() // 打印基础消息
 	local_ip, _ := LocalIPv4s()
-	log.Printf("LocalIp http://%s:%s\n", local_ip[0], viper.GetString("port"))
+	log.Printf("LocalIp http://%s:%s\n", local_ip[0], ConfigGetString("port"))
 
 	http.HandleFunc("/", HelloHandler)
+	http.HandleFunc("/token", VerifyToken1Handler)
 	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 对请求将 token发送到 email 速率进行限制
-	http.ListenAndServe(fmt.Sprintf("%s:%s", viper.GetString("host"), viper.GetString("port")), nil)
+	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
 }
 
 var limiter = rate.NewLimiter(0.3, 1)
