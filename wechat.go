@@ -17,6 +17,7 @@ func wechatmpfunc(w http.ResponseWriter, r *http.Request) {
 	}
 	if mp.Request.FromUserName != openid {
 		mp.ReplyTextMsg(w, "你不是恐咖兵糖")
+		log.Println("陌生人:", mp.Request.FromUserName)
 		return
 	}
 	r_str := "📩 已保存，<a href='https://note.ftls.xyz/#/ZK/202209050658'>点击查看今日笔记</a>"

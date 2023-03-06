@@ -28,6 +28,11 @@ type MoodReaderHighlights struct {
 
 // Token1
 func ob_today(w http.ResponseWriter, r *http.Request) {
+	setupCORS(&w)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(200)
+		return
+	}
 	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken1(r.Header.Get("Token")) {
 		w.WriteHeader(401)
@@ -55,6 +60,11 @@ func ob_today(w http.ResponseWriter, r *http.Request) {
 
 // Token1
 func ob_today_all(w http.ResponseWriter, r *http.Request) {
+	setupCORS(&w)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(200)
+		return
+	}
 	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken1(r.Header.Get("Token")) {
 		w.WriteHeader(401)
@@ -78,6 +88,11 @@ func ob_today_all(w http.ResponseWriter, r *http.Request) {
 
 // Tokne1
 func get_3_day(w http.ResponseWriter, r *http.Request) {
+	setupCORS(&w)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(200)
+		return
+	}
 	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken1(r.Header.Get("Token")) {
 		w.WriteHeader(401)

@@ -79,7 +79,7 @@ func store(sess *session.Session, file_key string, file_bytes []byte) error {
 	defer fp.Close()
 	uploader := s3manager.NewUploader(sess)
 	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String("obsidian-1234567890"),
+		Bucket: aws.String(ConfigGetString("bucket")),
 		Key:    aws.String(file_key),
 		Body:   fp,
 	})
