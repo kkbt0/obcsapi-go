@@ -4,7 +4,7 @@ description: by kkbt
 host: 0.0.0.0
 port: 9000
 token_path: ./token/
-token1_live_time: 24h
+token1_live_time: 72h
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
