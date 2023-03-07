@@ -148,7 +148,7 @@ func get_3_daily_list(sess *session.Session) [3]Daily {
 		if err != nil {
 			fmt.Println(err)
 		}
-		ans[i] = Daily{Data: day, Date: timeFmt("200601021504"), ServerTime: date}
+		ans[i] = Daily{Data: day, Date: date, ServerTime: timeFmt("200601021504")}
 	}
 	return ans
 }
