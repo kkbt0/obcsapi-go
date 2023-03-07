@@ -42,19 +42,19 @@ Go 语言开发
 
 入口文件  
 
-server.go 可按照需求，删减相关路径。
-mail.go 邮件相关代码
-s3.go 对 对象存储 操作相关的代码
-token.go Token 的生成，修改，验证代码
-wechat.go 微信公众号/测试号，相关代码
-handlers.go 其余路径的一些代码
+- server.go 可按照需求，删减相关路径。
+- mail.go 邮件相关代码
+- s3.go 对 对象存储 操作相关的代码
+- token.go Token 的生成，修改，验证代码
+- wechat.go 微信公众号/测试号，相关代码
+- handlers.go 其余路径的一些代码
 
 文件说明
 
-token/token1 存储 token1 全权限 token 
-token/token2 存储只发送 token2 用于一些只发送的其他第三方程序 api
-template/index.html 前端文件，一般不使用。但是也可以用。在配置文件中修改前端地址。邮件登录链接就会使用相关前端
-template/404.html 404 文档
-tem.txt 存储请求的 markdown 文本（因为 s3 sdk 文档很复杂，暂时用这方法）
-build.sh 将 go 打包成无链接的静态文件
-http/test.http vscode 插件 postcode 使用的，用于测试
+- token/token1 存储 token1 全权限 token 
+- token/token2 存储只发送 token2 用于一些只发送的其他第三方程序 api
+- template/index.html 前端文件，一般不使用。但是也可以用。在配置文件中修改前端地址。邮件登录链接就会使用相关前端
+- template/404.html 404 文档
+- tem.txt 存储请求的 markdown 文本（因为 s3 sdk 文档很复杂，暂时用这方法）
+- build.sh 将 go 打包成无链接的静态文件
+- http/test.http vscode 插件 postcode 使用的，用于测试
