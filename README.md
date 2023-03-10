@@ -2,6 +2,8 @@
 
 python 老版本 https://gitee.com/kkbt/obsidian-csapi 相关说明可能算是更详细一点。可以借鉴一些其中的配置说明，和实际效果。
 
+文档 Docs : [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
+
 基于 Obsidian S3 存储的后端 API ,保存到 S3 存储的 Obsidian 库。支持列表
 
 一个简易前端（后有图）
