@@ -22,9 +22,7 @@ Python 版本容易在阿里云-云函数服务处修改和部署，完全不需
 
 [Obsidian S3 存储的后端 API python 版本](https://gitee.com/kkbt/obsidian-csapi)  
 
-###  微信到Obsidian
-
-#### 介绍
+###  微信到Obsidian 介绍
 微信测试号发送消息，保存到COS。被Obsidian插件Remotely Save同步到笔记中。使用 Flask + Vue 。前端在 https://note.ftls.xyz/#/ZK/202209050658 中，就是一个 md 文件。需要 vue , markd , axios 三个 js 。 源码 F12 自取。使用 localStorge 存储 api 地址和 token 。另外前端基于 https://gitee.com/kkbt/obweb  。
 
 - 支持图片和文字
@@ -46,9 +44,9 @@ BUG:
 
 启动程序请运行 app.py
 
-## 部署
+### 部署
 
-### 方法 1 阿里云函数计算 FC 部署 (推荐)
+#### 方法 1 阿里云函数计算 FC 部署 (推荐)
 
 1. 拉取项目，或下载 zip 压缩包，解压。
 2. 打开并填写 config.ini 中配置。可以使用随机生成密码等程序生成 token 之类的。不要出现 %，空格，换行 。而 ^!@$ a-z A-Z 0-9 是可以的。完成后，在 obsidian-caspi 目录下全部选中，压缩为 zip 。也就是说，解压后会出现一堆文件而非一个文件夹。
@@ -69,11 +67,11 @@ pip install -t . -r requirements.txt
 
 为减少冷启动时间，可在 首页/服务列表/服务 xxxxx 详情/函数管理/创建规则 配置规则(会增加费用)。也可设置定时访问。详细见 [阿里云 函数计算冷启动优化最佳实践](https://help.aliyun.com/document_detail/140338.html)
 
-### 方法2 服务器运行
+#### 方法2 服务器运行
 
 安装依赖，服务器直接运行，（建议使用宝塔 python 项目管理器），然后 Nginx 反向代理到自己的域名。注意由于阿里云函数计算 fc 计算机时间为 +0。程序已经 特意 +8 使时间正常。所以若方法二部署，一般需要修改 obcs.py 中 def timeFmt 函数 中的 8 为 0。
 
-### Docker 部署
+#### Docker 部署
 
 !!! docker run 之前确保 config.ini 存在，否则会生成一个 config.ini 的文件夹。运行会出错。  !!!   
 打包示例
@@ -168,11 +166,11 @@ POST /ob/today 以 Obsidian Memeos 形式增加一条 Memeos ,eg: \n- [ ] 12:00 
 
 后台发送的邮件
 
-![](images/Snipaste_2023-03-07_11-36-48.png)
+![](https://gitee.com/kkbt/obcsapi-go/raw/master/docs/images/Snipaste_2023-03-07_11-36-48.png)
 
 点击进入的样子
 
-![](images/Snipaste_2023-03-07_11-37-38.png)
+![](https://gitee.com/kkbt/obcsapi-go/raw/master/docs/images/Snipaste_2023-03-07_11-37-38.png)
 
 ### 开发说明
 
