@@ -106,10 +106,10 @@ func get_3_day(w http.ResponseWriter, r *http.Request) {
 }
 
 // Token2
-func moodreader(w http.ResponseWriter, r *http.Request) {
+func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.RequestURI)
 	right_token2, _ := GetToken("token2")
-	if r.Header.Get("Token") != "Token "+right_token2.TokenString {
+	if r.Header.Get("Authorization") != "Token "+right_token2.TokenString {
 		w.WriteHeader(401)
 		return
 	}
