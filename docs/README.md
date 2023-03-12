@@ -6,6 +6,9 @@
 [Obsidian S3 存储的后端 API python 版本](https://gitee.com/kkbt/obsidian-csapi)  
 [Obsidian 云存储后端 API Go 版本](https://gitee.com/kkbt/obcsapi-go)
 
+博客教程及效果（小白图文版）: [https://www.ftls.xyz/posts/obcsapi-fc-simple/](https://www.ftls.xyz/posts/obcsapi-fc-simple/)
+视频效果演示：[Obsidian 从本地到云端-哔哩哔哩](https://b23.tv/uJFvw3A)
+
 前端 Demo [https://kkbt.gitee.io/obweb/#/Memos](https://kkbt.gitee.io/obweb/#/Memos) 第一次加载不正常显示，后端加载慢属于正常现象。
 
 Python 版本容易在阿里云-云函数服务处修改和部署，完全不需要安装任何 Python 环境就可以简单修改。Go 版本性能高一些，实现了邮箱登录链接的功能，但是缺少微信文章剪裁的功能，而且修改需要 Golang 语言环境。
