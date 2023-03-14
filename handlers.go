@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func greet(w http.ResponseWriter, r *http.Request) {
+func Greet(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World! %s", time.Now())
 }
 
