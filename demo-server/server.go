@@ -100,7 +100,7 @@ func Get3DaysHandler(c *gin.Context) {
 		c.JSON(200, []Daily{
 			{Data: "No such file: 日志/1999-12-30.md",
 				MdShowData: "No such file: 日志/1999-12-30.md",
-				Date:       "1999-12-30",
+				Date:       "1999-12-31",
 				ServerTime: serverTime},
 			{Data: dailymd,
 				MdShowData: dailymd,
