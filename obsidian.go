@@ -140,8 +140,8 @@ func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
 		err = append(client, file_key, yaml+append_text)
 	}
 	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(400)
+		log.Println(err)
+		w.WriteHeader(500)
 		fmt.Fprintf(w, "错误")
 		return
 	}
@@ -166,4 +166,45 @@ func fvHandler(w http.ResponseWriter, r *http.Request) {
 		append_memos_in_daily(client, fmt.Sprintf("![](%s)", file_key))
 		fmt.Fprintf(w, "Success")
 	}
+}
+
+// SimpRead WebHook Used
+type SimpReadWebHookStruct struct {
+	Title       string `json:"title"`
+	Url         string `json:"url"`
+	Description string `json:"desc"`
+	Tags        string `json:"tags"`
+	Content     string `json:"content"`
+	Note        string `json:"note"`
+}
+
+// SimpRead WebHook Used
+func SRWebHook(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Method, r.RequestURI)
+	if !VerifyToken2(r.Header.Get("Token")) {
+		w.WriteHeader(401)
+		return
+	}
+	decoder := json.NewDecoder(r.Body)
+	var simpReadJson SimpReadWebHookStruct
+	err := decoder.Decode(&simpReadJson)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		fmt.Fprintf(w, "错误")
+		return
+	}
+	serverTime := timeFmt("200601021504")
+	yaml := fmt.Sprintf("---\ntitle: %s\nsctime: %s\n---\n", simpReadJson.Title, serverTime)
+	file_str := fmt.Sprintf("%s[[简悦WebHook生成]]\n生成时间: %s\n原文: %s\n标题: %s\n描述: %s\n标签: %s\n内容: \n%s", yaml, serverTime, simpReadJson.Url, simpReadJson.Title, simpReadJson.Description, simpReadJson.Tags, simpReadJson.Content)
+	// todo: 去除标题中非法字符
+	file_key := fmt.Sprintf("支持类文件/SimpRead/%s %s.md", simpReadJson.Title, serverTime)
+	client, err := get_client()
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		fmt.Fprintf(w, "错误")
+		return
+	}
+	store(client, file_key, []byte(file_str))
 }
