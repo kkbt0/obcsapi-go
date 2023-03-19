@@ -10,6 +10,7 @@ import (
 
 type Daily struct {
 	Data       string `json:"data"`
+	MdShowData string `json:"md_show_data"`
 	Date       string `json:"date"`
 	ServerTime string `json:"serverTime"`
 }
@@ -41,7 +42,8 @@ func ob_today(w http.ResponseWriter, r *http.Request) {
 	client, _ := get_client()
 	if r.Method == "GET" {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		daily_data := Daily{Date: timeFmt("2006-01-02"), ServerTime: timeFmt("200601021504"), Data: get_today_daily_list(client)[0]}
+		json_data := get_today_daily_list(client)[0]
+		daily_data := Daily{Date: timeFmt("2006-01-02"), ServerTime: timeFmt("200601021504"), Data: json_data, MdShowData: string(replace_md_url2pre_url([]byte(json_data)))}
 		data, _ := json.Marshal([]Daily{daily_data})
 		fmt.Fprint(w, string(data))
 	} else if r.Method == "POST" {

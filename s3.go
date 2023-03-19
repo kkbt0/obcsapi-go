@@ -148,7 +148,7 @@ func get_3_daily_list(sess *session.Session) [3]Daily {
 		if err != nil {
 			fmt.Println(err)
 		}
-		ans[i] = Daily{Data: day, Date: date, ServerTime: timeFmt("200601021504")}
+		ans[i] = Daily{Data: day, MdShowData: string(replace_md_url2pre_url([]byte(day))), Date: date, ServerTime: timeFmt("200601021504")}
 	}
 	return ans
 }
@@ -204,7 +204,7 @@ func replace_md_url2pre_url(in_md []byte) []byte {
 		if err != nil {
 			log.Println(err)
 		}
-		fmt.Println(link2)
+		// fmt.Println(link2)
 		// 替换链接为临时鉴权链接
 		return []byte(fmt.Sprintf("![%s](%s)", description, link2))
 	}

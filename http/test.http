@@ -16,3 +16,6 @@ GET {{host}}/time HTTP/ 1.1
 ###
 GET {{host}}/ob/today HTTP/ 1.1
 Token:  NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
+###
+GET {{host}}/ob/recent HTTP/ 1.1
+Token:  NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
