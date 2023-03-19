@@ -18,7 +18,7 @@ POST  {{host}}/today
 Token: {{token}}
 Content-Type: application/json
 
-{"content":"hello"}
+{"content":"<<>hello"}
 
 ###
 GET {{host}}/time

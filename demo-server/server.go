@@ -4,8 +4,8 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"html"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -50,7 +50,6 @@ func TodayHandler(c *gin.Context) {
 			Date:       timeFmt("2006-01-02"),
 			ServerTime: timeFmt("2006-01-02-15-04"),
 		}})
-
 	case "POST":
 		decoder := json.NewDecoder(c.Request.Body)
 		var postJson PostJson
@@ -60,7 +59,8 @@ func TodayHandler(c *gin.Context) {
 			c.Status(500)
 			return
 		}
-		memos := fmt.Sprintf("\n- %s %s", timeFmt("15:04"), postJson.Content)
+		// EscapeString 预防 xss 个人使用不需要
+		memos := fmt.Sprintf("\n- %s %s", timeFmt("15:04"), html.EscapeString(postJson.Content))
 		guestInputText = append(guestInputText, []byte(memos)...)
 		c.Status(200)
 	case "OPTIONS":
@@ -84,7 +84,8 @@ func PostTodayAllHandler(c *gin.Context) {
 			c.Status(500)
 			return
 		}
-		guestInputText = []byte(strings.ReplaceAll(postJson.Content, dailymd, ""))
+		// EscapeString 预防 xss 个人使用不需要
+		guestInputText = []byte(html.EscapeString(postJson.Content))
 		c.Status(200)
 	case "OPTIONS":
 		c.Status(200)
