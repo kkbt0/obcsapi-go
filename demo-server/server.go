@@ -25,7 +25,7 @@ func main() {
 	config.AddAllowHeaders("Token")
 	r.Use(cors.New(config)) // cors 配置
 
-	r.GET("/time", TokenAuthMiddleware(), GreetHandler)                // 验证服务和服务器时间
+	r.GET("/ob/time", GreetHandler)                                    // 验证服务和服务器时间
 	r.Any("/ob/today", TokenAuthMiddleware(), TodayHandler)            // Obsidian Token1 GET/POST 今日日记
 	r.Any("/ob/today/all", TokenAuthMiddleware(), PostTodayAllHandler) // Obsidian Token1 POST 整片修改今日日记
 	r.Any("/ob/recent", TokenAuthMiddleware(), Get3DaysHandler)
@@ -41,17 +41,16 @@ func GreetHandler(c *gin.Context) {
 }
 
 func TodayHandler(c *gin.Context) {
-	serverTime := timeFmt("2006-01-02-15-04")
-	date := timeFmt("2006-01-02")
 	switch c.Request.Method {
 	case "GET":
 		// 注意是数组
 		c.JSON(200, []Daily{{
-			Data:       string(dailymd) + string(guestInputText),
-			MdShowData: string(dailymd) + string(guestInputText),
-			Date:       date,
-			ServerTime: serverTime,
+			Data:       string(guestInputText),
+			MdShowData: string(guestInputText),
+			Date:       timeFmt("2006-01-02"),
+			ServerTime: timeFmt("2006-01-02-15-04"),
 		}})
+
 	case "POST":
 		decoder := json.NewDecoder(c.Request.Body)
 		var postJson PostJson
@@ -95,28 +94,26 @@ func PostTodayAllHandler(c *gin.Context) {
 }
 
 func Get3DaysHandler(c *gin.Context) {
+	serverTime := timeFmt("2006-01-02-15-04")
 	switch c.Request.Method {
 	case "GET":
-		serverTime := timeFmt("2006-01-02-15-04")
-		date := timeFmt("2006-01-02")
 		c.JSON(200, []Daily{
 			{Data: "No such file: 日志/1999-12-30.md",
 				MdShowData: "No such file: 日志/1999-12-30.md",
 				Date:       "1999-12-30",
-				ServerTime: "2000-01-01-00-00"},
-			{Data: "No such file: 日志/1999-12-31.md",
-				MdShowData: "No such file: 日志/1999-12-31.md",
-				Date:       "1999-12-31",
-				ServerTime: "2000-01-01-00-00"},
-			{Data: string(dailymd) + string(guestInputText),
-				MdShowData: string(dailymd) + string(guestInputText),
-				Date:       date,
+				ServerTime: serverTime},
+			{Data: dailymd,
+				MdShowData: dailymd,
+				Date:       "2000-01-01",
+				ServerTime: serverTime},
+			{Data: string(guestInputText),
+				MdShowData: string(guestInputText),
+				Date:       timeFmt("2006-01-02"),
 				ServerTime: serverTime}})
 	case "OPTIONS":
 		c.Status(200)
 	default:
 		c.Status(404)
-
 	}
 
 }
@@ -124,8 +121,7 @@ func Get3DaysHandler(c *gin.Context) {
 // TokenAuthMiddleware 认证中间件
 func TokenAuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("Token")
-		if token != "yourtoken" {
+		if c.Request.Header.Get("Token") != "yourtoken" {
 			c.JSON(401, gin.H{
 				"code": 401,
 				"msg":  "验证错误",
