@@ -138,11 +138,11 @@
         allowBack() { return (this.allowback > 0) ? true : false }
         allowForwad() { return (this.allowforwad > 0) ? true : false }
     }
-    var allMdArr = new Array()
+    var allMdArr = new Array() // 存储所有 json 每个 json 有 data，date，md_show_data，serverTime 字段
     var vm = new Vue({
         el: '#box',
         data: {
-            version: '2.4',
+            version: '2.6',
             mConfig: null,
             apiUrl: "", token: "",
             inputText: "",
@@ -222,7 +222,7 @@
                 var allHtmlArr = new Array()
                 val.forEach(item => {
                     // console.log(item.data)
-                    allHtmlArr.push(this.dealDayRaw(item.data, item.date))
+                    allHtmlArr.push(this.dealDayRaw(item.md_show_data, item.date))
                 })
                 var allItem = []
                 for (var i = 0; i < allHtmlArr.length; i++) {
