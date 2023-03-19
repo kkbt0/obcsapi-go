@@ -61,7 +61,7 @@ func get_object(sess *session.Session, file_key string) ([]byte, error) {
 		return nil, err
 	}
 	// 对图片 url 进行预签名
-	return replace_md_url2pre_url(sess, buf), nil
+	return buf, nil
 }
 
 // """直接上传存储,可能覆盖"""
@@ -190,7 +190,11 @@ func getPreSignURL(sess *session.Session, file_key string) (string, error) {
 }
 
 // md text img url to preSigned url ![](a.jpg) -> ![](a.jpg&signed)
-func replace_md_url2pre_url(sess *session.Session, in_md []byte) []byte {
+func replace_md_url2pre_url(in_md []byte) []byte {
+	sess, err := get_client()
+	if err != nil {
+		log.Println(err)
+	}
 	pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
 	replaceFunc := func(match []byte) []byte {
 		// 获取匹配到的链接 并转为 预签名 url

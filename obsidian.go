@@ -159,7 +159,7 @@ func fvHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Success")
 	} else if r.Header.Get("Content-Type") == "application/octet-stream" {
 		content, _ := ioutil.ReadAll(r.Body)
-		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", timeFmt("200601"), timeFmt("200601021504"))
+		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", timeFmt("200601"), timeFmt("20060102150405"))
 		store(client, file_key, content)
 		append_memos_in_daily(client, fmt.Sprintf("![](%s)", file_key))
 		fmt.Fprintf(w, "Success")
