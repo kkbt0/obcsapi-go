@@ -30,11 +30,11 @@ type MoodReaderHighlights struct {
 // Token1
 func ob_today(w http.ResponseWriter, r *http.Request) {
 	setupCORS(&w)
+	log.Println(r.Method, r.RequestURI)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(200)
 		return
 	}
-	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken1(r.Header.Get("Token")) {
 		w.WriteHeader(401)
 		return
@@ -51,7 +51,7 @@ func ob_today(w http.ResponseWriter, r *http.Request) {
 		var memosData MemosData
 		err := decoder.Decode(&memosData)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 		append_memos_in_daily(client, memosData.Content)
 		fmt.Fprintf(w, "Success")
@@ -207,4 +207,38 @@ func SRWebHook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	store(client, file_key, []byte(file_str))
+}
+
+func GeneralHeader(w http.ResponseWriter, r *http.Request) {
+	setupCORS(&w)
+	log.Println(r.Method, r.RequestURI)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(200)
+		return
+	}
+	if !VerifyToken2(r.Header.Get("Token")) {
+		w.WriteHeader(401)
+		return
+	}
+	decoder := json.NewDecoder(r.Body)
+	var memosData MemosData
+	err := decoder.Decode(&memosData)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	client, err := get_client()
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	err = append_memos_in_daily(client, memosData.Content)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	fmt.Fprintf(w, "Success")
 }

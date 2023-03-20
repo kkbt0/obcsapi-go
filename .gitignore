@@ -2,3 +2,4 @@ config.yaml
 server.zip
 server
 demo-server/demo-server
+testgo/test.py

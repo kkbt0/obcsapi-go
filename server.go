@@ -31,6 +31,7 @@ func main() {
 	http.HandleFunc("/ob/moonreader", moodreaderHandler)                          // Obsidian Token2 POST 静读天下 api
 	http.HandleFunc("/ob/fv", fvHandler)                                          // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
 	http.HandleFunc("/ob/sr/webhook", SRWebHook)                                  // Obsidian Token2 POST 简悦 Webhook 使用
+	http.HandleFunc("/ob/general", GeneralHeader)                                 // Obsidian Token2 POST 通用接口 今日日记
 	http.HandleFunc("/time", Greet)                                               // 打招呼 测试使用 GET
 	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 请求将 token发送到 email GET 请求
 	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
