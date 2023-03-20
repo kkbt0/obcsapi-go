@@ -154,7 +154,6 @@ func get_3_daily_list(sess *session.Session) [3]Daily {
 }
 
 func downloader(url string) ([]byte, error) {
-	fmt.Println("Hello World!")
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
