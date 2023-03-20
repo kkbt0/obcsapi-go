@@ -7,8 +7,8 @@ import (
 
 func main() {
 	fmt.Println("Run")
-	olrdMd := "![](https://github.com/1.jpg)and![xxx](https://github.com/2.jpg)"
-	pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
+	olrdMd := "![](https://github.com/1.jpg)\n![xxx](https://github.com/2.jpg)\n![](xxx)xxxx\n![xx](xxx)xxxx"
+	pattern := regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
 	replaceFunc := func(match []byte) []byte {
 		// 获取匹配到的链接
 		desp := pattern.ReplaceAllString(string(match), "$1")
@@ -21,5 +21,5 @@ func main() {
 }
 
 func dealPic(key string) string {
-	return fmt.Sprintf("%s+autho", key)
+	return fmt.Sprintf("%s+捕获", key)
 }

@@ -195,7 +195,8 @@ func replace_md_url2pre_url(in_md []byte) []byte {
 	if err != nil {
 		log.Println(err)
 	}
-	pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
+	pattern := regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
+	//pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
 	replaceFunc := func(match []byte) []byte {
 		// 获取匹配到的链接 并转为 预签名 url
 		description := pattern.ReplaceAllString(string(match), "$1")
