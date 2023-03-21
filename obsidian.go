@@ -107,7 +107,7 @@ func get_3_day(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(data))
 }
 
-// Token2
+// Token2 静读天下使用的 API
 func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.RequestURI)
 	right_token2, _ := GetToken("token2")
@@ -130,7 +130,7 @@ func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
 	author := moodReader.Highlights[0].Author
 	note := moodReader.Highlights[0].Note
 	client, _ := get_client()
-	file_key := "支持类文件/MoonReader/" + title + ".md"
+	file_key := fmt.Sprintf("支持类文件/MoonReader/%s.md", ReplaceUnAllowedChars(title))
 	append_text := fmt.Sprintf("文: %s\n批: %s\n于: %s\n\n---\n", text, note, timeFmt("2006-01-02 15:04"))
 	md, _ := get_object(client, file_key)
 	if md != nil {
@@ -148,6 +148,7 @@ func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Success")
 }
 
+// 安卓软件 fv 悬浮球使用的 API 用于自定义任务的 图片、文字
 func fvHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken2(r.Header.Get("Token")) {
@@ -197,8 +198,7 @@ func SRWebHook(w http.ResponseWriter, r *http.Request) {
 	serverTime := timeFmt("200601021504")
 	yaml := fmt.Sprintf("---\ntitle: %s\nsctime: %s\n---\n", simpReadJson.Title, serverTime)
 	file_str := fmt.Sprintf("%s[[简悦WebHook生成]]\n生成时间: %s\n原文: %s\n标题: %s\n描述: %s\n标签: %s\n内容: \n%s", yaml, serverTime, simpReadJson.Url, simpReadJson.Title, simpReadJson.Description, simpReadJson.Tags, simpReadJson.Content)
-	// todo: 去除标题中非法字符
-	file_key := fmt.Sprintf("支持类文件/SimpRead/%s %s.md", simpReadJson.Title, serverTime)
+	file_key := fmt.Sprintf("支持类文件/SimpRead/%s %s.md", ReplaceUnAllowedChars(simpReadJson.Title), serverTime)
 	client, err := get_client()
 	if err != nil {
 		log.Println(err)
@@ -209,6 +209,7 @@ func SRWebHook(w http.ResponseWriter, r *http.Request) {
 	store(client, file_key, []byte(file_str))
 }
 
+// 通用 API 接口 使用 Token2 验证
 func GeneralHeader(w http.ResponseWriter, r *http.Request) {
 	setupCORS(&w)
 	log.Println(r.Method, r.RequestURI)

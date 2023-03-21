@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -40,4 +41,14 @@ func timeFmt(fmt string) string {
 	// fmt.Println(time.Now().In(cstZone).Format("2006-01-02 15:04:05"))
 	var cstZone = time.FixedZone("CST", 8*3600)
 	return time.Now().In(cstZone).Format(fmt)
+}
+
+//  obsidian 文件名非法字符 * " \ / < > : | ? 链接失效 # ^ [ ] | 替换为 _
+func ReplaceUnAllowedChars(s string) string {
+	unAllowedChars := "*\"\\/<>:|?#^[]|"
+	fmt.Println(unAllowedChars)
+	for _, c := range unAllowedChars {
+		s = strings.ReplaceAll(s, string(c), "_")
+	}
+	return s
 }
