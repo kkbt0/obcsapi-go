@@ -38,7 +38,6 @@ func SendTokenHandler(w http.ResponseWriter, r *http.Request) {
 // 验证 Token 1 有效性
 
 func VerifyToken1Handler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
 	// 解析 token json {"token":"sometoken1"}
 	decoder := json.NewDecoder(r.Body)
 	var tokenFromJSON TokenFromJSON

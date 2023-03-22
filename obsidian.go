@@ -32,7 +32,6 @@ type MoodReaderHighlights struct {
 // Token1
 func ob_today(w http.ResponseWriter, r *http.Request) {
 	setupCORS(&w)
-	log.Println(r.Method, r.RequestURI)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(200)
 		return
@@ -69,7 +68,6 @@ func ob_today_all(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		return
 	}
-	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken1(r.Header.Get("Token")) {
 		w.WriteHeader(401)
 		return
@@ -97,7 +95,6 @@ func get_3_day(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		return
 	}
-	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken1(r.Header.Get("Token")) {
 		w.WriteHeader(401)
 		return
@@ -111,7 +108,6 @@ func get_3_day(w http.ResponseWriter, r *http.Request) {
 
 // Token2 静读天下使用的 API
 func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
 	right_token2, _ := GetToken("token2")
 	if r.Header.Get("Authorization") != "Token "+right_token2.TokenString {
 		w.WriteHeader(401)
@@ -152,7 +148,6 @@ func moodreaderHandler(w http.ResponseWriter, r *http.Request) {
 
 // 安卓软件 fv 悬浮球使用的 API 用于自定义任务的 图片、文字
 func fvHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken2(r.Header.Get("Token")) {
 		w.WriteHeader(401)
 		return
@@ -183,7 +178,6 @@ type SimpReadWebHookStruct struct {
 
 // SimpRead WebHook Used
 func SRWebHook(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken2(r.Header.Get("Token")) {
 		w.WriteHeader(401)
 		return
@@ -214,7 +208,6 @@ func SRWebHook(w http.ResponseWriter, r *http.Request) {
 // 通用 API 接口 使用 Token2 验证
 func GeneralHeader(w http.ResponseWriter, r *http.Request) {
 	setupCORS(&w)
-	log.Println(r.Method, r.RequestURI)
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(200)
 		return
@@ -251,7 +244,6 @@ type UrlStruct struct {
 }
 
 func Url2MdHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
 	if !VerifyToken2(r.Header.Get("Token")) {
 		w.WriteHeader(401)
 		return
