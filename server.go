@@ -32,7 +32,7 @@ func main() {
 	http.HandleFunc("/ob/fv", Logging(fvHandler))                                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
 	http.HandleFunc("/ob/sr/webhook", Logging(SRWebHook))                         // Obsidian Token2 POST 简悦 Webhook 使用
 	http.HandleFunc("/ob/general", Logging(GeneralHeader))                        // Obsidian Token2 POST 通用接口 今日日记
-	http.HandleFunc("/ob/url", Logging(Url2MdHandler))                            // Obsidian Token2 POST 页面转 md 存储
+	http.HandleFunc("/ob/url", Logging(Url2MdHandler))                            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	http.HandleFunc("/time", Greet)                                               // 打招呼 测试使用 GET
 	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 请求将 token发送到 email GET 请求
 	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
