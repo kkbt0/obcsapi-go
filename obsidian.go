@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	md "github.com/JohannesKaufmann/html-to-markdown"
 )
 
 type Daily struct {
@@ -242,4 +244,47 @@ func GeneralHeader(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "Success")
+}
+
+type UrlStruct struct {
+	Url string `json:"url"`
+}
+
+func Url2MdHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Method, r.RequestURI)
+	if !VerifyToken2(r.Header.Get("Token")) {
+		w.WriteHeader(401)
+		return
+	}
+	decoder := json.NewDecoder(r.Body)
+	var urlStruct UrlStruct
+	err := decoder.Decode(&urlStruct)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	text, err := Downloader(urlStruct.Url)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	converter := md.NewConverter("", true, nil)
+	markdown, err := converter.ConvertString(string(text))
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	client, err := get_client()
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	serverTime := timeFmt("200601021504")
+	yaml := fmt.Sprintf("---\nurl: %s\nsctime: %s\n---\n", urlStruct.Url, serverTime)
+	file_key := fmt.Sprintf("支持类文件/HtmlPages/%s.md", serverTime)
+	store(client, file_key, []byte(yaml+markdown))
 }

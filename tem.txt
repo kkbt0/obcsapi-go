@@ -1,5 +1,221 @@
+---
+url: https://www.jianshu.com/p/bb11a55dc84d
+sctime: 202303221157
+---
+go解析html - 简书
 
-- 13:32 CDTYZ-FY3A4-XFFCY
-- 13:42 ![](日志/附件/202303/202303191342.jpg)
-- 13:43 ![](日志/附件/202303/202303191343.jpg)
-123
+[简书](/)
+
+[登录](/sign_in) [注册](/sign_up) [写文章](/writer)
+
+[首页](/) [下载APP](/apps?utm_medium=desktop&utm_source=navbar-apps) [会员](/vips) [IT技术](/techareas)
+
+# go解析html
+
+[岑吾](/u/a51cd2236c13) 关注赞赏支持
+
+# go解析html
+
+在go中可以使用goquery库来解析html，这个有点类似于jQuery的库，提供与 jQuery 相近的接口。
+
+## 一、安装
+
+```go
+go get -u github.com/PuerkitoBio/goquery
+
+```
+
+## 二、使用
+
+### 1\. 创建goquery对象
+
+使用 `NewDocument` 简单的创建，但不推荐这么用，建议使用http.Get()成功后，装body传给 `NewDocumentFromReader` 创建
+
+```go
+doc, err := goquery.NewDocument("https://zengwu.com.cn")
+
+```
+
+使用 `NewDocumentFromReader` 创建还可以从本地文件或内存中构造对象
+
+```go
+res, err := http.Get("https://zengwu.com.cn")
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer res.Body.Close()
+  if res.StatusCode != 200 {
+    log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+  }
+
+  doc, err := goquery.NewDocumentFromReader(res.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+```
+
+### 2\. 查找 `head` 中数据
+
+```html
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta name="theme-color" content="#222">
+  ...
+
+```
+
+如有以上网页头数据，我们要找出 `charset` 编码
+
+```go
+    // 查找head
+    head := doc.Find("head")
+
+    // 查找meta属性项charset
+    charset := head.Find("meta[charset]")
+
+    // 获取charset中的charset属性值
+    str, _ := charset.Attr("charset")
+
+    fmt.Println(str)
+
+```
+
+### 3\. 查找html中的id
+
+```html
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br /> 首页
+          </a>
+        </li>
+...
+
+```
+
+如有以上网页头数据，要找出id为 `menu` 的项
+
+```go
+menu := doc.Find("#menu")
+
+```
+
+### 4\. 查找html中的class
+
+还是上面代码，要找出nav class为 `site-nav` 的项
+
+```go
+menu := doc.Find("nav.site-nav")
+
+```
+
+### 5\. 查找所有div或列表数据
+
+```xml
+<div class="pull-left" style="white-space:nowrap">
+    01-01
+    <a href="/p/26da89a5.html" title="将阿里云盘映射成本地磁盘">将阿里云盘映射成本地磁盘</a>
+</div><br>
+
+<div class="pull-left" style="white-space:nowrap">
+    12-05
+    <a href="/p/c1edbab3.html" title="bat中的enabledelayedexpansion">bat中的enabledelayedexpansion</a>
+</div><br>
+
+<div class="pull-left" style="white-space:nowrap">
+    11-21
+    <a href="/p/afe6edd9.html" title="Nginx配置跨域">Nginx配置跨域</a>
+</div><br>
+
+<div class="pull-left" style="white-space:nowrap">
+    11-19
+    <a href="/p/e334394.html" title="curl发送POST请求">curl发送POST请求</a>
+</div><br>
+
+<div class="pull-left" style="white-space:nowrap">
+    11-18
+    <a href="/p/334d5fc9.html" title="Java中byte数组和String字符串相互转换">Java中byte数组和String字符串相互转换</a>
+</div><br>
+
+```
+
+找出所有class为pull-left的div，然后在每个div下搜索<a>，获取<a>的显示文本内容
+
+```go
+    var txt = []string{}
+    doc.Find("div.pull-left").Each(func(i int, s *goquery.Selection) {
+        a := s.Find("a").Text()
+        txt = append(txt, a)
+    })
+
+    fmt.Println(txt)
+
+```
+
+### 推荐阅读 [更多精彩内容](/)
+
+- [【建议收藏】2021字节跳动、腾讯、阿里巴巴等一线互联网校招面试真题解析](/p/b7b9e29de1ea)
+
+
+
+HTML 篇 说说 title 和 alt 属性 两个属性都是当鼠标滑动到元素上的时候显示 alt 是 img 的...
+
+
+
+[前前前端小飞](/u/44ee327ddfc7) 阅读763评论0赞10
+
+- [php解析html类库simple\_html\_dom(爬虫相关)](/p/d35ddd13cd1b)
+
+
+
+下载地址：https://github.com/samacs/simple\_html\_dom 解析器不仅仅只是帮助...
+
+
+
+[七彩邪云](/u/88e45a0050f0) 阅读6,091评论0赞51
+
+- [前端面试题整理](/p/2435a3704231)
+
+
+
+在线阅读 http://blog.poetries.top/FE-Interview-Questions 目录 $...
+
+
+
+[Aniugel](/u/8ce2755e4397) 阅读834评论0赞1
+
+- [前端面试题整理](/p/feab89b88d6b)
+
+
+
+在线阅读 http://interview.poetries.top\[http://interview.poetr...
+
+
+
+[程序员poetry](/u/94077fcddfc0) 阅读112,653评论24赞450
+
+- [前端面试题之Html](/p/46644d0d3edf)
+
+
+
+1\. 一个200\*200的div在不同分辨率屏幕上下左右居中，用css实现 2. 写一个左中右布局占满屏幕，其中左...
+
+
+
+[造了个轮子](/u/2e02d84b1eb6) 阅读408评论0赞1
+
+
+评论0
+
+赞4
+
+4赞5赞
+
+赞赏
+
+更多好文

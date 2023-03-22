@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"golang.org/x/time/rate"
@@ -20,9 +21,8 @@ func setupCORS(w *http.ResponseWriter) {
 
 func main() {
 	ShowConfig() // 打印基础消息
-
 	http.Handle("/", http.FileServer(http.Dir("./template")))
-	http.HandleFunc("/404", BaseHandler)                                          // 404
+	http.HandleFunc("/404", Logging(BaseHandler))                                 // 404
 	http.HandleFunc("/token", VerifyToken1Handler)                                // Token 验证 测试使用
 	http.HandleFunc("/api/wechat", wechatmpfunc)                                  // wecheet 机器人 用于公众测试号
 	http.HandleFunc("/ob/today", ob_today)                                        // Obsidian Token1 GET/POST 今日日记
@@ -32,6 +32,7 @@ func main() {
 	http.HandleFunc("/ob/fv", fvHandler)                                          // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
 	http.HandleFunc("/ob/sr/webhook", SRWebHook)                                  // Obsidian Token2 POST 简悦 Webhook 使用
 	http.HandleFunc("/ob/general", GeneralHeader)                                 // Obsidian Token2 POST 通用接口 今日日记
+	http.HandleFunc("/ob/url", Url2MdHandler)                                     // Obsidian Token2 POST 页面转 md 存储
 	http.HandleFunc("/time", Greet)                                               // 打招呼 测试使用 GET
 	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 请求将 token发送到 email GET 请求
 	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
@@ -48,4 +49,11 @@ func limit(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func Logging(f http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.Method, r.RequestURI)
+		f(w, r)
+	}
 }

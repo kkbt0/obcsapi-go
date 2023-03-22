@@ -1,4 +1,6 @@
 @host = http://localhost:8900
+@token1 = NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
+@token2 = fQbzONJAAw
 # emailSendToken
 GET {{host}}/api/sendtoken2mail HTTP/ 1.1
 ###
@@ -7,7 +9,7 @@ POST {{host}}/token  HTTP/ 1.1
 Content-Type: application/json
 
 {
-    "token": "g8BVPFLWeY9qiwF2oOVxM5QPMen1xVHT"
+    "token": "NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2"
 }
 ###
 GET {{host}}/index.html HTTP/ 1.1
@@ -15,7 +17,16 @@ GET {{host}}/index.html HTTP/ 1.1
 GET {{host}}/time HTTP/ 1.1
 ###
 GET {{host}}/ob/today HTTP/ 1.1
-Token:  NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
+Token:  {{token1}}
 ###
 GET {{host}}/ob/recent HTTP/ 1.1
-Token:  NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
+Token:  {{token1}}
+###
+POST  {{host}}/ob/url HTTP/ 1.1
+Token:  {{token2}}
+Content-Type: application/json
+
+{"url":"https://www.jianshu.com/p/bb11a55dc84d"}
+
+###
+GET {{host}}/404

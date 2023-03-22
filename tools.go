@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -51,4 +55,26 @@ func ReplaceUnAllowedChars(s string) string {
 		s = strings.ReplaceAll(s, string(c), "_")
 	}
 	return s
+}
+
+// 和 downloads 除了保存文件名不一样 剩下都一样
+func Downloader(url string) ([]byte, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	reader := bufio.NewReaderSize(res.Body, 32*1024)
+	file, err := os.Create("tem.file")
+	writer := bufio.NewWriter(file)
+	io.Copy(writer, reader)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	buf, err := os.ReadFile("tem.file")
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
 }
