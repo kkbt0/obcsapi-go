@@ -3,20 +3,20 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sidbusy/weixinmp"
 )
 
-func wechatmpfunc(w http.ResponseWriter, r *http.Request) {
+func WeChatMpHandlers(c *gin.Context) {
 	log.Println("WeChat MP Run")
 	openid := ConfigGetString("wechat_openid") // OpenID
 	mp := weixinmp.New(ConfigGetString("wechat_token"), ConfigGetString("wechat_appid"), ConfigGetString("wechat_secret"))
-	if !mp.Request.IsValid(w, r) {
+	if !mp.Request.IsValid(c.Writer, c.Request) {
 		return
 	}
 	if mp.Request.FromUserName != openid {
-		mp.ReplyTextMsg(w, "你不是恐咖兵糖")
+		mp.ReplyTextMsg(c.Writer, "你不是恐咖兵糖")
 		log.Println("陌生人:", mp.Request.FromUserName)
 		return
 	}
@@ -50,5 +50,5 @@ func wechatmpfunc(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		r_str = "Error"
 	}
-	mp.ReplyTextMsg(w, r_str)
+	mp.ReplyTextMsg(c.Writer, r_str)
 }

@@ -30,3 +30,6 @@ Content-Type: application/json
 
 ###
 GET {{host}}/404
+
+###
+GET {{host}}/test

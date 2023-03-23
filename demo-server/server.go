@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
-	"log"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -55,7 +54,7 @@ func TodayHandler(c *gin.Context) {
 		var postJson PostJson
 		err := decoder.Decode(&postJson)
 		if err != nil {
-			log.Println(err)
+			c.Error(err)
 			c.Status(500)
 			return
 		}
@@ -80,7 +79,7 @@ func PostTodayAllHandler(c *gin.Context) {
 		var postJson PostJson
 		err := decoder.Decode(&postJson)
 		if err != nil {
-			log.Println(err)
+			c.Error(err)
 			c.Status(500)
 			return
 		}

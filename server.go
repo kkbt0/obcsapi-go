@@ -1,10 +1,12 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
-	"log"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
 
@@ -13,47 +15,79 @@ type IndexInfo struct {
 	Content string
 }
 
-func setupCORS(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Token")
-}
+//go:embed template/index.html
+var indeHtml string
 
 func main() {
 	ShowConfig() // 打印基础消息
-	http.Handle("/", http.FileServer(http.Dir("./template")))
-	http.HandleFunc("/404", Logging(BaseHandler))                                 // 404
-	http.HandleFunc("/token", Logging(VerifyToken1Handler))                       // Token 验证 测试使用
-	http.HandleFunc("/api/wechat", Logging(wechatmpfunc))                         // wecheet 机器人 用于公众测试号
-	http.HandleFunc("/ob/today", Logging(ob_today))                               // Obsidian Token1 GET/POST 今日日记
-	http.HandleFunc("/ob/today/all", Logging(ob_today_all))                       // Obsidian Token1 POST 整片修改今日日记
-	http.HandleFunc("/ob/recent", Logging(get_3_day))                             // Obsidian Token1 GET 近三天日记
-	http.HandleFunc("/ob/moonreader", Logging(moodreaderHandler))                 // Obsidian Token2 POST 静读天下 api
-	http.HandleFunc("/ob/fv", Logging(fvHandler))                                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
-	http.HandleFunc("/ob/sr/webhook", Logging(SRWebHook))                         // Obsidian Token2 POST 简悦 Webhook 使用
-	http.HandleFunc("/ob/general", Logging(GeneralHeader))                        // Obsidian Token2 POST 通用接口 今日日记
-	http.HandleFunc("/ob/url", Logging(Url2MdHandler))                            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
-	http.HandleFunc("/time", Greet)                                               // 打招呼 测试使用 GET
-	http.Handle("/api/sendtoken2mail", limit(http.HandlerFunc(SendTokenHandler))) // 请求将 token发送到 email GET 请求
-	http.ListenAndServe(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port")), nil)
+
+	r := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AddAllowHeaders("Token")
+	r.Use(cors.New(config)) // cors 配置
+
+	r.GET("/", IndexHandler)                                // index.html
+	r.GET("/404", BaseHandler)                              // 404
+	r.GET("/time", Greet)                                   // 打招呼 测试使用 GET
+	r.POST("/token", VerifyToken1Handler)                   // 验证 Token1 有效性
+	r.Any("/api/wechat", WeChatMpHandlers)                  // wecheet 机器人 用于公众测试号
+	r.GET("/api/sendtoken2mail", SendTokenHandler, limit()) // 请求将 token发送到 email GET 请求
+
+	obGroup := r.Group("/ob")
+	{
+		obGroup.Any("today", ObTodayHandler, Token1AuthMiddleware())            // Obsidian Token1 GET/POST 今日日记
+		obGroup.Any("today/all", ObPostTodayAllHandler, Token1AuthMiddleware()) // Obsidian Token1 POST 整片修改今日日记
+		obGroup.GET("recent", ObGet3DaysHandler, Token1AuthMiddleware())        // Obsidian Token1 GET 近三天日记
+
+		obGroup.POST("moonreader", MoodReaderHandler, Token2AuthMiddleware()) // Obsidian Token2 POST 静读天下 api
+		obGroup.POST("fv", fvHandler, Token2AuthMiddleware())                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
+		obGroup.POST("sr/webhook", SRWebHook, Token2AuthMiddleware())         // Obsidian Token2 POST 简悦 Webhook 使用
+		obGroup.POST("general", GeneralHeader, Token2AuthMiddleware())        // Obsidian Token2 POST 通用接口 今日日记
+		obGroup.POST("url", Url2MdHandler, Token2AuthMiddleware())            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
+	}
+	r.Run(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port"))) // 运行服务
 }
 
 var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。
 
 // 短时间多次请求限制
-func limit(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func limit() func(c *gin.Context) {
+	return func(c *gin.Context) {
 		if !limiter.Allow() {
-			http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			http.Error(c.Writer, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			c.Abort()
 			return
 		}
-		next.ServeHTTP(w, r)
-	})
+		c.Next()
+	}
 }
 
-func Logging(f http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.Method, r.RequestURI)
-		f(w, r)
+func Token1AuthMiddleware() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		if !VerifyToken1(c.Request.Header.Get("Token")) {
+			c.JSON(401, gin.H{
+				"code": 401,
+				"msg":  "验证错误",
+			})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+func Token2AuthMiddleware() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		if !VerifyToken2(c.Request.Header.Get("Token")) {
+			c.JSON(401, gin.H{
+				"code": 401,
+				"msg":  "验证错误",
+			})
+			c.Abort()
+			return
+		}
+		c.Next()
 	}
 }
