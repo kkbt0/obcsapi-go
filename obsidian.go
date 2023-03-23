@@ -64,22 +64,15 @@ func ObPostTodayAllHandler(c *gin.Context) {
 	if err != nil {
 		c.Error(err)
 	}
-	switch c.Request.Method {
-	case "OPTIONS":
-		c.Status(200)
-	case "POST":
-		decoder := json.NewDecoder(c.Request.Body)
-		var memosData MemosData
-		err := decoder.Decode(&memosData)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			store(client, daily_file_key(), []byte(memosData.Content))
-		}
-		c.String(200, "Success")
-	default:
-		c.Status(404)
+	decoder := json.NewDecoder(c.Request.Body)
+	var memosData MemosData
+	err = decoder.Decode(&memosData)
+	if err != nil {
+		c.Error(err)
+	} else {
+		store(client, daily_file_key(), []byte(memosData.Content))
 	}
+	c.String(200, "Success")
 }
 
 // Tokne1
@@ -145,12 +138,14 @@ func fvHandler(c *gin.Context) {
 		content, _ := ioutil.ReadAll(c.Request.Body)
 		append_memos_in_daily(client, string(content))
 		c.String(200, "Success")
+		return
 	} else if c.GetHeader("Content-Type") == "application/octet-stream" {
 		content, _ := ioutil.ReadAll(c.Request.Body)
 		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", timeFmt("200601"), timeFmt("20060102150405"))
 		store(client, file_key, content)
 		append_memos_in_daily(client, fmt.Sprintf("![](%s)", file_key))
 		c.String(200, "Success")
+		return
 	}
 	c.String(404, "Error")
 }
