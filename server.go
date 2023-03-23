@@ -30,12 +30,13 @@ func main() {
 	config.AddAllowHeaders("Token")
 	r.Use(cors.New(config)) // cors 配置
 
-	r.GET("/", IndexHandler)                                // index.html
-	r.GET("/404", BaseHandler)                              // 404
-	r.GET("/time", Greet)                                   // 打招呼 测试使用 GET
-	r.POST("/token", VerifyToken1Handler)                   // 验证 Token1 有效性
-	r.Any("/api/wechat", WeChatMpHandlers)                  // wecheet 机器人 用于公众测试号
-	r.GET("/api/sendtoken2mail", SendTokenHandler, limit()) // 请求将 token发送到 email GET 请求
+	r.GET("/", IndexHandler)               // index.html
+	r.GET("/404", BaseHandler)             // 404
+	r.GET("/time", Greet)                  // 打招呼 测试使用 GET
+	r.POST("/token", VerifyToken1Handler)  // 验证 Token1 有效性
+	r.Any("/api/wechat", WeChatMpHandlers) // wecheet 机器人 用于公众测试号
+
+	r.GET("/api/sendtoken2mail", LimitMiddleware(), SendTokenHandler) // 请求将 token发送到 email GET 请求
 
 	obGroup1 := r.Group("/ob", Token1AuthMiddleware()) // 前端使用
 	{
@@ -50,15 +51,15 @@ func main() {
 		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
 		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
-	r.POST("/ob/moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api
+	r.POST("/ob/moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
 
 	r.Run(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port"))) // 运行服务
 }
 
 var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。
 
-// 短时间多次请求限制
-func limit() func(c *gin.Context) {
+// 限制短时间多次请求
+func LimitMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if !limiter.Allow() {
 			http.Error(c.Writer, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
