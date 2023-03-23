@@ -4,50 +4,47 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
-	"text/template"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-func Greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World! %s", time.Now())
+func IndexHandler(c *gin.Context) {
+	c.Writer.Header().Set("Content-Type", "text/html")
+	c.String(200, indeHtml)
 }
 
-func BaseHandler(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles("./template/404.html")
-	if err != nil {
-		log.Panicln("Template File Error:", err)
-		return
-	}
-	indexInfo := IndexInfo{Title: "404", Content: "404 Not Found"}
-	tpl.Execute(w, indexInfo)
+func Greet(c *gin.Context) {
+	c.String(200, "Hello World! %s", time.Now())
+}
+
+func BaseHandler(c *gin.Context) {
+	c.String(404, "404")
 }
 
 // NewCaptcha 生成或更新 token 邮件发送登录链接 直接附带 token
-func SendTokenHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method, r.RequestURI)
+func SendTokenHandler(c *gin.Context) {
 	log.Println("Succeed Send Token")
-
 	// 修改 Token1
 	ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: timeFmt("2006-01-02 15:04:05")}, "token1")
 	// 发送所有 Token 消息
 	emailSendToken()
-	fmt.Fprintf(w, "Succeed Send Token")
+	c.String(200, "Succeed Send Token")
 }
 
 // 验证 Token 1 有效性
 
-func VerifyToken1Handler(w http.ResponseWriter, r *http.Request) {
+func VerifyToken1Handler(c *gin.Context) {
 	// 解析 token json {"token":"sometoken1"}
-	decoder := json.NewDecoder(r.Body)
+	decoder := json.NewDecoder(c.Request.Body)
 	var tokenFromJSON TokenFromJSON
 	err := decoder.Decode(&tokenFromJSON)
 	if err != nil {
 		fmt.Println("JSON Decoder Error:", err)
 	}
 	if VerifyToken1(tokenFromJSON.TokenString) {
-		fmt.Fprintf(w, "a right Token")
+		c.String(200, "a right Token")
 	} else {
-		fmt.Fprintf(w, "a error Token")
+		c.String(200, "a error Token")
 	}
 }

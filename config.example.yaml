@@ -1,5 +1,5 @@
 name: obcsapi-go
-version: v1.0.1
+version: v1.1.0
 description: by kkbt
 host: 0.0.0.0
 port: 9000

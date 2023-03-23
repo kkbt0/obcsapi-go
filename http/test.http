@@ -12,7 +12,7 @@ Content-Type: application/json
     "token": "NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2"
 }
 ###
-GET {{host}}/index.html HTTP/ 1.1
+GET {{host}}/ HTTP/ 1.1
 ###
 GET {{host}}/time HTTP/ 1.1
 ###
@@ -30,3 +30,6 @@ Content-Type: application/json
 
 ###
 GET {{host}}/404
+
+###
+GET {{host}}/test

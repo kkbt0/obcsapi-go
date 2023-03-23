@@ -72,7 +72,7 @@ func VerifyToken1(inToken string) bool {
 		return false
 	}
 	liveTime, _ := time.ParseDuration(ConfigGetString("token1_live_time"))
-	log.Println(nowTime, rightTokenTime.Add(liveTime))
+	// log.Println(nowTime, rightTokenTime.Add(liveTime))
 	// 验证 Token 相符合 且 现在时间 < 生成时间 + 存活时间
 	if inToken == rightToken.TokenString && nowTime.Before(rightTokenTime.Add(liveTime)) {
 		return true
