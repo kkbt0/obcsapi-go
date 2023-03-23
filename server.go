@@ -21,6 +21,8 @@ var indeHtml string
 func main() {
 	ShowConfig() // 打印基础消息
 
+	// f, _ := os.Create("gin.log")
+	// gin.DefaultWriter = io.MultiWriter(f, os.Stdout) // 日志写入文件和控制台
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
