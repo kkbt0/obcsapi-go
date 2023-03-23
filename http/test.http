@@ -33,3 +33,9 @@ GET {{host}}/404
 
 ###
 GET {{host}}/test
+###
+POST {{host}}/ob/general
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"test token2"}
