@@ -50,7 +50,7 @@ func main() {
 		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
 		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
-	r.POST("moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api
+	r.POST("/ob/moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api
 
 	r.Run(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port"))) // 运行服务
 }

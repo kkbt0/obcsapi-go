@@ -96,7 +96,7 @@ func ObGet3DaysHandler(c *gin.Context) {
 // Token2 静读天下使用的 API
 func MoodReaderHandler(c *gin.Context) {
 	right_token2, _ := GetToken("token2")
-	if c.Request.Header.Get("Token") != "Token "+right_token2.TokenString {
+	if c.Request.Header.Get("Authorization") != "Token "+right_token2.TokenString {
 		c.Status(401)
 		return
 	}
