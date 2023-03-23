@@ -45,12 +45,13 @@ func main() {
 	}
 	obGroup2 := r.Group("/ob", Token2AuthMiddleware())
 	{
-		obGroup2.POST("moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api
-		obGroup2.POST("fv", fvHandler)                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
-		obGroup2.POST("sr/webhook", SRWebHook)         // Obsidian Token2 POST 简悦 Webhook 使用
-		obGroup2.POST("general", GeneralHeader)        // Obsidian Token2 POST 通用接口 今日日记
-		obGroup2.POST("url", Url2MdHandler)            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
+		obGroup2.POST("fv", fvHandler)          // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
+		obGroup2.POST("sr/webhook", SRWebHook)  // Obsidian Token2 POST 简悦 Webhook 使用
+		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
+		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
+	r.POST("moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api
+
 	r.Run(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port"))) // 运行服务
 }
 
