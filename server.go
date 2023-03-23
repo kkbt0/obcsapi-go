@@ -37,15 +37,15 @@ func main() {
 
 	obGroup := r.Group("/ob")
 	{
-		obGroup.Any("today", ObTodayHandler, Token1AuthMiddleware())            // Obsidian Token1 GET/POST 今日日记
-		obGroup.Any("today/all", ObPostTodayAllHandler, Token1AuthMiddleware()) // Obsidian Token1 POST 整片修改今日日记
-		obGroup.GET("recent", ObGet3DaysHandler, Token1AuthMiddleware())        // Obsidian Token1 GET 近三天日记
+		obGroup.Any("today", Token1AuthMiddleware(), ObTodayHandler)             // Obsidian Token1 GET/POST 今日日记
+		obGroup.POST("today/all", Token1AuthMiddleware(), ObPostTodayAllHandler) // Obsidian Token1 POST 整片修改今日日记
+		obGroup.GET("recent", Token1AuthMiddleware(), ObGet3DaysHandler)         // Obsidian Token1 GET 近三天日记
 
-		obGroup.POST("moonreader", MoodReaderHandler, Token2AuthMiddleware()) // Obsidian Token2 POST 静读天下 api
-		obGroup.POST("fv", fvHandler, Token2AuthMiddleware())                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
-		obGroup.POST("sr/webhook", SRWebHook, Token2AuthMiddleware())         // Obsidian Token2 POST 简悦 Webhook 使用
-		obGroup.POST("general", GeneralHeader, Token2AuthMiddleware())        // Obsidian Token2 POST 通用接口 今日日记
-		obGroup.POST("url", Url2MdHandler, Token2AuthMiddleware())            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
+		obGroup.POST("moonreader", Token2AuthMiddleware(), MoodReaderHandler) // Obsidian Token2 POST 静读天下 api
+		obGroup.POST("fv", Token2AuthMiddleware(), fvHandler)                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
+		obGroup.POST("sr/webhook", Token2AuthMiddleware(), SRWebHook)         // Obsidian Token2 POST 简悦 Webhook 使用
+		obGroup.POST("general", Token2AuthMiddleware(), GeneralHeader)        // Obsidian Token2 POST 通用接口 今日日记
+		obGroup.POST("url", Token2AuthMiddleware(), Url2MdHandler)            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
 	r.Run(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port"))) // 运行服务
 }
