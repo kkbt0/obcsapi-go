@@ -200,9 +200,16 @@ func replace_md_url2pre_url(in_md []byte) []byte {
 		// 获取匹配到的链接 并转为 预签名 url
 		description := pattern.ReplaceAllString(string(match), "$1")
 		link := pattern.ReplaceAllString(string(match), "$2")
-		link2, err := getPreSignURL(sess, link)
-		if err != nil {
-			log.Println(err)
+		link2 := link
+		// 若请求 以 .md 结尾，则拒绝，避免文本泄露
+		if strings.HasSuffix(link, ".md") {
+			link2 = link
+		} else {
+			link2, err = getPreSignURL(sess, link)
+			if err != nil {
+				log.Println(err)
+				return []byte(fmt.Sprintf("![%s](%s)", description, link))
+			}
 		}
 		// fmt.Println(link2)
 		// 替换链接为临时鉴权链接
