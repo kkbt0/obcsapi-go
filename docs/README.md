@@ -83,13 +83,13 @@ pip install -t . -r requirements.txt
 ```sh
 git clone https://gitee.com/kkbt/obsidian-csapi
 cd obsidian-csapi/
-docker build -t obcsapi:v3.0
-docker run -d -v /home/obcsapi/config.ini:/app/config.ini --name obcsapi -p 3023:9000 obcsapi:v3.0
+docker build -t obcsapi:v3.1 .
+docker run -d -v /home/obcsapi/config.ini:/app/config.ini --name obcsapi -p 3023:9000 obcsapi:v3.1
 ```
 使用示例 镜像 https://hub.docker.com/r/kkbt/obcsapi/tags
 ```sh
-docker pull kkbt/obcsapi:v3.0
-docker run -d -v /home/obcsapi/config.ini:/app/config.ini --name obcsapi -p 3023:9000 obcsapi:v3.0
+docker pull kkbt/obcsapi:v3.1
+docker run -d -v /home/obcsapi/config.ini:/app/config.ini --name obcsapi -p 3023:9000 obcsapi:v3.1
 ```
 
 ### 其余配置 
