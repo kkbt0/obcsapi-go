@@ -8,3 +8,6 @@ tem.file
 http/my.http
 tem.txt
 gin.log
+testgo/testgo
+testgo/config.yaml
+vendor

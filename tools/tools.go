@@ -1,10 +1,9 @@
-package main
+package tools
 
 import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -12,22 +11,6 @@ import (
 
 	"github.com/spf13/viper"
 )
-
-func ShowConfig() {
-	// Read configuration
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
-
-	// output configuration
-	log.Println(viper.GetString("name"), viper.GetString("version"), viper.GetString("description"))
-	log.Println("Server Time:", timeFmt("2006-01-02 15:04"))
-	log.Println("Tokne File Path:", viper.GetString("token_path"))
-	log.Println("Run on", viper.GetString("host"))
-}
 
 // 从配置中获取 参数
 func ConfigGetString(parm string) string {
@@ -40,8 +23,19 @@ func ConfigGetString(parm string) string {
 	return viper.GetString(parm)
 }
 
+// 从配置中获取 参数
+func ConfigGetInt(parm string) int {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
+	}
+	return viper.GetInt(parm)
+}
+
 // Time fmt eg 2006-01-02 15:04:05
-func timeFmt(fmt string) string {
+func TimeFmt(fmt string) string {
 	// fmt.Println(time.Now().In(cstZone).Format("2006-01-02 15:04:05"))
 	var cstZone = time.FixedZone("CST", 8*3600)
 	return time.Now().In(cstZone).Format(fmt)

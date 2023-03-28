@@ -11,17 +11,36 @@ Content-Type: application/json
 {
     "token": "NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2"
 }
-###
-GET {{host}}/ HTTP/ 1.1
-###
-GET {{host}}/time HTTP/ 1.1
-###
+
+################################
+### Ob Today Get
 GET {{host}}/ob/today HTTP/ 1.1
 Token:  {{token1}}
-###
+### Ob Today Post
+POST  {{host}}/ob/today HTTP/ 1.1
+Token:  {{token1}}
+Content-Type: application/json
+
+{"content":" New From Test"}
+### Ob TodayAll Post
+POST {{host}}/ob/today/all HTTP/ 1.1
+Token:  {{token1}}
+Content-Type: application/json
+
+{"content":" All Str\n"}
+### Ob 3 Days Get
 GET {{host}}/ob/recent HTTP/ 1.1
 Token:  {{token1}}
-###
+
+### 
+POST {{host}}/ob/general
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"test token2"}
+
+################################
+### 简易的剪裁 web 网页
 POST  {{host}}/ob/url HTTP/ 1.1
 Token:  {{token2}}
 Content-Type: application/json
@@ -30,12 +49,10 @@ Content-Type: application/json
 
 ###
 GET {{host}}/404
-
 ###
 GET {{host}}/test
-###
-POST {{host}}/ob/general
-Token: {{token2}}
-Content-Type: application/json
 
-{"content":"test token2"}
+###
+GET {{host}}/ HTTP/ 1.1
+###
+GET {{host}}/time HTTP/ 1.1
