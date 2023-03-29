@@ -1,5 +1,5 @@
 name: obcsapi-go
-version: v4.0.3
+version: v4.0.4
 description: by kkbt
 host: 0.0.0.0
 port: 8900
@@ -9,6 +9,7 @@ token1_live_time: 72h
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
+wechat_return_str: "📩 已保存，<a href='https://note.ftls.xyz/#/ZK/202209050658'>点击查看今日笔记</a>"
 
 # Obsidian 文件夹设置
 

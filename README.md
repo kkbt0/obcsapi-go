@@ -63,10 +63,16 @@ Go 语言开发
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.3 . 
+docker build -t kkbt/obcsapi:v4.0.4 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.3 kkbt/obcsapi:v4.0.3
-# 修改好的 config.yaml
-docker cp config.yaml myObcsapi4.0.3:/app/config.yaml
-docker restart myObcsapi4.0.3 
+docker run -d -p 8900:8900 --name myObcsapi4.0.4 -v /home/kkbt/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.4
+# 或者通过 cp 方式修改好的 config.yaml
+docker cp config.yaml myObcsapi4.0.4:/app/data/config.yaml
+docker restart myObcsapi4.0.4 
 ```
+
+# 版本说明
+
+4.0.2 每次部署 Docker 更新token，会在日志中显示一次
+4.0.3 可以自定义日记等文件夹
+4.0.4 可自定义微信返回内容 可 -v 映射文件夹 /app/data/

@@ -6,7 +6,7 @@ ENV GOPROXY=https://goproxy.cn,direct
 WORKDIR /home/workspace
 COPY . .
 RUN go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
-RUN mkdir app && cp server app/
+RUN mkdir app && cp server app/ && cp docker-entrypoint.sh app/
 
 FROM alpine:latest
 MAINTAINER 恐咖兵糖<0@ftls.xyz>
@@ -16,6 +16,9 @@ ENV GIN_MODE release
 
 WORKDIR /app
 COPY --from=builder /home/workspace/app/ .
+RUN chmod +x docker-entrypoint.sh
+RUN pwd && ls
 EXPOSE 8900
 
-ENTRYPOINT ["/app/server"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
