@@ -13,11 +13,11 @@ import (
 // 邮件发送 Tokne 包含两种 Token
 func emailSendToken() error {
 	// get token
-	token1, err := GetToken("token1")
+	token1, err := tools.GetToken("token1")
 	if err != nil {
 		return err
 	}
-	token2, err := GetToken("token2")
+	token2, err := tools.GetToken("token2")
 	if err != nil {
 		return err
 	}

@@ -27,11 +27,11 @@ func ShowConfig() {
 	log.Println("Run on", viper.GetString("host"))
 
 	// 显示 Token
-	token1, err := GetToken("token1")
+	token1, err := tools.GetToken("token1")
 	if err != nil {
 		panic(fmt.Errorf("error: Fatal error Get Token file: %s \n ", err))
 	}
-	token2, err := GetToken("token2")
+	token2, err := tools.GetToken("token2")
 	if err != nil {
 		panic(fmt.Errorf("error: Fatal error Get Token file: %s \n ", err))
 	}

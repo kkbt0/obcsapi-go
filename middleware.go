@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"obcsapi-go/tools"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,7 @@ func LimitMiddleware() func(c *gin.Context) {
 
 func Token1AuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		if !VerifyToken1(c.Request.Header.Get("Token")) {
+		if !tools.VerifyToken1(c.Request.Header.Get("Token")) {
 			c.JSON(401, gin.H{
 				"code": 401,
 				"msg":  "验证错误",
@@ -34,7 +35,7 @@ func Token1AuthMiddleware() func(c *gin.Context) {
 
 func Token2AuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		if !VerifyToken2(c.Request.Header.Get("Token")) {
+		if !tools.VerifyToken2(c.Request.Header.Get("Token")) {
 			c.JSON(401, gin.H{
 				"code": 401,
 				"msg":  "验证错误",

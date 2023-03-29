@@ -27,7 +27,7 @@ func BaseHandler(c *gin.Context) {
 func SendTokenHandler(c *gin.Context) {
 	log.Println("Succeed Send Token")
 	// 修改 Token1
-	ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: tools.TimeFmt("2006-01-02 15:04:05")}, "token1")
+	tools.ModTokenFile(tools.Token{TokenString: tools.GengerateToken(32), GenerateTime: tools.TimeFmt("2006-01-02 15:04:05")}, "token1")
 	// 发送所有 Token 消息
 	emailSendToken()
 	c.String(200, "Succeed Send Token")
@@ -38,12 +38,12 @@ func SendTokenHandler(c *gin.Context) {
 func VerifyToken1Handler(c *gin.Context) {
 	// 解析 token json {"token":"sometoken1"}
 	decoder := json.NewDecoder(c.Request.Body)
-	var tokenFromJSON TokenFromJSON
+	var tokenFromJSON tools.TokenFromJSON
 	err := decoder.Decode(&tokenFromJSON)
 	if err != nil {
 		fmt.Println("JSON Decoder Error:", err)
 	}
-	if VerifyToken1(tokenFromJSON.TokenString) {
+	if tools.VerifyToken1(tokenFromJSON.TokenString) {
 		c.String(200, "a right Token")
 	} else {
 		c.String(200, "a error Token")
