@@ -1,0 +1,20 @@
+# !!! Use This After Build !!!
+# go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
+FROM alpine:latest
+
+ENV VERSION 4.0.0
+ENV GIN_MODE release
+
+MAINTAINER 恐咖兵糖<0@ftls.xyz>
+
+WORKDIR /app
+VOLUME ["/apps/token"]
+COPY server /app/server
+COPY token/ /app/token/
+COPY config.example.yaml /app/config.yaml
+COPY tem.txt /app/tem.txt
+
+ENV LANG C.UTF-8
+EXPOSE 8900
+
+ENTRYPOINT ["/app/server"]

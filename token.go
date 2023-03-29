@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
+	"obcsapi-go/tools"
 	"os"
 	"time"
 )
@@ -37,12 +38,12 @@ func ModTokenFile(new_token Token, token_class string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(ConfigGetString("token_path")+token_class, data, 0666)
+	return os.WriteFile(tools.ConfigGetString("token_path")+token_class, data, 0666)
 }
 
 // 获取 token token_class 传入 token1(全权限，有效期) or token2（只能发送） 从而获取本地存储的 token 文件内容
 func GetToken(token_class string) (Token, error) {
-	tokenBytes, err := os.ReadFile(ConfigGetString("token_path") + token_class)
+	tokenBytes, err := os.ReadFile(tools.ConfigGetString("token_path") + token_class)
 	if err != nil {
 		return Token{}, err
 	}
@@ -61,7 +62,7 @@ func VerifyToken1(inToken string) bool {
 		log.Println("Token Get Error:", err)
 		return false
 	}
-	nowTime, err := time.Parse("2006-01-02 15:04:05", timeFmt("2006-01-02 15:04:05"))
+	nowTime, err := time.Parse("2006-01-02 15:04:05", tools.TimeFmt("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Println(err)
 		return false
@@ -71,7 +72,7 @@ func VerifyToken1(inToken string) bool {
 		log.Println(err)
 		return false
 	}
-	liveTime, _ := time.ParseDuration(ConfigGetString("token1_live_time"))
+	liveTime, _ := time.ParseDuration(tools.ConfigGetString("token1_live_time"))
 	// log.Println(nowTime, rightTokenTime.Add(liveTime))
 	// 验证 Token 相符合 且 现在时间 < 生成时间 + 存活时间
 	if inToken == rightToken.TokenString && nowTime.Before(rightTokenTime.Add(liveTime)) {

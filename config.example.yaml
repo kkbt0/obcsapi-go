@@ -1,14 +1,21 @@
 name: obcsapi-go
-version: v1.1.1
+version: v4.0.1
 description: by kkbt
 host: 0.0.0.0
-port: 9000
+port: 8900
 token_path: ./token/
 token1_live_time: 72h
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
+
+# S3 -> 1 ; CouchDb -> 2
+data_source: 2
+
+# CouchDb 配置
+couchdb_url: http://admin:password@localhost:5984/
+couchdb_db_name: note
 
 # S3 配置
 access_key: xxxxxxxxxxxxxx

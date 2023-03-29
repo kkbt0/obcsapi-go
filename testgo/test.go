@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"obcsapi-go/dao"
 	"regexp"
 	"strings"
 	"testing"
@@ -9,7 +10,13 @@ import (
 
 func main() {
 	fmt.Println("Run")
-	testRegexp2()
+	//estRegexp2()
+	fmt.Println(dao.CheckObject("3.md"))
+	fmt.Println(dao.GetTextObject("2.md"))
+	fmt.Println(dao.ObjectStore("object.md", []byte("a new object")))
+	fmt.Println(dao.MdTextStore("text.md", "A new object"))
+	fmt.Println(dao.TextAppend("text.md", "\nNew line"))
+	fmt.Println(dao.DailyTextAppendMemos("今日测试"))
 }
 
 func testRegexp2() {

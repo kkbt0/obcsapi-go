@@ -1,11 +1,9 @@
-package main
+package dao
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
+	"obcsapi-go/tools"
 	"os"
 	"regexp"
 	"strings"
@@ -18,18 +16,18 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func get_client() (*session.Session, error) {
+func NewS3Session() (*session.Session, error) {
 	sess, err := session.NewSession(&aws.Config{
-		Credentials: credentials.NewStaticCredentials(ConfigGetString("access_key"), ConfigGetString("secret_key"), ""),
-		Endpoint:    aws.String(ConfigGetString("end_point")),
-		Region:      aws.String(ConfigGetString("region")),
+		Credentials: credentials.NewStaticCredentials(tools.ConfigGetString("access_key"), tools.ConfigGetString("secret_key"), ""),
+		Endpoint:    aws.String(tools.ConfigGetString("end_point")),
+		Region:      aws.String(tools.ConfigGetString("region")),
 	})
 	return sess, err
 }
 
 // get text used
-func get(sess *session.Session, text_file_key string) (string, error) {
-	tem, err := get_object(sess, text_file_key)
+func S3GetTextObject(sess *session.Session, text_file_key string) (string, error) {
+	tem, err := S3GetObject(sess, text_file_key)
 	if tem == nil {
 		return "No such file: " + text_file_key, nil
 	}
@@ -37,7 +35,7 @@ func get(sess *session.Session, text_file_key string) (string, error) {
 }
 
 // get_object
-func get_object(sess *session.Session, file_key string) ([]byte, error) {
+func S3GetObject(sess *session.Session, file_key string) ([]byte, error) {
 	file, err := os.Create("tem.txt")
 	if err != nil {
 		return nil, err
@@ -47,7 +45,7 @@ func get_object(sess *session.Session, file_key string) ([]byte, error) {
 	numBytes, err := downloader.Download(
 		file,
 		&s3.GetObjectInput{
-			Bucket: aws.String(ConfigGetString("bucket")),
+			Bucket: aws.String(tools.ConfigGetString("bucket")),
 			Key:    aws.String(file_key),
 		})
 	if err != nil {
@@ -64,8 +62,8 @@ func get_object(sess *session.Session, file_key string) ([]byte, error) {
 	return buf, nil
 }
 
-// """直接上传存储,可能覆盖"""
-func store(sess *session.Session, file_key string, file_bytes []byte) error {
+// 直接上传存储,覆盖
+func S3ObjectStore(sess *session.Session, file_key string, file_bytes []byte) error {
 	file, err := os.Create("tem.txt")
 	if err != nil {
 		return err
@@ -82,7 +80,7 @@ func store(sess *session.Session, file_key string, file_bytes []byte) error {
 	defer fp.Close()
 	uploader := s3manager.NewUploader(sess)
 	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(ConfigGetString("bucket")),
+		Bucket: aws.String(tools.ConfigGetString("bucket")),
 		Key:    aws.String(file_key),
 		Body:   fp,
 	})
@@ -91,12 +89,12 @@ func store(sess *session.Session, file_key string, file_bytes []byte) error {
 	}
 	return nil
 }
-func append(sess *session.Session, file_key string, text string) error {
-	try_get_file, err := get_object(sess, file_key)
+func S3TextAppend(sess *session.Session, file_key string, text string) error {
+	try_get_file, err := S3GetObject(sess, file_key)
 	if try_get_file == nil && err != nil {
-		err = store(sess, file_key, []byte(text))
+		err = S3ObjectStore(sess, file_key, []byte(text))
 	} else {
-		err = store(sess, file_key, []byte(string(try_get_file)+text))
+		err = S3ObjectStore(sess, file_key, []byte(string(try_get_file)+text))
 	}
 	if err != nil {
 		fmt.Println(err)
@@ -105,80 +103,55 @@ func append(sess *session.Session, file_key string, text string) error {
 	return nil
 }
 
-func daily_file_key() string {
-	return "日志/" + timeFmt("2006-01-02") + ".md"
+func S3DailyTextAppend(sess *session.Session, text string) error {
+	return S3TextAppend(sess, GetDailyFileKey(), text)
 }
-func append_daily(sess *session.Session, text string) error {
-	err := append(sess, daily_file_key(), text)
+
+func S3GetTodayDaily(sess *session.Session) string {
+	tem, err := S3GetTextObject(sess, GetDailyFileKey())
 	if err != nil {
-		return err
-	}
-	return nil
-}
-func append_memos_in_daily(sess *session.Session, text string) error {
-	var todo = "todo"
-	if strings.Contains(text, todo) {
-		text = fmt.Sprintf("\n- [ ] %s %s", timeFmt("15:04"), text)
-	} else {
-		text = fmt.Sprintf("\n- %s %s", timeFmt("15:04"), text)
-	}
-	err := append_daily(sess, text)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-func today_daily(sess *session.Session) string {
-	tem, err := get(sess, daily_file_key())
-	if err != nil {
+		log.Println(err)
 		return "Have Error!"
 	}
 	return tem
 }
-func get_today_daily_list(sess *session.Session) []string {
-	return []string{today_daily(sess)}
+
+// 获取今日日记列表，只有一个元素 对 url 进行了相应处理，可在前端显示
+func S3GetTodayDailyList(sess *session.Session) []Daily {
+	json_data := S3GetTodayDaily(sess)
+	return []Daily{{
+		Date:       tools.TimeFmt("2006-01-02"),
+		ServerTime: tools.TimeFmt("200601021504"),
+		Data:       json_data,
+		MdShowData: string(S3ReplaceMdUrl2PreSignedUrl([]byte(json_data))),
+	}}
 }
-func get_3_daily_list(sess *session.Session) [3]Daily {
+
+func S3Get3DaysDailyList(sess *session.Session) [3]Daily {
 	// fmt.Println(time.Now().In(cstZone).Format("2006-01-02 15:04:05"))
 	var cstZone = time.FixedZone("CST", 8*3600)
 	var ans [3]Daily
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
 		date := time.Now().AddDate(0, 0, i-2).In(cstZone).Format("2006-01-02")
-		day, err := get(sess, fmt.Sprintf("日志/%s.md", date))
+		day, err := S3GetTextObject(sess, fmt.Sprintf("日志/%s.md", date))
 		if err != nil {
 			fmt.Println(err)
 		}
-		ans[i] = Daily{Data: day, MdShowData: string(replace_md_url2pre_url([]byte(day))), Date: date, ServerTime: timeFmt("200601021504")}
+		ans[i] = Daily{
+			Data:       day,
+			MdShowData: string(S3ReplaceMdUrl2PreSignedUrl([]byte(day))),
+			Date:       date,
+			ServerTime: tools.TimeFmt("200601021504"),
+		}
 	}
 	return ans
 }
 
-func downloader(url string) ([]byte, error) {
-	res, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-	reader := bufio.NewReaderSize(res.Body, 32*1024)
-	file, err := os.Create("tem.jpg")
-	writer := bufio.NewWriter(file)
-	io.Copy(writer, reader)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	buf, err := os.ReadFile("tem.jpg")
-	if err != nil {
-		return nil, err
-	}
-	return buf, nil
-}
-
 // 获取文件预先签名 5 min 有效期 即使 file 不存在也会返回 URL
-func getPreSignURL(sess *session.Session, file_key string) (string, error) {
+func S3GetPreSignURL(sess *session.Session, file_key string) (string, error) {
 	svc := s3.New(sess)
 	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
-		Bucket: aws.String(ConfigGetString("bucket")),
+		Bucket: aws.String(tools.ConfigGetString("bucket")),
 		Key:    aws.String(file_key),
 	})
 	urlStr, err := req.Presign(5 * time.Minute)
@@ -189,8 +162,8 @@ func getPreSignURL(sess *session.Session, file_key string) (string, error) {
 }
 
 // md text img url to preSigned url ![](a.jpg) -> ![](a.jpg&signed)
-func replace_md_url2pre_url(in_md []byte) []byte {
-	sess, err := get_client()
+func S3ReplaceMdUrl2PreSignedUrl(in_md []byte) []byte {
+	sess, err := NewS3Session()
 	if err != nil {
 		log.Println(err)
 	}
@@ -205,7 +178,7 @@ func replace_md_url2pre_url(in_md []byte) []byte {
 		if strings.HasSuffix(link, ".md") {
 			link2 = link
 		} else {
-			link2, err = getPreSignURL(sess, link)
+			link2, err = S3GetPreSignURL(sess, link)
 			if err != nil {
 				log.Println(err)
 				return []byte(fmt.Sprintf("![%s](%s)", description, link))

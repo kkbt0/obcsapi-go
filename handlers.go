@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"obcsapi-go/tools"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +27,7 @@ func BaseHandler(c *gin.Context) {
 func SendTokenHandler(c *gin.Context) {
 	log.Println("Succeed Send Token")
 	// 修改 Token1
-	ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: timeFmt("2006-01-02 15:04:05")}, "token1")
+	ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: tools.TimeFmt("2006-01-02 15:04:05")}, "token1")
 	// 发送所有 Token 消息
 	emailSendToken()
 	c.String(200, "Succeed Send Token")

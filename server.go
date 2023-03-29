@@ -3,20 +3,18 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"net/http"
+	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
+	"obcsapi-go/tools"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
 
-type IndexInfo struct {
-	Title   string
-	Content string
-}
-
 //go:embed template/index.html
 var indeHtml string
+
+var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
 
 func main() {
 	ShowConfig() // 打印基础消息
@@ -53,47 +51,5 @@ func main() {
 	}
 	r.POST("/ob/moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
 
-	r.Run(fmt.Sprintf("%s:%s", ConfigGetString("host"), ConfigGetString("port"))) // 运行服务
-}
-
-var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。
-
-// 限制短时间多次请求
-func LimitMiddleware() func(c *gin.Context) {
-	return func(c *gin.Context) {
-		if !limiter.Allow() {
-			http.Error(c.Writer, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
-}
-
-func Token1AuthMiddleware() func(c *gin.Context) {
-	return func(c *gin.Context) {
-		if !VerifyToken1(c.Request.Header.Get("Token")) {
-			c.JSON(401, gin.H{
-				"code": 401,
-				"msg":  "验证错误",
-			})
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
-}
-
-func Token2AuthMiddleware() func(c *gin.Context) {
-	return func(c *gin.Context) {
-		if !VerifyToken2(c.Request.Header.Get("Token")) {
-			c.JSON(401, gin.H{
-				"code": 401,
-				"msg":  "验证错误",
-			})
-			c.Abort()
-			return
-		}
-		c.Next()
-	}
+	r.Run(fmt.Sprintf("%s:%s", tools.ConfigGetString("host"), tools.ConfigGetString("port"))) // 运行服务
 }

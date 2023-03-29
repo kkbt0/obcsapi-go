@@ -60,3 +60,8 @@ Go 语言开发
 - tem.txt 存储请求的 markdown 文本（因为 s3 sdk 文档很复杂，暂时用这方法）
 - build.sh 将 go 打包成无链接的静态文件
 - http/test.http vscode 插件 postcode 使用的，用于测试
+
+```sh
+docker build -t kkbt/obcsapi:v4.0.0 . 
+docker run -d -p 8900:8900 kkbt/obcsapi:v4.0.1 
+```

@@ -1,10 +1,9 @@
-package main
+package tools
 
 import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -95,8 +94,19 @@ func ConfigGetString(parm string) string {
 	return viper.GetString(parm)
 }
 
+// 从配置中获取 参数
+func ConfigGetInt(parm string) int {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
+	}
+	return viper.GetInt(parm)
+}
+
 // Time fmt eg 2006-01-02 15:04:05
-func timeFmt(fmt string) string {
+func TimeFmt(fmt string) string {
 	// fmt.Println(time.Now().In(cstZone).Format("2006-01-02 15:04:05"))
 	var cstZone = time.FixedZone("CST", 8*3600)
 	return time.Now().In(cstZone).Format(fmt)
