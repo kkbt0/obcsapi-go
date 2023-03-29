@@ -17,6 +17,5 @@ ENV GIN_MODE release
 WORKDIR /app
 COPY --from=builder /home/workspace/app/ .
 EXPOSE 8900
-VOLUME ["/app"]
 
 ENTRYPOINT ["/app/server"]
