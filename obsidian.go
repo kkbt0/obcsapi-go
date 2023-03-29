@@ -111,7 +111,7 @@ func fvHandler(c *gin.Context) {
 		return
 	} else if c.GetHeader("Content-Type") == "application/octet-stream" {
 		content, _ := ioutil.ReadAll(c.Request.Body)
-		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
+		file_key := fmt.Sprintf("%s%s/%s.jpg", tools.ConfigGetString("ob_daily_attachment_dir"), tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
 		ObjectStore(file_key, content)
 		DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
 		c.String(200, "Success")

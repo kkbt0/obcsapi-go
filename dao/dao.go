@@ -59,7 +59,7 @@ func init() {
 
 // 用于获取日记目录
 func GetDailyFileKey() string {
-	return "日志/" + tools.TimeFmt("2006-01-02") + ".md"
+	return tools.ConfigGetString("ob_daily_dir") + tools.TimeFmt("2006-01-02") + ".md"
 }
 
 // 获取指定位置文件 并读取为 Str

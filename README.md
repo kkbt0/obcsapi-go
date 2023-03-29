@@ -63,9 +63,9 @@ Go 语言开发
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.2 . 
+docker build -t kkbt/obcsapi:v4.0.3 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.2 kkbt/obcsapi:v4.0.2
+docker run -d -p 8900:8900 --name myObcsapi4.0.2 kkbt/obcsapi:v4.0.3
 # 修改好的 config.yaml
 docker cp config.yaml myObcsapi4.0.2:/app/config.yaml
 docker restart myObcsapi4.0.2

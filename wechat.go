@@ -30,7 +30,7 @@ func WeChatMpHandlers(c *gin.Context) {
 		err = DailyTextAppendMemos(mp.Request.Content) //
 	case weixinmp.MsgTypeImage: // 图片消息
 		fileby, _ := PicDownloader(mp.Request.PicUrl)
-		file_key := fmt.Sprintf("日志/附件/%s/%s.jpg", tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
+		file_key := fmt.Sprintf("%s%s/%s.jpg", tools.ConfigGetString("ob_daily_attachment_dir"), tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
 		ObjectStore(file_key, fileby)
 		// 前端会监测 ![https://..](..) 将 http:// 放到 后面 ![..](https://..)
 		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))

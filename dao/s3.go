@@ -133,7 +133,7 @@ func S3Get3DaysDailyList(sess *session.Session) [3]Daily {
 	var ans [3]Daily
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
 		date := time.Now().AddDate(0, 0, i-2).In(cstZone).Format("2006-01-02")
-		day, err := S3GetTextObject(sess, fmt.Sprintf("日志/%s.md", date))
+		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
 		if err != nil {
 			fmt.Println(err)
 		}

@@ -1,5 +1,5 @@
 name: obcsapi-go
-version: v4.0.2
+version: v4.0.3
 description: by kkbt
 host: 0.0.0.0
 port: 8900
@@ -9,6 +9,12 @@ token1_live_time: 72h
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
+
+# Obsidian 文件夹设置
+
+ob_daily_dir: 日志/
+ob_daily_attachment_dir: 日志/附件/
+ob_daily_other_dir: 支持类文件/
 
 # S3 -> 1 ; CouchDb -> 2
 data_source: 2
