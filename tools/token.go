@@ -23,7 +23,7 @@ const allowChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
 
 // 生成随机 token
 func GengerateToken(n int) string {
-	rand.Seed(time.Now().Unix()) // 保证每秒生成不同的随机 token  , unix 时间戳，秒
+	rand.Seed(time.Now().UnixMilli()) // 保证每秒生成不同的随机 token  , unix 时间戳，ms
 	ans := make([]byte, n)
 	for i := range ans {
 		ans[i] = allowChars[rand.Intn(len(allowChars))]

@@ -62,6 +62,6 @@ Go 语言开发
 - http/test.http vscode 插件 postcode 使用的，用于测试
 
 ```sh
-docker build -t kkbt/obcsapi:v4.0.0 . 
-docker run -d -p 8900:8900 kkbt/obcsapi:v4.0.1 
+docker build -t kkbt/obcsapi:v4.0.2 . 
+docker run -d -p 8900:8900 kkbt/obcsapi:v4.0.2 
 ```
