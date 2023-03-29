@@ -65,7 +65,7 @@ Go 语言开发
 # 构建镜像
 docker build -t kkbt/obcsapi:v4.0.5 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.5 -v /home/kkbt/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.5
+docker run -d -p 8900:8900 --name myObcsapi4.0.5 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.5
 # 或者通过 cp 方式修改好的 config.yaml
 docker cp config.yaml myObcsapi4.0.5:/app/data/config.yaml
 docker restart myObcsapi4.0.5 
