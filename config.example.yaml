@@ -39,4 +39,4 @@ smtp_mail:
   # 以下一个是发送者 一个是接受者
   mail_sender_address: no-reply@mail.ftls.xyz
   mail_sender_name: "ObCSAPI"
-  mail_send_to: snowandocean@foxmail.com
+  mail_send_to: yourmail@foxmail.com
