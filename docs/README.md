@@ -167,6 +167,14 @@ POST /ob/today 以 Obsidian Memeos 形式增加一条 Memeos ,eg: \n- [ ] 12:00 
 
 现在这玩意算是能用，但是这个 token 系统还称不上好用。
 
+### 图床功能 PicGo 配置
+
+![](images/imagesHost1.png)
+
+![](images/imagesHost2.png)
+
+![](images/imagesHost3.png)
+
 ### 展示
 
 后台发送的邮件

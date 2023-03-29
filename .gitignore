@@ -12,3 +12,4 @@ testgo/testgo
 testgo/config.yaml
 vendor
 images
+!docs/images
