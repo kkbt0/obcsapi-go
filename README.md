@@ -70,6 +70,7 @@ docker run -d -p 8900:8900 --name myObcsapi4.0.5 -v /home/kkbt/app/obcsapi-go/:/
 docker cp config.yaml myObcsapi4.0.5:/app/data/config.yaml
 docker restart myObcsapi4.0.5 
 ```
+如果出现没有权限访问的问题，可执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
 # 版本说明
 
