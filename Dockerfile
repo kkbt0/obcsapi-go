@@ -11,7 +11,7 @@ RUN mkdir app && cp server app/ && cp docker-entrypoint.sh app/
 FROM alpine:latest
 MAINTAINER 恐咖兵糖<0@ftls.xyz>
 
-ENV VERSION 4.0.2
+ENV VERSION 4.0.5
 ENV GIN_MODE release
 
 WORKDIR /app

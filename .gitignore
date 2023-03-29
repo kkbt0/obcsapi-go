@@ -11,3 +11,4 @@ gin.log
 testgo/testgo
 testgo/config.yaml
 vendor
+images

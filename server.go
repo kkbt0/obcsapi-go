@@ -50,6 +50,11 @@ func main() {
 		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
 	r.POST("/ob/moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
+	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
+	r.MaxMultipartMemory = 8 << 20 // 8 MiB
+
+	r.POST("/api/upload", Token2AuthMiddleware(), ImagesHostUplaodHanler) //图床
+	r.Static("/images", "./images")
 
 	r.Run(fmt.Sprintf("%s:%s", tools.ConfigGetString("host"), tools.ConfigGetString("port"))) // 运行服务
 }

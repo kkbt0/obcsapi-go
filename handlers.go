@@ -49,3 +49,22 @@ func VerifyToken1Handler(c *gin.Context) {
 		c.String(200, "a error Token")
 	}
 }
+
+// 一个简易图床
+func ImagesHostUplaodHanler(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	log.Println("ImagesHost Upload:", file.Filename)
+	filePath := fmt.Sprintf("/images/%s/%s", tools.TimeFmt("200601"), file.Filename)
+	c.SaveUploadedFile(file, "."+filePath)
+	c.JSON(200, gin.H{
+		"data": gin.H{
+			"url":  fmt.Sprintf("http://%s%s", tools.ConfigGetString("backend_url"), filePath),
+			"url2": fmt.Sprintf("https://%s%s", tools.ConfigGetString("backend_url"), filePath),
+		},
+	})
+}
