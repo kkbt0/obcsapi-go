@@ -8,3 +8,5 @@ tem.file
 http/my.http
 tem.txt
 gin.log
+vendor
+testgo/testgo

@@ -13,6 +13,61 @@ import (
 	"github.com/spf13/viper"
 )
 
+//go:embed config.example.yaml
+var configExample string
+
+func CheckFiles() {
+	log.Println("Check Need Files")
+	s, err := os.Stat("config.yaml")
+	if err != nil {
+		if os.IsNotExist(err) {
+			os.WriteFile("config.yaml", []byte(configExample), 0666)
+		} else {
+			log.Panicln("Error: Stat config.yaml")
+		}
+	}
+	if s.IsDir() {
+		os.Remove("config.yaml")
+		os.WriteFile("config.yaml", []byte(configExample), 0666)
+	}
+	_, err = os.Stat("token/")
+	if err != nil {
+		if os.IsNotExist(err) {
+			os.Mkdir("token/", 0777)
+			os.Chmod("token/", 0777)
+		} else {
+			log.Panicln("Error: Stat token/")
+		}
+	}
+	_, err = os.Stat("token/token1")
+	if err != nil {
+		if os.IsNotExist(err) {
+			ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: TimeFmt("2006-01-02 15:04:05")}, "token1")
+		} else {
+			log.Println(err)
+			log.Panicln("Error: Stat token/token1")
+		}
+	}
+	_, err = os.Stat("token/token2")
+	if err != nil {
+		if os.IsNotExist(err) {
+			time.Sleep(time.Duration(3) * time.Millisecond)
+			ModTokenFile(Token{TokenString: GengerateToken(16), GenerateTime: TimeFmt("2006-01-02 15:04:05")}, "token2")
+		} else {
+			log.Println(err)
+			log.Panicln("Error: Stat token/token2")
+		}
+	}
+	_, err = os.Stat("tem.txt")
+	if err != nil {
+		if os.IsNotExist(err) {
+			os.WriteFile("tem.txt", []byte("Hello,World!"), 0666)
+		} else {
+			log.Panicln("Error: Stat tem.txt")
+		}
+	}
+}
+
 func ShowConfig() {
 	// Read configuration
 	viper.SetConfigFile("config.yaml")
