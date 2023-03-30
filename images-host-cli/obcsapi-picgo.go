@@ -90,7 +90,7 @@ func main() {
 					if err != nil {
 						log.Println("Download File Err,Skip This One", err)
 					}
-					fileName := TimeFmt("20060102-") + RandomString(6) + ".jpg"
+					fileName := TimeFmt("20060102_") + RandomString(6) + ".jpg"
 					fmt.Println(PostObcsapiImageHost(fileName, body))
 				}
 			} else {
@@ -118,7 +118,7 @@ func GetFromWindowsClipboard() {
 	if len(img) == 0 {
 		fmt.Println("[PicGo ERROR]: Fail Read from clipboard")
 	} else {
-		fmt.Printf("[PicGo SUCCESS]:\n%s", PostObcsapiImageHost(TimeFmt("20060102-")+RandomString(6)+".png", img))
+		fmt.Printf("[PicGo SUCCESS]:\n%s", PostObcsapiImageHost(TimeFmt("20060102_")+RandomString(6)+".png", img))
 	}
 }
 
