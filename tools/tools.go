@@ -3,9 +3,11 @@ package tools
 import (
 	"bufio"
 	_ "embed"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
@@ -140,4 +142,11 @@ func Downloader(url string) ([]byte, error) {
 		return nil, err
 	}
 	return buf, nil
+}
+
+func RandomString(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]byte, n)
+	rand.Read(b)
+	return hex.EncodeToString(b)[0:n]
 }

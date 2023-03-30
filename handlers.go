@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"obcsapi-go/tools"
+	"path"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -59,12 +61,23 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		return
 	}
 	log.Println("ImagesHost Upload:", file.Filename)
-	filePath := fmt.Sprintf("/images/%s/%s", tools.TimeFmt("200601"), file.Filename)
-	c.SaveUploadedFile(file, "."+filePath)
+	// filePath: /images/202303/test.jpg
+	typeName := path.Ext(file.Filename)
+	filePath := []string{tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt"))}
+	// filePath := fmt.Sprintf("%s%s", tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt")), file.Filename)
+	if tools.ConfigGetString("images_hosted_use_raw_name") == "true" {
+		filePath = append(filePath, strings.TrimSuffix(file.Filename, typeName)) // 200601/test
+	}
+	fmt.Println(tools.ConfigGetInt("images_hosted_random_name_length"))
+	if tools.ConfigGetInt("images_hosted_random_name_length") != 0 {
+		filePath = append(filePath, "_"+tools.RandomString(tools.ConfigGetInt("images_hosted_random_name_length"))) // 200601/test_e5md1
+	}
+	filePath = append(filePath, typeName) // 200601/test_e5md1.jpg
+	c.SaveUploadedFile(file, "./images/"+strings.Join(filePath, ""))
 	c.JSON(200, gin.H{
 		"data": gin.H{
-			"url":  fmt.Sprintf("http://%s%s", tools.ConfigGetString("backend_url"), filePath),
-			"url2": fmt.Sprintf("https://%s%s", tools.ConfigGetString("backend_url"), filePath),
+			"url":  fmt.Sprintf("http://%s/images/%s", tools.ConfigGetString("backend_url"), strings.Join(filePath, "")),
+			"url2": fmt.Sprintf("https://%s/images/%s", tools.ConfigGetString("backend_url"), strings.Join(filePath, "")),
 		},
 	})
 }

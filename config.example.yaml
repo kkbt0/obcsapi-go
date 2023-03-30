@@ -16,6 +16,11 @@ wechat_return_str: "📩 已保存，<a href='https://note.ftls.xyz/#/ZK/2022090
 ob_daily_dir: 日志/
 ob_daily_attachment_dir: 日志/附件/
 ob_daily_other_dir: 支持类文件/
+# 图床文件 有三部分构成 文件夹及前缀，原名字，随机字符
+# 图床文件夹及文件前缀 eg 2006-01-02 15:04:05 如 按月存放是 01/ ; 按 年存放 2006/ ; 文件前缀 200601 ; 文件夹和文件前缀 200601/200601_
+images_hosted_fmt: 200601/kkbt_
+images_hosted_use_raw_name: true # 图床文件是否使用原名字 true or false
+images_hosted_random_name_length: 1 # 图床文件随机字符命名 随机字符长度
 
 # S3 -> 1 ; CouchDb -> 2
 data_source: 2

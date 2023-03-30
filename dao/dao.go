@@ -137,7 +137,7 @@ func DailyTextAppend(text string) error {
 func DailyTextAppendMemos(text string) error {
 	var todo = "todo"
 	if strings.Contains(text, todo) {
-		text = fmt.Sprintf("\n- [ ] %s %s", tools.TimeFmt("15:04"), text)
+		text = fmt.Sprintf("\n- [ ] %s %s", tools.TimeFmt("15:04"), strings.Replace(text, "todo", "", 1))
 	} else {
 		text = fmt.Sprintf("\n- %s %s", tools.TimeFmt("15:04"), text)
 	}
