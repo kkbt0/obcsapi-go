@@ -1,1 +1,1 @@
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64  go build  -o obcsapi-picgo.exe  obcsapi-picgo
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64  go build  -o obcsapi-picgo.exe  obcsapi-picgo.go

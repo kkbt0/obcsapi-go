@@ -1,5 +1,5 @@
 name: obcsapi-go
-version: v4.0.5
+version: v4.0.6
 description: by kkbt
 host: 0.0.0.0
 port: 8900
@@ -20,7 +20,7 @@ ob_daily_other_dir: 支持类文件/
 # 图床文件夹及文件前缀 eg 2006-01-02 15:04:05 如 按月存放是 01/ ; 按 年存放 2006/ ; 文件前缀 200601 ; 文件夹和文件前缀 200601/200601_
 images_hosted_fmt: 200601/kkbt_
 images_hosted_use_raw_name: true # 图床文件是否使用原名字 true or false
-images_hosted_random_name_length: 1 # 图床文件随机字符命名 随机字符长度
+images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字符长度
 
 # S3 -> 1 ; CouchDb -> 2
 data_source: 2

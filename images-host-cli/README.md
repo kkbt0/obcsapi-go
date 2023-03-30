@@ -1,47 +1,13 @@
+http://127.0.0.1:8900/api/upload
+fQbzONJAAw
+url
 
-```go
-package goPaste_test
+第一行是上传链接
+第二行是 token2 的值
+第三行可选 url or url2 。url 是 http ；url2 是 https
 
-import (
-	"fmt"
-	"goPaste"
-	"os"
-)
-
-func Example() {
-	text, err := goPaste.PasteTXT()
-	if err == nil {
-		fmt.Println(text)
-	} else {
-		fmt.Println(err)
-	}
-
-	img, imgErr := goPaste.PasteImg(true)
-	if imgErr == nil {
-		f, err := os.OpenFile("output.png", os.O_WRONLY, 0666)
-		if err != nil {
-			f, err = os.Create("output.png")
-		}
-		if err == nil {
-			f.Write(img)
-			f.Close()
-		}
-	} else {
-		fmt.Println(imgErr)
-	}
-
-	img, imgErr = goPaste.PasteImg(false)
-	if imgErr == nil {
-		f, err := os.OpenFile("output.bmp", os.O_WRONLY, 0666)
-		if err != nil {
-			f, err = os.Create("output.bmp")
-		}
-		if err == nil {
-			f.Write(img)
-			f.Close()
-		}
-	} else {
-		fmt.Println(imgErr)
-	}
-}
+构建 
+```
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64  go build  -o obcsapi-picgo.exe  obcsapi-picgo.go
+go build -ldflags "-s -w" -o obcsapi-picgo.exe obcsapi-picgo.go
 ```

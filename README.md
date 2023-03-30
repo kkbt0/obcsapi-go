@@ -63,12 +63,12 @@ Go 语言开发
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.5 . 
+docker build -t kkbt/obcsapi:v4.0.6 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.5 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.5
+docker run -d -p 8900:8900 --name myObcsapi4.0.6 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.6
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.0.5:/app/data/config.yaml
-docker restart myObcsapi4.0.5 
+docker cp config.yaml myObcsapi4.0.6:/app/data/config.yaml
+docker restart myObcsapi4.0.6 
 ```
 如果出现没有权限访问的问题，可执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -78,3 +78,4 @@ docker restart myObcsapi4.0.5
 4.0.3 可以自定义日记等文件夹
 4.0.4 可自定义微信返回内容 可 -v 映射文件夹 /app/data/
 4.0.5 新增一个简易图床
+4.0.6 图床增加一些自定义功能 ，增加可配合 Obsidian 插件 Image auto upload Plugin ，使用 PicGo-Core 即可上传
