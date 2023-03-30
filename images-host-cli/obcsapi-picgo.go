@@ -74,8 +74,10 @@ func main() {
 	case "upload", "u":
 		if len(os.Args) == 2 {
 			GetFromWindowsClipboard()
+			return
 		}
 		// 读取 upload 后面的参数
+		fmt.Println("[PicGo SUCCESS]:")
 		for i := 2; i < len(os.Args); i++ {
 			if strings.HasPrefix(os.Args[i], "http") {
 				res, err := http.Get(os.Args[i])
@@ -90,14 +92,12 @@ func main() {
 					if err != nil {
 						log.Println("Download File Err,Skip This One", err)
 					}
-					fmt.Println("[PicGo SUCCESS]:")
 					// fileName := TimeFmt("20060102_") + RandomString(6) + ".jpg"
 					fileName := filepath.Base(os.Args[i])
 					fmt.Println(PostObcsapiImageHost(fileName, body))
 				}
 			} else {
 				fileName := path.Base(filepath.ToSlash(os.Args[i])) // windows path 风格转 unix 然后获取文件名
-				fmt.Println("[PicGo SUCCESS]:")
 				file, err := ioutil.ReadFile(os.Args[i])
 				if err != nil {
 					log.Println("Read File Err,Skip This One", err)
