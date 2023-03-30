@@ -90,7 +90,9 @@ func main() {
 					if err != nil {
 						log.Println("Download File Err,Skip This One", err)
 					}
-					fileName := TimeFmt("20060102_") + RandomString(6) + ".jpg"
+					fmt.Println("[PicGo SUCCESS]:")
+					// fileName := TimeFmt("20060102_") + RandomString(6) + ".jpg"
+					fileName := filepath.Base(os.Args[i])
 					fmt.Println(PostObcsapiImageHost(fileName, body))
 				}
 			} else {
