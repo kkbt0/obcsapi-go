@@ -177,25 +177,31 @@ POST /ob/today 以 Obsidian Memeos 形式增加一条 Memeos ,eg: \n- [ ] 12:00 
 
 ### 图床 PicGo-Core 类似 cli 工具
 
-windows 下
+概述：用于上传到 Obcsapi 图床的专用命令行工具。可配合 Obsidian 插件 Image Auto upload Plugin ，实现 Obsidian 图片上传。
+
+下载地址： [https://gitee.com/kkbt/obcsapi-go/tree/master/images-host-cli/out](https://gitee.com/kkbt/obcsapi-go/tree/master/images-host-cli/out)
+
+windows，linux，mac 下
 
 ```cmd
 obcsapi-picgo.exe :: 没有配置则生成配置
-obcsapi-picgo.exe u .\1.png :: 上传本地图片 1.png
+obcsapi-picgo.exe u .\1.png .\2.jpg :: 上传本地图片 1.png 2.jpg
 obcsapi-picgo.exe u  :: 上传剪切板图片，如果有的话
 obcsapi-picgo.exe u https://cdn.ftls.xyz/images/2022/11/zhishi2.jpg :: 下载网络图片，并上传
 ```
 
-配置说明，第一次运行会自动生产配置。之有三行
+配置说明，第一次运行会自动生产配置。有三行
 ```
 http://127.0.0.1:8900/api/upload
 fQbzONJAAw
 url
+```
 
 第一行是上传链接
 第二行是 token2 的值，程序会在请求 Header Token 设置为该值
 第三行是选 url or url2 。url 是 http ；url2 是 https
-```
+
+除了命令行运行之外，还可配合 Obsidian 插件 Image Auto upload Plugin .选择 Picgo-Core 模式，路径选择可执行文件在的位置 如 `C:\CLI\obcsapi-picgo.exe`。也可以改名，为`picgo.exe`。
 
 ### 展示
 
