@@ -1,4 +1,4 @@
-module demoserver
+module demo-server
 
 go 1.18
 

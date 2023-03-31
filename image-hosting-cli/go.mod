@@ -1,4 +1,4 @@
-module obcsapi-picgo
+module image-hosting-cli
 
 go 1.18
 

@@ -1,3 +1,9 @@
+# 概述
+
+概述：是 Picgo-Core 的部分功能替代，用于上传到 Obcsapi 图床的专用命令行工具。可配合 Obsidian 插件 Image Auto upload Plugin ，实现 Obsidian 图片上传。
+
+# 配置文件说明
+
 http://127.0.0.1:8900/api/upload
 fQbzONJAAw
 url
@@ -6,7 +12,8 @@ url
 第二行是 token2 的值
 第三行可选 url or url2 。url 是 http ；url2 是 https
 
-构建 
+
+# 构建 
 
 CGO_ENABLED=0 剪切板功能失效
 
