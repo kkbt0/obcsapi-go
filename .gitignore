@@ -1,15 +1,10 @@
-config.yaml
-server.zip
-server
-demo-server/demo-server
-testgo/test.py
-testgo/tem.file
-tem.file
-http/my.http
-tem.txt
-gin.log
-testgo/testgo
-testgo/config.yaml
 vendor
-images
-!docs/images
+server/config.yaml
+server/images
+server/tem.txt
+server/tem.file
+# 可执行文件
+server/server
+server/server.zip
+demo-server/demo-server
+testgo
