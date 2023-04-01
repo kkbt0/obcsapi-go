@@ -139,6 +139,10 @@ Content-Type: application/json
 {"content":"test token2"}
 ```
 
+#### Public 公开文档功能
+
+以配置项中 `ob_daily_other_dir: 支持类文件/` 为例，在 `支持类文件/Public/`下的文档可以公开访问。如 `支持类文件/Public/test.md` 的访问路径为 `https://127.0.0.1:8900/public/test.md` 。仅支持 Markdown 文件，图片文件公开请使用图床功能。
+
 #### WeChat MP
 
 微信测试号，配置完成后。微信测试号发送消息返回的链接，已保存的网址，进入网站。按下齿轮，勾选 Debug。拉到页面下面，两个输入框，第一个是后端api。第二个是 token。api填写类似 api.ftls.xyz/ob ，不需要协议头和尾部斜杠。按函数计算fc格式，第一个框如 someone.cn-hangzhou.fcapp.run/ob ，第二个框 `BxzbwiSIxeXCv71ktQe6cAIcLVy6qd96` 为 Token1 的值。
