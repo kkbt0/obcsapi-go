@@ -24,6 +24,9 @@ func WeChatMpHandlers(c *gin.Context) {
 		return
 	}
 	r_str := tools.ConfigGetString("wechat_return_str")
+	if r_str == "" {
+		r_str = "📩 已保存，<a href='https://kkbt.gitee.io/obweb/#/Memos'>点击查看今日笔记</a>"
+	}
 	var err error
 	switch mp.Request.MsgType {
 	case weixinmp.MsgTypeText: // 文字消息
