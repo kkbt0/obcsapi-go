@@ -10,3 +10,4 @@ demo-server/demo-server
 testgo
 kkbt.md
 server/gin.log
+server/obcsapi-go
