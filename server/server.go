@@ -3,8 +3,11 @@ package main
 import (
 	_ "embed"
 	"fmt"
+	"io"
+	"log"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
 	"obcsapi-go/tools"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -19,8 +22,12 @@ var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 
 func main() {
 	ShowConfig() // 打印基础消息
 
-	// f, _ := os.Create("gin.log")
-	// gin.DefaultWriter = io.MultiWriter(f, os.Stdout) // 日志写入文件和控制台
+	f, err := os.Create("gin.log")
+	if err != nil {
+		log.Println(err)
+	}
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout) // 日志写入文件和控制台
+
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
