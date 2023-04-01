@@ -57,7 +57,7 @@ func sendMail(subjct string, content string) error {
 	sender_addr := fmt.Sprintf("%s:%d", mail_config["smtp_host"], mail_config["port"]) // smtpdm.aliyun.com:80"
 	err = em.Send(sender_addr, smtp.PlainAuth("", mail_config["username"].(string), mail_config["password"].(string), mail_config["smtp_host"].(string)))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return err
 	}
 	log.Println("Send successfully ... Subject: ", subjct)
