@@ -1,8 +1,8 @@
 @host = http://localhost:8900
 @token1 = NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
 @token2 = fQbzONJAAw
-# emailSendToken
-GET {{host}}/api/sendtoken2mail HTTP/ 1.1
+### Public Pages
+GET {{host}}/public/1.md
 ###
 # Token Test
 POST {{host}}/token  HTTP/ 1.1
@@ -56,3 +56,5 @@ GET {{host}}/test
 GET {{host}}/ HTTP/ 1.1
 ###
 GET {{host}}/time HTTP/ 1.1
+### emailSendToken
+GET {{host}}/api/sendtoken2mail HTTP/ 1.1

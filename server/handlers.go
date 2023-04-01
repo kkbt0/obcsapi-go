@@ -1,9 +1,11 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"log"
+	"obcsapi-go/dao"
 	"obcsapi-go/tools"
 	"path"
 	"strings"
@@ -79,5 +81,20 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 			"url":  fmt.Sprintf("http://%s/images/%s", tools.ConfigGetString("backend_url"), strings.Join(filePath, "")),
 			"url2": fmt.Sprintf("https://%s/images/%s", tools.ConfigGetString("backend_url"), strings.Join(filePath, "")),
 		},
+	})
+}
+
+func ObsidianPublicFiles(c *gin.Context) {
+	fileName := c.Param("fileName")
+	fileName = tools.ConfigGetString("ob_daily_other_dir") + "Public" + fileName
+	md, err := dao.GetTextObject(fileName)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	c.HTML(200, "markdown.html", gin.H{
+		"title":    c.Param("fileName"),
+		"markdown": md,
 	})
 }

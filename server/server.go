@@ -1,8 +1,10 @@
 package main
 
 import (
+	"embed"
 	_ "embed"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
@@ -14,8 +16,11 @@ import (
 	"golang.org/x/time/rate"
 )
 
-//go:embed template/index.html
+//go:embed static/index.html
 var indeHtml string
+
+//go:embed templates
+var files embed.FS
 
 var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
 
@@ -29,6 +34,9 @@ func main() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout) // 日志写入文件和控制台
 
 	r := gin.Default()
+
+	templ := template.Must(template.New("").ParseFS(files, "templates/*.html")) // 加载模板
+	r.SetHTMLTemplate(templ)
 
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
@@ -56,7 +64,9 @@ func main() {
 		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
 		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
-	r.POST("/ob/moonreader", MoodReaderHandler) // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
+	r.POST("/ob/moonreader", MoodReaderHandler)     // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
+	r.GET("/public/*fileName", ObsidianPublicFiles) // Obsidian Public Files GET
+
 	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB
 

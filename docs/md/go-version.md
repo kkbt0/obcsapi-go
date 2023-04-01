@@ -33,7 +33,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.0.6 # 项目版本
+version: v4.0.7 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -100,12 +100,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.6 . 
+docker build -t kkbt/obcsapi:v4.0.7 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.6 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.6
+docker run -d -p 8900:8900 --name myObcsapi4.0.7 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.7
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.0.6:/app/data/config.yaml
-docker restart myObcsapi4.0.6 
+docker cp config.yaml myObcsapi4.0.7:/app/data/config.yaml
+docker restart myObcsapi4.0.7
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -245,7 +245,8 @@ Go 语言开发
 - dao/couchdb.go couchdb 处理操作相关的代码
 - dao/s3.go s3 处理操作相关的代码
 - dao/type.go 一些 struct 定义
-- template/index.html 前端文件，一般不使用。但是也可以用。在配置文件中修改前端地址。邮件登录链接就会使用相关前端
+- static/* 前端文件
+- template/* 前端文件
 - token/token1 存储 token1 前端 token ，有效期取决于配置文件
 - token/token2 存储只发送 token2 用于一些只发送的其他第三方程序 api、
 - tools/token.go Token 相关代码 。Token 的生成，修改，验证代码
@@ -271,5 +272,7 @@ Go 语言开发
 4.0.4 可自定义微信返回内容 可 -v 映射文件夹 /app/data/
 4.0.5 新增一个简易图床
 4.0.6 图床增加一些自定义功能 ，增加可配合 Obsidian 插件 Image auto upload Plugin ，使用 PicGo-Core 即可上传
+4.0.7 增加 Public 目录公开访问文档功能;开启日志功能;修复了一些已知错误
+
 
 

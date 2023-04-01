@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ .title }}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 16px;
+			line-height: 1.5;
+			color: #333;
+			background-color: #f5f5f5;
+			margin: 0;
+			padding: 0;
+		}
+		header {
+			background-color: #fff;
+			color: #333;
+			padding: 20px;
+		}
+		h1 {
+			margin-top: 0;
+			margin-bottom: 20px;
+			font-size: 36px;
+			line-height: 1.2;
+		}
+		main {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 2px 4px rgba(0,0,0,.1);
+		}
+		p {
+			margin-top: 0;
+			margin-bottom: 20px;
+		}
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+	</style>
+    <script src="//cdn.jsdelivr.net/npm/marked@3/marked.min.js"></script>
+</head>
+<body>
+
+    <main>
+        <header>
+            <h3>{{ .title }}</h3>
+        </header>
+        <div id="html"></div>
+    </main>
+    <textarea style="display:none;" id="markdown" rows="10" cols="80">{{ .markdown }}</textarea>
+
+    <script>
+        var markdown = document.getElementById('markdown');
+        var html = document.getElementById('html');
+        html.innerHTML = marked(markdown.value || '', { breaks: true });
+    </script>
+</body>
+</html>
