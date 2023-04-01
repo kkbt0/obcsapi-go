@@ -126,6 +126,7 @@ docker restart myObcsapi4.0.7
 | POST     |     token2     | /ob/url             | 页面转 md 存储 效果很一般   |
 | POST     |     token2     | /ob/moonreader      | 静读天下高亮和笔记          |
 | POST     |     token2     | /api/upload         | 图床 PicGo 可用             |
+| GET      |       /        | /public/*           | 公开文档功能                |
 
 一些访问方式可见文件 http/server.http
 
@@ -138,6 +139,12 @@ Content-Type: application/json
 
 {"content":"test token2"}
 ```
+
+如 IOS 捷径可使用此接口
+
+![](../images/IMG_5471_recompress.jpg)
+
+![](../images/IMG_5472_recompress.jpg)
 
 #### Public 公开文档功能
 

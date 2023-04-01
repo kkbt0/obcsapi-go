@@ -26,23 +26,24 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 [Obsidian S3 存储的后端 API python 版本](https://gitee.com/kkbt/obsidian-csapi)  
 
 
-|                                          | python           | go              |
-| ---------------------------------------- | ---------------- | --------------- |
-| 体积                                     | 未压缩 100Mb+    | 未压缩20Mb      |
-| FC函数计算内存                           | 100Mb 上下       | 20Mb  上下      |
-| 修改难度                                 | 简单<sup>2</sup> | 比python复杂    |
-| 微信公众号(测试号)<sup>3</sup>           | √                | √               |
-| 微信文章裁剪                             | √                | ×               |
-| 简悦 SimpRead Webook                     | √                | √               |
-| fv悬浮球文字图片分享保存                 | √                | √               |
-| 静读天下 MoonReader 高亮标注<sup>4</sup> | √                | √               |
-| 通用 http api                            | √                | √               |
-| S3 对象存储                              | √                | √               |
-| CouchDb                                  | ×                | √               |
+|                                          | python           | go             |
+| ---------------------------------------- | ---------------- | -------------- |
+| 体积                                     | 未压缩 100Mb+    | 未压缩20Mb     |
+| FC函数计算内存                           | 100Mb 上下       | 20Mb  上下     |
+| 修改难度                                 | 简单<sup>2</sup> | 比python复杂   |
+| 微信公众号(测试号)<sup>3</sup>           | √                | √              |
+| 微信文章裁剪                             | √                | ×              |
+| 简悦 SimpRead Webook                     | √                | √              |
+| fv悬浮球文字图片分享保存                 | √                | √              |
+| 静读天下 MoonReader 高亮标注<sup>4</sup> | √                | √              |
+| 通用 http api                            | √                | √              |
+| S3 对象存储                              | √                | √              |
+| CouchDb                                  | ×                | √              |
 | Web 网页支持                             | √                | √ <sup>5</sup> |
-| 图床  和 CLI上传工具                     | ×                | √               |
-| 邮件发送登录链接                         | ×                | √               |
-| Docker                                   | <=3              | >=4             |
+| 图床  和 CLI上传工具                     | ×                | √              |
+| 邮件发送登录链接                         | ×                | √              |
+| 公开文档功能                             | ×                | √              |
+| Docker                                   | <=3              | >=4            |
 
 Docker 3.0 之前的是 python 版本，之后的是 Go 版本。
 
