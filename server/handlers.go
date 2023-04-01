@@ -60,13 +60,13 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		c.Status(500)
 		return
 	}
-	log.Println("ImagesHost Upload:", file.Filename)
+	log.Println("ImagesHost Upload:", file.Filename, "=>", tools.ReplaceUnAllowedChars(file.Filename))
 	// filePath: /images/202303/test.jpg
 	typeName := path.Ext(file.Filename)
 	filePath := []string{tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt"))}
 	// filePath := fmt.Sprintf("%s%s", tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt")), file.Filename)
 	if tools.ConfigGetString("images_hosted_use_raw_name") == "true" {
-		filePath = append(filePath, strings.TrimSuffix(file.Filename, typeName)) // 200601/test
+		filePath = append(filePath, strings.TrimSuffix(tools.ReplaceUnAllowedChars(file.Filename), typeName)) // 200601/test
 	}
 	fmt.Println(tools.ConfigGetInt("images_hosted_random_name_length"))
 	if tools.ConfigGetInt("images_hosted_random_name_length") != 0 {
