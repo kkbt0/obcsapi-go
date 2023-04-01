@@ -10,6 +10,8 @@ import (
 
 // 一些杂七杂八的函数 又不能放到 tools 里的
 
+var version string = "v4.0.6"
+
 func ShowConfig() {
 
 	// Read configuration
@@ -21,7 +23,8 @@ func ShowConfig() {
 	}
 
 	// output configuration
-	log.Println(viper.GetString("name"), viper.GetString("version"), viper.GetString("description"))
+	log.Println(viper.GetString("name"), version, "ConfigVersion", viper.GetString("version"), viper.GetString("description"))
+	log.Println("https://gitee.com/kkbt/obcsapi-go")
 	log.Println("Server Time:", tools.TimeFmt("2006-01-02 15:04"))
 	log.Println("Tokne File Path:", viper.GetString("token_path"))
 	log.Println("Run on", viper.GetString("host"))
