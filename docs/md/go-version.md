@@ -211,6 +211,17 @@ Enjoy it !
 
 ![](../images/imagesHost3.png)
 
+POST {{host}}/api/upload
+Token: {{token2}}
+Content-Type: form-data
+
+字段名: file
+
+```json
+{"data":{"url":"http://example.com/images/test.jpg","url2":"http://example.com/images/test.jpg"}}
+```
+~~第三行是选 url or url2 。url 是 http ；url2 是 https~~ 现在 url url2 都一样的，http/https 由配置文件决定
+
 ### 图床 PicGo-Core 类似 cli 工具
 
 概述：用于上传到 Obcsapi 图床的专用命令行工具。可配合 Obsidian 插件 Image Auto upload Plugin ，实现 Obsidian 图片上传。
@@ -235,9 +246,22 @@ url
 
 第一行是上传链接
 第二行是 token2 的值，程序会在请求 Header Token 设置为该值
-第三行是选 url or url2 。url 是 http ；url2 是 https
+~~第三行是选 url or url2 。url 是 http ；url2 是 https~~ 现在 url url2 都一样的，http/https 由配置文件决定
 
 除了命令行运行之外，还可配合 Obsidian 插件 Image Auto upload Plugin .选择 Picgo-Core 模式，路径选择可执行文件在的位置 如 `C:\CLI\obcsapi-picgo.exe`。也可以改名，为`picgo.exe`。
+
+### 图床 OCR（试验性质）
+
+配置文件中将 bd_ocr_access_token 取消注释，替换成自己的 access_token 即可，注意 access_token 有效期 30 天。  
+access_token 申请 [https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu](https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu)
+
+```yaml
+# 百度 OCR https://ai.baidu.com/ai-doc/OCR/zk3h7xz52 该项置空或删除此项则不进行 OCR 注意该项有效期 30 天
+# https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu
+# bd_ocr_access_token: xxxxx.xxxxx.xxxxx.xxxxx.xxxxx-xxxxx
+```
+
+数据按配置文件将保存在: `支持类文件/OcrData/bdocr.md` 。此文件可以随意删除，移动，更换名字。如果上传图片时没有此文件，程序会自动创建追加写入 OCR 结果。
 
 ### 展示
 
