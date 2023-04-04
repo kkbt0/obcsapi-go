@@ -252,6 +252,10 @@ url
 
 ### 图床 OCR（试验性质）
 
+图床可选配置，使用百度 OCR 进行文字识别，结果保存到 Obsidian 便于后续查询。使用 https://ai.baidu.com/tech/ocr
+
+使用百度 OCR 通用文字识别（标准版）
+
 配置文件中将 bd_ocr_access_token 取消注释，替换成自己的 access_token 即可，注意 access_token 有效期 30 天。  
 access_token 申请 [https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu](https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu)
 
