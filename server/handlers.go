@@ -70,16 +70,36 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 	if tools.ConfigGetString("images_hosted_use_raw_name") == "true" {
 		filePath = append(filePath, strings.TrimSuffix(tools.ReplaceUnAllowedChars(file.Filename), typeName)) // 200601/test
 	}
-	fmt.Println(tools.ConfigGetInt("images_hosted_random_name_length"))
 	if tools.ConfigGetInt("images_hosted_random_name_length") != 0 {
 		filePath = append(filePath, "_"+tools.RandomString(tools.ConfigGetInt("images_hosted_random_name_length"))) // 200601/test_e5md1
 	}
 	filePath = append(filePath, typeName) // 200601/test_e5md1.jpg
 	c.SaveUploadedFile(file, "./images/"+strings.Join(filePath, ""))
+	// Bd ocr
+	if tools.ConfigGetString("bd_ocr_access_token") != "" {
+		switch typeName {
+		case ".jpg", ".jpeg", ".png", ".bmp":
+			ans, err := tools.BdGeneralBasicOcr("./images/" + strings.Join(filePath, ""))
+			if err != nil {
+				c.Error(err)
+			}
+			var textList []string
+			for _, v := range ans {
+				textList = append(textList, v.Words)
+			}
+			inMdText := fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, ""))
+			inMdText += fmt.Sprintf("\n%s\n\n---\n", strings.Join(textList, "\n"))
+			dao.TextAppend(tools.ConfigGetString("ob_daily_other_dir")+"OcrData/bdocr.md", inMdText)
+			fmt.Println(ans)
+		default:
+			log.Println("UnSupported file type: ", typeName)
+		}
+	}
+	// END ocr
 	c.JSON(200, gin.H{
 		"data": gin.H{
-			"url":  fmt.Sprintf("http://%s/images/%s", tools.ConfigGetString("backend_url"), strings.Join(filePath, "")),
-			"url2": fmt.Sprintf("https://%s/images/%s", tools.ConfigGetString("backend_url"), strings.Join(filePath, "")),
+			"url":  fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, "")),
+			"url2": fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, "")),
 		},
 	})
 }

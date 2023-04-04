@@ -33,7 +33,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.0.7 # 项目版本
+version: v4.0.8 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -55,6 +55,9 @@ ob_daily_other_dir: 支持类文件/ # 用于第三方软件 如静读天下，�
 images_hosted_fmt: 200601/kkbt_
 images_hosted_use_raw_name: true # 图床文件是否使用原名字 true or false
 images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字符长度
+# 百度 OCR https://ai.baidu.com/ai-doc/OCR/zk3h7xz52 该项置空或删除此项则不进行 OCR 注意该项有效期 30 天
+# https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu
+# bd_ocr_access_token: xxxxx.xxxxx.xxxxx.xxxxx.xxxxx-xxxxx
 
 # S3 -> 1 ; CouchDb -> 2
 data_source: 2
@@ -100,12 +103,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.7 . 
+docker build -t kkbt/obcsapi:v4.0.8 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.7 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.7
+docker run -d -p 8900:8900 --name myObcsapi4.0.8 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.8
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.0.7:/app/data/config.yaml
-docker restart myObcsapi4.0.7
+docker cp config.yaml myObcsapi4.0.8:/app/data/config.yaml
+docker restart myObcsapi4.0.8
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -284,6 +287,4 @@ Go 语言开发
 4.0.5 新增一个简易图床
 4.0.6 图床增加一些自定义功能 ，增加可配合 Obsidian 插件 Image auto upload Plugin ，使用 PicGo-Core 即可上传
 4.0.7 增加 Public 目录公开访问文档功能;开启日志功能;修复了一些已知错误
-
-
-
+4.0.8 增加百度图片OCR功能进行测试
