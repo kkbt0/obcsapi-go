@@ -5,7 +5,6 @@ import (
 	"log"
 	"obcsapi-go/tools"
 
-	"github.com/robfig/cron"
 	"github.com/spf13/viper"
 )
 
@@ -45,31 +44,4 @@ func ShowConfig() {
 	log.Println("Token1 用于前端，有有效期概念。Token2 用于第三方 API 调用，无限时间。也可以在配置文件中设置很长时间的 Token1有效期")
 	log.Println("你可以访问 /api/sendtoken2mail 路径更新 Token1 ,如果你配置了邮箱服务，程序会将 Token 相关信息发送到指定邮箱")
 
-}
-
-// 定时任务
-func RunCronJob() {
-	log.Println("Starting cron job...")
-	c := cron.New()
-	c.AddFunc("1/60 * * * * ?", func() { // 每分钟执行一次
-		log.Println("Run a scheduled task...")
-		// 要执行的代码
-		err := MessagesSend()
-		if err != nil {
-			log.Println(err)
-		}
-	})
-	c.Start()
-}
-
-func MessagesSend() error {
-	var err error = nil
-	if tools.ConfigGetString("email_reminder_time") == tools.TimeFmt("1504") {
-		err = DailyEmailReminder()
-	}
-	if err != nil {
-		log.Println(err)
-	}
-	err = WechatMpReminder()
-	return err
 }
