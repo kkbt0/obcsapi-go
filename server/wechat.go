@@ -39,7 +39,7 @@ func WeChatMpHandlers(c *gin.Context) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = TextAppend(tools.ConfigGetString("ob_daily_dir")+extract[0].Format("2006-01-02.md"), "- [ ] "+mp.Request.Content)
+			err = TextAppend(tools.ConfigGetString("ob_daily_dir")+extract[0].Format("2006-01-02.md"), "\n- [ ] "+mp.Request.Content+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
 			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
 		} else {
 			err = DailyTextAppendMemos(mp.Request.Content) //
@@ -59,7 +59,7 @@ func WeChatMpHandlers(c *gin.Context) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = TextAppend(tools.ConfigGetString("ob_daily_dir")+extract[0].Format("2006-01-02.md"), "- [ ] "+mp.Request.Recognition)
+			err = TextAppend(tools.ConfigGetString("ob_daily_dir")+extract[0].Format("2006-01-02.md"), "\n- [ ] "+mp.Request.Recognition+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
 			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
 		} else {
 			err = DailyTextAppendMemos("语音: " + mp.Request.Recognition) //
