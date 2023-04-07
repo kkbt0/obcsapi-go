@@ -3,6 +3,7 @@ module obcsapi-go
 go 1.18
 
 require (
+	github.com/DanPlayer/timefinder v1.1.110
 	github.com/JohannesKaufmann/html-to-markdown v1.3.7
 	github.com/aws/aws-sdk-go v1.44.214
 	github.com/gin-contrib/cors v1.4.0
@@ -17,7 +18,6 @@ require (
 )
 
 require (
-	github.com/DanPlayer/timefinder v1.1.110 // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
