@@ -20,9 +20,8 @@ ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 COPY --from=builder /home/workspace/app/ .
-RUN chmod +x docker-entrypoint.sh
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add --no-cache tzdata
-RUN pwd && ls
+RUN chmod +x docker-entrypoint.sh && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add --no-cache tzdata
+# RUN pwd && ls
 VOLUME /app/data
 EXPOSE 8900
 
