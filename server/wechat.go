@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"log"
 	. "obcsapi-go/dao"
@@ -31,7 +32,18 @@ func WeChatMpHandlers(c *gin.Context) {
 	var err error
 	switch mp.Request.MsgType {
 	case weixinmp.MsgTypeText: // 文字消息
-		err = DailyTextAppendMemos(mp.Request.Content) //
+		// 提醒任务判断
+		extract := segmenter.TimeExtract(mp.Request.Content) // 如果提取出了时间
+		if strings.Contains(mp.Request.Content, "提醒我") && len(extract) != 0 {
+			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+mp.Request.Content)
+			if err != nil {
+				log.Println(err)
+			}
+			err = TextAppend(tools.ConfigGetString("ob_daily_dir")+extract[0].Format("2006-01-02.md"), "- [ ] "+mp.Request.Content)
+			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
+		} else {
+			err = DailyTextAppendMemos(mp.Request.Content) //
+		}
 	case weixinmp.MsgTypeImage: // 图片消息
 		fileby, _ := PicDownloader(mp.Request.PicUrl)
 		file_key := fmt.Sprintf("%s%s/%s.jpg", tools.ConfigGetString("ob_daily_attachment_dir"), tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
@@ -40,7 +52,18 @@ func WeChatMpHandlers(c *gin.Context) {
 		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
 		err = DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
 	case weixinmp.MsgTypeVoice: // 语言消息
-		err = DailyTextAppendMemos(fmt.Sprintf("语音: %s", mp.Request.Recognition))
+		// 提醒任务判断
+		extract := segmenter.TimeExtract(mp.Request.Recognition)
+		if strings.Contains(mp.Request.Recognition, "提醒我") && len(extract) != 0 {
+			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+mp.Request.Recognition)
+			if err != nil {
+				log.Println(err)
+			}
+			err = TextAppend(tools.ConfigGetString("ob_daily_dir")+extract[0].Format("2006-01-02.md"), "- [ ] "+mp.Request.Recognition)
+			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
+		} else {
+			err = DailyTextAppendMemos("语音: " + mp.Request.Recognition) //
+		}
 	case weixinmp.MsgTypeLocation: // 位置消息
 		err = DailyTextAppendMemos(fmt.Sprintf("位置信息: 位置 %s <br>经纬度( %f , %f )", mp.Request.Label, mp.Request.LocationX, mp.Request.LocationY))
 	case weixinmp.MsgTypeLink: // 链接消息
