@@ -12,5 +12,4 @@ server/gin.log
 server/obcsapi-go
 dir-ocr
 http/kkbt.http
-server/wx7cf99a23716cacb4-accesstoken.tmp
 server/ob4.0.tar.gz
