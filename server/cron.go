@@ -9,9 +9,9 @@ import (
 
 // 定时任务
 func RunCronJob() {
+	log.Println("Start scheduled tasks...")
 	c := cron.New()
 	c.AddFunc("1/60 * * * * ?", func() { // 每分钟执行一次
-		log.Println("Run a scheduled task...")
 		// 要执行的代码
 		err := MessagesSend()
 		if err != nil {

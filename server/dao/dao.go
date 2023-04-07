@@ -141,6 +141,16 @@ func DailyTextAppendMemos(text string) error {
 	} else {
 		text = fmt.Sprintf("\n- %s %s", tools.TimeFmt("15:04"), text)
 	}
+	// 提醒任务
+	if strings.HasPrefix(text, "r20") {
+		switch dataSource {
+		case S3:
+			return S3TextAppend(sess, "提醒任务.md", text[1:])
+		case CouchDb:
+			return CouchDbTextAppend(couchDb, "提醒任务.md", text[1:])
+		}
+	}
+	// end 提醒任务
 	switch dataSource {
 	case S3:
 		return S3DailyTextAppend(sess, text)
