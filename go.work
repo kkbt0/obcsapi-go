@@ -3,3 +3,4 @@ go 1.18
 use ./demo-server
 use ./server
 use ./image-hosting-cli
+use ./testgo

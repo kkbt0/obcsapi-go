@@ -89,7 +89,7 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 			}
 			inMdText := fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, ""))
 			inMdText += fmt.Sprintf("\n%s\n\n---\n", strings.Join(textList, "\n"))
-			dao.TextAppend(tools.ConfigGetString("ob_daily_other_dir")+"OcrData/bdocr.md", inMdText)
+			dao.TextAppend(tools.ConfigGetString("ob_daily_other_dir")+"OcrData/bdocr-"+tools.TimeFmt("200601")+".md", inMdText)
 			fmt.Println(ans)
 		default:
 			log.Println("UnSupported file type: ", typeName)
