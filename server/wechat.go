@@ -11,10 +11,11 @@ import (
 	"github.com/sidbusy/weixinmp"
 )
 
+var mp = weixinmp.New(tools.ConfigGetString("wechat_token"), tools.ConfigGetString("wechat_appid"), tools.ConfigGetString("wechat_secret"))
+
 func WeChatMpHandlers(c *gin.Context) {
 	log.Println("WeChat MP Run")
 	openid := tools.ConfigGetString("wechat_openid") // OpenID
-	mp := weixinmp.New(tools.ConfigGetString("wechat_token"), tools.ConfigGetString("wechat_appid"), tools.ConfigGetString("wechat_secret"))
 	if !mp.Request.IsValid(c.Writer, c.Request) {
 		return
 	}

@@ -12,3 +12,5 @@ kkbt.md
 server/gin.log
 server/obcsapi-go
 dir-ocr
+http/kkbt.http
+server/wx7cf99a23716cacb4-accesstoken.tmp

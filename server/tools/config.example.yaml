@@ -45,6 +45,7 @@ wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
 wechat_appid: xxxxxxxxxxxxxx # 微信公众平台的AppID
 wechat_secret: xxxxxxxxxxxxxx # 微信公众平台的AppSecret
 wechat_openid: xxxxxxxxxxxxxx # OpenID
+wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.DATA}}
 
 # smtp 邮箱服务
 smtp_mail:

@@ -73,5 +73,6 @@ func main() {
 	r.POST("/api/upload", Token2AuthMiddleware(), ImagesHostUplaodHanler) //图床
 	r.Static("/images", "./images")
 
+	// WeChatTemplateMesseng("This is a chat message\ntest message")
 	r.Run(fmt.Sprintf("%s:%s", tools.ConfigGetString("host"), tools.ConfigGetString("port"))) // 运行服务
 }
