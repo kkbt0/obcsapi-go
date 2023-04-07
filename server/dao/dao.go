@@ -139,9 +139,9 @@ func DailyTextAppendMemos(text string) error {
 	if strings.HasPrefix(text, "r20") {
 		switch dataSource {
 		case S3:
-			return S3TextAppend(sess, "提醒任务.md", text[1:])
+			return S3TextAppend(sess, "提醒任务.md", text[1:]+"\n")
 		case CouchDb:
-			return CouchDbTextAppend(couchDb, "提醒任务.md", text[1:])
+			return CouchDbTextAppend(couchDb, "提醒任务.md", text[1:]+"\n")
 		}
 	}
 	// end 提醒任务
