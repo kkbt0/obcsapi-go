@@ -43,6 +43,7 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 | 图床  和 CLI上传工具                     | ×                | √              |
 | 邮件发送登录链接                         | ×                | √              |
 | 公开文档功能                             | ×                | √              |
+| 邮件/微信任务提醒                        | ×                | √              |
 | Docker                                   | <=3              | >=4            |
 
 Docker 3.0 之前的是 python 版本，之后的是 Go 版本。

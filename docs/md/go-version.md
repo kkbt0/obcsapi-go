@@ -79,6 +79,9 @@ wechat_appid: xxxxxxxxxxxxxx # 微信公众平台的AppID
 wechat_secret: xxxxxxxxxxxxxx # 微信公众平台的AppSecret
 wechat_openid: xxxxxxxxxxxxxx # OpenID 自己关注测试号后，获取的
 
+# 任务提醒
+email_reminder_time: 0700 # 指每天 07:00 
+
 # smtp 邮箱服务
 smtp_mail:
   smtp_host: smtpdm.aliyun.com
@@ -161,6 +164,7 @@ Content-Type: application/json
 
 Enjoy it !
 
+
 ##### 微信公众号说明
 
 微信测试号发送消息，保存 Obsidian 中。前端在 https://gitee.com/kkbt/obweb 中，实例 https://kkbt.gitee.io/obweb/#/ 点击右侧图片。使用 localStorge 存储 api 地址和 token 。你可以将 https://gitee.com/kkbt/obweb frok 下来，用 Memos.md 文件内容覆盖 HOME.md ，然后借助 github pages 静态部署整个项目，这个项目整个文件夹就是一个 Obsidian 库，也是一个 Docsify 文档文件夹。如果使用对象存储的静态网站功能，可以轻松部署成网页。
@@ -185,6 +189,42 @@ Enjoy it !
 #### 邮件发送 
 
 访问 /api/sendtoken2mail 路径，这个路径大约 3 天可以访问一次。会更新 token1 并发送邮件到指定邮箱。
+
+#### 任务提醒
+
+
+##### 微信分钟级别提醒
+
+[登录微信测试号](https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index),模板消息接口新增测试模板，标题随意。内容处包含 `{{content.DATA}}` 即可。如
+
+```
+待办任务： {{content.DATA}}
+```
+
+创建完成后，模板ID 复制到配置文件，作为 `wechat_template_id`  的值。
+
+库的根目录下创建 `提醒任务` .( Obsidian 会创建 提醒任务.md 文件，所以不必加后缀 .md)。内容示例如下
+
+```md
+这是一个任务提醒功能
+20230407 1322 测试提醒1
+20230407 1353 测试提醒2<br>第二行
+```
+
+示例中,`20230407 1322 测试提醒1` 会在 2023年04月07日 13:22 发送微信模板消息。发送后的那一行消息，按配置会被移动到 `支持类文件/WeChatSended/202304.md` 中。
+
+该功能每分钟查询一次，所以此 `提醒任务.md` 文件不要过大。否则会引起流量过大等问题。
+
+快捷创建方式: 微信/通用/fv悬浮球等接口发送以 `r20` 开头的句子，即可添加到 `提醒任务.md`。如发送 `r20230407 1322 测试提醒1` ，`提醒任务.md` 会新增 `20230407 1322 测试提醒1` 。
+
+此项功能可删除 `提醒任务.md` 关闭。
+
+##### 邮件每日提醒
+
+邮件配置正确情况下，并且配置文件中 `email_reminder_time` 处于可取的值。 Obcsapi 会读取根目录 `每日提醒.md` 和三天日记（今天，昨天，前天）中的 `- [ ]` 开头的行发送到指定邮箱中。
+
+如果想关闭此项功能可将 `email_reminder_time` 设置为 `9999` 等数字。
+
 
 #### fv 悬浮球
 
@@ -316,3 +356,4 @@ Go 语言开发
 4.0.6 图床增加一些自定义功能 ，增加可配合 Obsidian 插件 Image auto upload Plugin ，使用 PicGo-Core 即可上传
 4.0.7 增加 Public 目录公开访问文档功能;开启日志功能;修复了一些已知错误
 4.0.8 增加百度图片OCR功能进行测试
+4.0.9 任务提醒功能
