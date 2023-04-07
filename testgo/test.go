@@ -2,52 +2,34 @@ package main
 
 import (
 	"fmt"
-	"obcsapi-go/dao"
-	"regexp"
+	"io/ioutil"
+	"log"
+	"obcsapi-go/tools"
 	"strings"
-	"testing"
 )
 
 func main() {
 	fmt.Println("Run")
-	//estRegexp2()
-	fmt.Println(dao.CheckObject("3.md"))
-	fmt.Println(dao.GetTextObject("2.md"))
-	fmt.Println(dao.ObjectStore("object.md", []byte("a new object")))
-	fmt.Println(dao.MdTextStore("text.md", "A new object"))
-	fmt.Println(dao.TextAppend("text.md", "\nNew line"))
-	fmt.Println(dao.DailyTextAppendMemos("今日测试"))
-}
-
-func testRegexp2() {
-	s := "-?!*<>[#^|]"
-	fmt.Println(ReplaceUnAllowedChars(s))
-}
-
-//  obsidian 文件名非法字符 * " \ / < > : | ? 链接失效 # ^ [ ] | 替换为 _
-func ReplaceUnAllowedChars(s string) string {
-	unAllowedChars := "*\"\\/<>:|?#^[]|"
-	fmt.Println(unAllowedChars)
-	for _, c := range unAllowedChars {
-		s = strings.ReplaceAll(s, string(c), "_")
+	file, err := ioutil.ReadFile("1.txt")
+	if err != nil {
+		log.Println(err)
 	}
-	return s
-}
-
-func testRegexp(t *testing.T) {
-	olrdMd := "![](https://github.com/1.jpg)\n![xxx](https://github.com/2.jpg)\n![](xxx)xxxx\n![xx](xxx)xxxx"
-	pattern := regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
-	replaceFunc := func(match []byte) []byte {
-		// 获取匹配到的链接
-		desp := pattern.ReplaceAllString(string(match), "$1")
-		link := pattern.ReplaceAllString(string(match), "$2")
-		// 替换链接为临时鉴权链接
-		return []byte(fmt.Sprintf("![%s](%s)", desp, dealPic(link)))
+	rawTodoList := strings.Split(string(file), "\n")
+	var todoList []string
+	for i := 0; i < len(rawTodoList); i++ {
+		rawTodoList[i] = strings.ReplaceAll(rawTodoList[i], "\n", "")
+		rawTodoList[i] = strings.ReplaceAll(rawTodoList[i], "\t", "")
+		if strings.HasPrefix(rawTodoList[i], "20") {
+			todoList = append(todoList, rawTodoList[i])
+		}
 	}
-	result := pattern.ReplaceAllFunc([]byte(olrdMd), replaceFunc)
-	fmt.Println(string(result))
-}
-
-func dealPic(key string) string {
-	return fmt.Sprintf("%s+捕获", key)
+	fmt.Println("RawFile", string(file))
+	fmt.Println("---todoList---")
+	fmt.Println(todoList)
+	fmt.Println("---checkList---")
+	for _, v := range todoList {
+		if strings.HasPrefix(v, tools.TimeFmt("20060102 1504")) {
+			fmt.Println(v)
+		}
+	}
 }
