@@ -279,6 +279,24 @@ Enjoy it !
 
 如果想关闭此项功能可将 `email_reminder_time` 设置为 `9999` 等数字。
 
+邮件支持部分 HTML 标签，因此在 `每日提醒.md` 写可以实现每日随机一句话的效果。
+
+如 https://gushi.ci/ 的返回随机古诗的图片
+
+举例来说
+
+```markdown
+- [ ] <img src="https://v1.jinrishici.com/all.svg">
+- [ ] <img src="https://cdn.seovx.com/d/?mom=302" style="max-width: 100%; max-height: 100%;">
+- [ ] 
+```
+
+效果大概这样：
+
+![](../images/20230407181447.jpg)
+
+在 微信-设置-通用-辅助功能-QQ邮箱提醒 中启用邮箱提醒功能，每天设置的时间就会在微信中接收到一封这样的邮件。
+
 
 #### fv 悬浮球
 
