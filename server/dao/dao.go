@@ -135,12 +135,6 @@ func DailyTextAppend(text string) error {
 
 // 为今日日记 增加一行 Memos 格式内容
 func DailyTextAppendMemos(text string) error {
-	var todo = "todo"
-	if strings.Contains(text, todo) {
-		text = fmt.Sprintf("\n- [ ] %s %s", tools.TimeFmt("15:04"), strings.Replace(text, "todo", "", 1))
-	} else {
-		text = fmt.Sprintf("\n- %s %s", tools.TimeFmt("15:04"), text)
-	}
 	// 提醒任务
 	if strings.HasPrefix(text, "r20") {
 		switch dataSource {
@@ -151,6 +145,12 @@ func DailyTextAppendMemos(text string) error {
 		}
 	}
 	// end 提醒任务
+	var todo = "todo"
+	if strings.Contains(text, todo) {
+		text = fmt.Sprintf("\n- [ ] %s %s", tools.TimeFmt("15:04"), strings.Replace(text, "todo", "", 1))
+	} else {
+		text = fmt.Sprintf("\n- %s %s", tools.TimeFmt("15:04"), text)
+	}
 	switch dataSource {
 	case S3:
 		return S3DailyTextAppend(sess, text)
