@@ -185,6 +185,17 @@ func Get3DaysDailyList() [3]Daily {
 	return ans
 }
 
+func Get3DaysList() [3]string {
+	switch dataSource {
+	case S3:
+		return S3Get3DaysList(sess)
+	case CouchDb:
+		return CouchDbGet3DaysList(couchDb)
+	}
+	var ans [3]string
+	return ans
+}
+
 // ------Tools--------
 
 // 下载图片到 tem.jpg

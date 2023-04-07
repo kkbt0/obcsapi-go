@@ -272,3 +272,16 @@ func CouchDbGet3DaysDailyList(db *kivik.DB) [3]Daily {
 	}
 	return ans
 }
+
+func CouchDbGet3DaysList(db *kivik.DB) [3]string {
+	var ans [3]string
+	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
+		date := time.Now().AddDate(0, 0, i-2).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02")
+		day, err := CouchDbGetTextObject(db, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+		if err != nil {
+			log.Println(err)
+		}
+		ans[i] = day
+	}
+	return ans
+}
