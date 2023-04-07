@@ -33,7 +33,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.0.8 # 项目版本
+version: v4.0.9 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -106,12 +106,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.8 . 
+docker build -t kkbt/obcsapi:v4.0.9 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.8 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.8
+docker run -d -p 8900:8900 --name myObcsapi4.0.9 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.9
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.0.8:/app/data/config.yaml
-docker restart myObcsapi4.0.8
+docker cp config.yaml myObcsapi4.0.9:/app/data/config.yaml
+docker restart myObcsapi4.0.9
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
