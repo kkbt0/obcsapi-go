@@ -47,11 +47,11 @@ func LocalStorageObjectStore(webDavPath string, file_key string, file_bytes []by
 		log.Println("Creat Error")
 		return err
 	}
+	defer file.Close() // 关闭文件
 	_, err = file.Write(file_bytes)
 	if err != nil {
 		return err
 	}
-	defer file.Close() // 关闭文件
 	return nil
 }
 
