@@ -14,6 +14,7 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/sidbusy/weixinmp v0.0.0-20160719084217-60f690ec753a
 	github.com/spf13/viper v1.15.0
+	golang.org/x/net v0.8.0
 	golang.org/x/time v0.3.0
 )
 
@@ -50,7 +51,6 @@ require (
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect

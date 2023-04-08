@@ -5,6 +5,7 @@ server/tem.txt
 server/tem.file
 # 可执行文件
 server/server
+server/webdav/
 server/server.zip
 demo-server/demo-server
 kkbt.md
@@ -13,3 +14,4 @@ server/obcsapi-go
 dir-ocr
 http/kkbt.http
 server/ob4.0.tar.gz
+.gitignore

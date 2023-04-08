@@ -49,6 +49,7 @@ func main() {
 	r.GET("/", IndexHandler)               // index.html
 	r.GET("/404", BaseHandler)             // 404
 	r.GET("/time", Greet)                  // 打招呼 测试使用 GET
+	r.GET("/info", InfoHandler)            // Obcsapi info
 	r.POST("/token", VerifyToken1Handler)  // 验证 Token1 有效性
 	r.Any("/api/wechat", WeChatMpHandlers) // wecheet 机器人 用于公众测试号
 
@@ -74,7 +75,14 @@ func main() {
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB
 
 	r.POST("/api/upload", Token2AuthMiddleware(), ImagesHostUplaodHanler) //图床
-	r.Static("/images", "./images")
+	r.Static("/images", "./webdav/images")
+
+	// Webdav
+	r.Use(WebDavServe(
+		"/webdav/",
+		"./webdav",
+		WebDavServeAuth,
+	))
 
 	RunCronJob() //  运行定时任务
 

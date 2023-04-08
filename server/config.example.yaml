@@ -1,5 +1,5 @@
 name: obcsapi-go
-version: v4.0.9
+version: v4.1.0
 description: by kkbt
 host: 0.0.0.0
 port: 8900
@@ -26,8 +26,8 @@ images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字�
 # https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu
 # bd_ocr_access_token: xxxxx.xxxxx.xxxxx.xxxxx.xxxxx-xxxxx
 
-# S3 -> 1 ; CouchDb -> 2
-data_source: 2
+# S3 -> 1 ; CouchDb -> 2 ; Local -> 3
+data_source: 3
 
 # CouchDb 配置
 couchdb_url: http://admin:password@localhost:5984/
@@ -39,6 +39,12 @@ secret_key: xxxxxxxxxxxxxx
 end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
+
+# LocalStorage (RemotelySave WebDav) http://localhost:8900/webdav 用户自定义账户密码
+webdav_server: true
+webdav_username: kkbt
+webdav_password: kkbt123
+webdav_dir: testdb/
 
 # wechat 测试号/公众号
 wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token

@@ -204,6 +204,11 @@ func Url2MdHandler(c *gin.Context) {
 	serverTime := tools.TimeFmt("200601021504")
 	yaml := fmt.Sprintf("---\nurl: %s\nsctime: %s\n---\n", urlStruct.Url, serverTime)
 	file_key := fmt.Sprintf("支持类文件/HtmlPages/%s.md", serverTime)
-	MdTextStore(file_key, yaml+markdown)
+	err = MdTextStore(file_key, yaml+markdown)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
 	c.Status(200)
 }

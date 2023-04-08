@@ -1,5 +1,5 @@
 @host = http://localhost:8900
-@token1 = NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2
+@token1 = 8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q
 @token2 = fQbzONJAAw
 ### Public Pages
 GET {{host}}/public/1.md
@@ -9,7 +9,7 @@ POST {{host}}/token  HTTP/ 1.1
 Content-Type: application/json
 
 {
-    "token": "NOSvVEL02BoxOCu6VQI4BHiFP38ZveE2"
+    "token": "8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q"
 }
 
 ################################
@@ -37,7 +37,7 @@ POST {{host}}/ob/general
 Token: {{token2}}
 Content-Type: application/json
 
-{"content":"test token2"}
+{"content":"test From general"}
 
 ################################
 ### 简易的剪裁 web 网页
@@ -45,12 +45,12 @@ POST  {{host}}/ob/url HTTP/ 1.1
 Token:  {{token2}}
 Content-Type: application/json
 
-{"url":"https://www.jianshu.com/p/bb11a55dc84d"}
+{"url":"https://www.ftls.xyz/posts/anki-sync-server-rs-docker/"}
 
 ###
 GET {{host}}/404
 ###
-GET {{host}}/test
+GET {{host}}/info
 
 ###
 GET {{host}}/ HTTP/ 1.1

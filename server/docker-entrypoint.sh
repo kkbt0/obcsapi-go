@@ -1,7 +1,8 @@
 #!/bin/sh
 cd /app
-mkdir data
+mkdir /app/data
 cd /app/data
-mkdir images
+mkdir /app/data/webdav
+mkdir /app/data/webdav/images
 cp -R /app/static/ /app/data/
 /app/server

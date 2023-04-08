@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"obcsapi-go/dao"
 	"obcsapi-go/tools"
 	"path"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/webdav"
 )
 
 func IndexHandler(c *gin.Context) {
@@ -63,7 +65,7 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		return
 	}
 	log.Println("ImagesHost Upload:", file.Filename, "=>", tools.ReplaceUnAllowedChars(file.Filename))
-	// filePath: /images/202303/test.jpg
+	// filePath: /webdav/images/202303/test.jpg
 	typeName := path.Ext(file.Filename)
 	filePath := []string{tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt"))}
 	// filePath := fmt.Sprintf("%s%s", tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt")), file.Filename)
@@ -74,12 +76,12 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		filePath = append(filePath, "_"+tools.RandomString(tools.ConfigGetInt("images_hosted_random_name_length"))) // 200601/test_e5md1
 	}
 	filePath = append(filePath, typeName) // 200601/test_e5md1.jpg
-	c.SaveUploadedFile(file, "./images/"+strings.Join(filePath, ""))
+	c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
 	// Bd ocr
 	if tools.ConfigGetString("bd_ocr_access_token") != "" {
 		switch typeName {
 		case ".jpg", ".jpeg", ".png", ".bmp":
-			ans, err := tools.BdGeneralBasicOcr("./images/" + strings.Join(filePath, ""))
+			ans, err := tools.BdGeneralBasicOcr("./webdav/images/" + strings.Join(filePath, ""))
 			if err != nil {
 				c.Error(err)
 			}
@@ -104,6 +106,25 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 	})
 }
 
+type VersionResponseJosn struct {
+	Code          int       `json:"code"`
+	ServerVersion string    `json:"server_version"`
+	ConfigVersion string    `json:"config_version"`
+	ServerTime    time.Time `json:"server_time"`
+	Msg           string    `json:"msg"`
+}
+
+func InfoHandler(c *gin.Context) {
+	c.JSON(200, VersionResponseJosn{
+		Code:          200,
+		ServerVersion: version,
+		ConfigVersion: tools.ConfigGetString("version"),
+		ServerTime:    time.Now(),
+		Msg:           "道可道，非常道；名可名，非常名。无，名天地之始；有，名万物之母。故常无，欲以观其妙；常有，欲以观其徼。此两者，同出而异名，同谓之玄。玄之又玄，众妙之门。",
+	})
+}
+
+// Obsidian 公开文档功能
 func ObsidianPublicFiles(c *gin.Context) {
 	fileName := c.Param("fileName")
 	fileName = tools.ConfigGetString("ob_daily_other_dir") + "Public" + fileName
@@ -117,4 +138,49 @@ func ObsidianPublicFiles(c *gin.Context) {
 		"title":    c.Param("fileName"),
 		"markdown": md,
 	})
+}
+
+// WebDavServe
+func WebDavServe(prefix string, rootDir string,
+	validator func(c *gin.Context) bool) gin.HandlerFunc {
+	logger := func(req *http.Request, err error) {
+		if err != nil {
+			log.Println("[WebDAV]", req.URL.Path, "Err:", err)
+		}
+	}
+	w := webdav.Handler{
+		Prefix:     prefix,
+		FileSystem: webdav.Dir(rootDir),
+		LockSystem: webdav.NewMemLS(),
+		Logger:     logger,
+	}
+	return func(c *gin.Context) {
+		if strings.HasPrefix(c.Request.URL.Path, w.Prefix) {
+			if validator != nil && !validator(c) {
+				c.AbortWithStatus(404)
+				return
+			}
+			c.Status(200) // 200 by default, which may be override later
+			w.ServeHTTP(c.Writer, c.Request)
+			c.Abort()
+		}
+	}
+}
+
+var webDavServer = tools.ConfigGetString("webdav_server")
+
+func WebDavServeAuth(c *gin.Context) bool {
+	if webDavServer != "true" {
+		return false
+	}
+	username, password, ok := c.Request.BasicAuth()
+	if !ok {
+		c.Writer.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
+		c.Status(http.StatusUnauthorized) // 401
+	}
+	if username != tools.ConfigGetString("webdav_username") && password != tools.ConfigGetString("webdav_password") {
+		http.Error(c.Writer, "WebDAV: need authorized!", http.StatusUnauthorized)
+		return false
+	}
+	return true
 }

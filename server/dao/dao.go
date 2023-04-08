@@ -21,11 +21,13 @@ type DataSource int
 var dataSource DataSource
 var sess *session.Session
 var couchDb *kivik.DB
+var webDavPath string
 
 const (
 	Unknown DataSource = iota
 	S3
 	CouchDb
+	LocalStorage
 )
 
 func init() {
@@ -49,6 +51,10 @@ func init() {
 			log.Panicln("CouchDB Client Create Error,Please Check your Config file")
 		}
 		couchDb = client.DB(context.TODO(), tools.ConfigGetString("couchdb_db_name"))
+	case 3:
+		log.Println("Data Source: Local (Use Webdav)")
+		dataSource = LocalStorage
+		webDavPath = "./webdav/" + tools.ConfigGetString("webdav_dir")
 	default:
 		log.Panicln("Data Source: Unknown")
 		dataSource = Unknown
@@ -69,6 +75,8 @@ func GetTextObject(text_file_key string) (string, error) {
 		return S3GetTextObject(sess, text_file_key)
 	case CouchDb:
 		return CouchDbGetTextObject(couchDb, text_file_key)
+	case LocalStorage:
+		return LocalStorageGetTextObject(webDavPath, text_file_key)
 	}
 	return "", fmt.Errorf("err GetTextObject Data Source: Unknown")
 }
@@ -85,6 +93,8 @@ func CheckObject(file_key string) (bool, error) {
 	case CouchDb:
 		exist, _ := CouchDbCheckObject(couchDb, file_key)
 		return exist, nil
+	case LocalStorage:
+		return LocalStorageCheckObject(webDavPath, file_key)
 	}
 	return false, fmt.Errorf("err CheckObject Data Source: Unknown")
 }
@@ -96,6 +106,8 @@ func ObjectStore(file_key string, file_bytes []byte) error {
 		return S3ObjectStore(sess, file_key, file_bytes)
 	case CouchDb:
 		return CouchDbFileStorage(couchDb, file_key, file_bytes)
+	case LocalStorage:
+		return LocalStorageObjectStore(webDavPath, file_key, file_bytes)
 	}
 	return fmt.Errorf("err Data Source: Unknown")
 }
@@ -107,6 +119,8 @@ func MdTextStore(file_key string, text string) error {
 		return S3ObjectStore(sess, file_key, []byte(text))
 	case CouchDb:
 		return CouchDbMdFiletorage(couchDb, file_key, text)
+	case LocalStorage:
+		return LocalStorageObjectStore(webDavPath, file_key, []byte(text))
 	}
 	return fmt.Errorf("err Data Source: Unknown")
 }
@@ -118,6 +132,8 @@ func TextAppend(file_key string, text string) error {
 		return S3TextAppend(sess, file_key, text)
 	case CouchDb:
 		return CouchDbTextAppend(couchDb, file_key, text)
+	case LocalStorage:
+		return LocalStorageTextAppend(webDavPath, file_key, text)
 	}
 	return fmt.Errorf("err TextAppend Data Source: Unknown")
 }
@@ -129,6 +145,8 @@ func DailyTextAppend(text string) error {
 		return S3DailyTextAppend(sess, text)
 	case CouchDb:
 		return CouchDbDailyTextAppend(couchDb, text)
+	case LocalStorage:
+		return LocalStorageDailyTextAppend(webDavPath, text)
 	}
 	return fmt.Errorf("err DailyTextAppend Data Source: Unknown")
 }
@@ -146,6 +164,8 @@ func DailyTextAppendMemos(text string) error {
 		return S3DailyTextAppend(sess, text)
 	case CouchDb:
 		return CouchDbDailyTextAppend(couchDb, text)
+	case LocalStorage:
+		return LocalStorageDailyTextAppend(webDavPath, text)
 	}
 	return fmt.Errorf("err DailyTextAppendMemos Data Source: Unknown")
 }
@@ -157,6 +177,8 @@ func GetTodayDaily() string {
 		return S3GetTodayDaily(sess)
 	case CouchDb:
 		return CouchDbGetTodayDaily(couchDb)
+	case LocalStorage:
+		return LocalStorageGetTodayDaily(webDavPath)
 	}
 	return "没有预料的情况，可能是数据源出现了问题"
 }
@@ -168,6 +190,8 @@ func GetTodayDailyList() []Daily {
 		return S3GetTodayDailyList(sess)
 	case CouchDb:
 		return CouchDbGetTodayDailyList(couchDb)
+	case LocalStorage:
+		return LocalStorageGetTodayDailyList(webDavPath)
 	}
 	var ans []Daily
 	return ans
@@ -180,6 +204,8 @@ func Get3DaysDailyList() [3]Daily {
 		return S3Get3DaysDailyList(sess)
 	case CouchDb:
 		return CouchDbGet3DaysDailyList(couchDb)
+	case LocalStorage:
+		return LocalStorageGet3DaysDailyList(webDavPath)
 	}
 	var ans [3]Daily
 	return ans
@@ -191,6 +217,8 @@ func Get3DaysList() [3]string {
 		return S3Get3DaysList(sess)
 	case CouchDb:
 		return CouchDbGet3DaysList(couchDb)
+	case LocalStorage:
+		return LocalStorageGet3DaysList(webDavPath)
 	}
 	var ans [3]string
 	return ans

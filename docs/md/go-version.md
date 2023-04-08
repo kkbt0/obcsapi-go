@@ -33,7 +33,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.0.9 # 项目版本
+version: v4.1.0 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -59,8 +59,8 @@ images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字�
 # https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu
 # bd_ocr_access_token: xxxxx.xxxxx.xxxxx.xxxxx.xxxxx-xxxxx
 
-# S3 -> 1 ; CouchDb -> 2
-data_source: 2
+# S3 -> 1 ; CouchDb -> 2 ; Local -> 3
+data_source: 3
 
 # CouchDb 配置
 couchdb_url: http://admin:password@localhost:5984/ # admin 是账户名 ; password 是密码；
@@ -72,6 +72,12 @@ secret_key: xxxxxxxxxxxxxx
 end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
+
+# LocalStorage (RemotelySave WebDav) http://localhost:8900/webdav 用户自定义账户密码
+webdav_server: true
+webdav_username: kkbt
+webdav_password: kkbt123
+webdav_dir: testdb/
 
 # wechat 测试号/公众号
 wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
@@ -106,12 +112,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.0.9 . 
+docker build -t kkbt/obcsapi:v4.1.0 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.0.9 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.0.9
+docker run -d -p 8900:8900 --name myObcsapi4.1.0 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.0
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.0.9:/app/data/config.yaml
-docker restart myObcsapi4.0.9
+docker cp config.yaml myObcsapi4.1.0:/app/data/config.yaml
+docker restart myObcsapi4.1.0
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -135,6 +141,32 @@ docker restart myObcsapi4.0.9
 | GET      |       /        | /public/*           | 公开文档功能                |
 
 一些访问方式可见文件 http/server.http
+
+#### 本地存储 （服务器 WebDav 服务）
+
+配置文件中设置 WebDav 相关用户名，密码, `webdav_server`值设置为 `true`。并填写的 Remotely Save 插件 Webdav 方式的服务器地址，用户名，密码中。检查同步效果。服务器地址为 `http://localhost:8900/webdav` 
+
+```yaml
+webdav_server: true
+webdav_username: kkbt
+webdav_password: kkbt123
+webdav_dir: testdb/
+```
+
+注意：建议进行反向代理开启 https ，http 数据是在网络明文上传输的，并不安全。
+
+```
+微软的操作系统win7和win10对WebDAV默认只支持https协议的，需要修改注册表后才可以同时支持https和http
+运行输入框中输入regedit敲回车打开注册表
+在HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters位置，修改BasicAuthLevel 值改成2
+重启webclient
+```
+
+#### 文件管理
+
+建议使用其他软件，比如宝塔面板，或者 Alist 等程序对 Docker 暴露的文件夹进行文件管理。或者选择 WebDav 的客户端。
+
+WebDav 下的 testdb 是 Remotely Save WebDav 的默认文件夹， images 是本程序图床文件夹。
 
 #### 通用接口
 
@@ -429,3 +461,4 @@ Go 语言开发
 4.0.7 增加 Public 目录公开访问文档功能;开启日志功能;修复了一些已知错误
 4.0.8 增加百度图片OCR功能进行测试
 4.0.9 任务提醒功能
+4.1.0 增加数据源 本地存储 （服务器 WebDav 服务），可使用 WebDav 管理图床文件，或作为 Remotely Save WebDav 存储选项服务端。
