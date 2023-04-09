@@ -35,7 +35,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.1.0 # 项目版本
+version: v4.1.1 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -105,7 +105,7 @@ smtp_mail:
   mail_send_to: yourmail@foxmail.com # 接受者邮箱
 ```
 
-任务提醒 reminder_dictionary 可选择五个中文分词词典，即 static/ 目录下的几个文件。相应使用内存大概如下。可以调用 `ChineseSegmenterTest` 查看相应效果。
+任务提醒 reminder_dictionary 可选择五个中文分词词典，即 static/ 目录下的几个文件。相应使用内存大概如下。可以调用 `ChineseSegmenterTest` 查看相应效果。[测试代码](segmenter.md)
 
 ```
 # full 580k lines mem 200-300Mb
@@ -139,12 +139,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.1.0 . 
+docker build -t kkbt/obcsapi:v4.1.1 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.1.0 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.0
+docker run -d -p 8900:8900 --name myObcsapi4.1.1 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.1
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.1.0:/app/data/config.yaml
-docker restart myObcsapi4.1.0
+docker cp config.yaml myObcsapi4.1.1:/app/data/config.yaml
+docker restart myObcsapi4.1.1
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -504,3 +504,4 @@ Go 语言开发
 4.0.8 增加百度图片OCR功能进行测试
 4.0.9 任务提醒功能
 4.1.0 增加数据源 本地存储 （服务器 WebDav 服务），可使用 WebDav 管理文件，或作为 Remotely Save WebDav 存储选项服务端。
+4.1.1 优化使用内存
