@@ -28,8 +28,7 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 
 |                                          | python           | go             |
 | ---------------------------------------- | ---------------- | -------------- |
-| 体积                                     | 未压缩 100Mb+    | 未压缩20Mb     |
-| FC函数计算内存                           | 100Mb 上下       | 20Mb  上下     |
+| 体积                                     | 未压缩 100Mb+    | 未压缩50Mb-     |
 | 修改难度                                 | 简单<sup>2</sup> | 比python复杂   |
 | 微信公众号(测试号)<sup>3</sup>           | √                | √              |
 | 微信文章裁剪                             | √                | ×              |

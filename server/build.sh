@@ -7,6 +7,8 @@ ldd server
 mkdir output
 cp config.example.yaml output/config.yaml
 cp server output/
+cp fc-run.sh output/
+cp run.sh output/
 cp -R static/ output/
 cp -R templates/ output/
 cd output 

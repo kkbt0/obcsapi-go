@@ -112,6 +112,16 @@ go run .
 go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 ```
 
+#### 云函数部署
+
+用于阿里云云函数部署 由于自然分词等原因 实例刚刚创建时，巅峰内存为 300Mb + ，平时运行也在 200Mb +
+
+下载 releases 压缩包，修改其中配置文件。选择 Go 或 Linux 环境，运行程序填写 `bash fc-run.sh`。
+
+阿里云云函数选择挂载 OSS 时，如挂载到 函数计算`/app/` 目录。需要先将压缩包内除了 server config.yaml fc-run.sh 剩余文件放到 OSS 相应目录中。
+
+截止 2023 04 09 阿里云 云函数 不支持 webdav 一些方法，所以无法使用 Wevdav。
+
 #### Docker
 
 ```sh
