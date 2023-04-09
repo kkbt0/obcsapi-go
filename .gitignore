@@ -6,6 +6,7 @@ server/tem.file
 # 可执行文件
 server/server
 server/webdav/
+server/output/
 server/server.zip
 demo-server/demo-server
 kkbt.md
