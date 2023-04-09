@@ -91,6 +91,7 @@ wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.D
 
 # 任务提醒
 email_reminder_time: 0700 # 指每天 07:00 
+reminder_dictionary: dictionary-200k.txt # full 200k 100k 20k  10k  
 
 # smtp 邮箱服务
 smtp_mail:
@@ -103,6 +104,18 @@ smtp_mail:
   mail_sender_name: "ObCSAPI"
   mail_send_to: yourmail@foxmail.com # 接受者邮箱
 ```
+
+任务提醒 reminder_dictionary 可选择五个中文分词词典，即 static/ 目录下的几个文件。相应使用内存大概如下。可以调用 `ChineseSegmenterTest` 查看相应效果。
+
+```
+# full 580k lines mem 200-300Mb
+# 200k lines mem 120Mb
+# 100k lines mem 70Mb
+# 20k lines mem 30Mb
+# 10k lines mem 27Mb
+# None mem < 20Mb
+```
+
 
 #### 构建 server
 

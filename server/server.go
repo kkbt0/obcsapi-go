@@ -11,7 +11,6 @@ import (
 	"obcsapi-go/tools"
 	"os"
 
-	"github.com/DanPlayer/timefinder"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
@@ -24,8 +23,6 @@ var indeHtml string
 var files embed.FS
 
 var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
-// 初始化timefinder 对自然语言（中文）提取时间
-var segmenter = timefinder.New("./static/jieba_dict.txt,./static/dictionary.txt")
 
 func main() {
 	ShowConfig() // 打印基础消息
