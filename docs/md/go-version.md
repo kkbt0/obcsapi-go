@@ -183,9 +183,11 @@ webdav_password: kkbt123
 webdav_dir: obnote/ # 默认为 Obsidian 库的名
 ```
 
-设 Obcsapi 进行二级代理后，`http://localhost:8900` 代理为 `https://examples.com/obcsapi` 。
+设 Obcsapi 进行二级代理后，`http://localhost:8900` 代理为 `https://examples.com/obcsapi` 。`http://localhost:8900/webdav`代理为 `https://examples.com/webdav`
 
-Remotely Save Webdav 插件配置 服务器 `https://examples.com/obcsapi/webdav`  用户`kkbt` 密码 `kkbt123` 
+Remotely Save Webdav 插件配置 服务器 `https://examples.com/webdav`  用户`kkbt` 密码 `kkbt123` 
+
+**注意：`https://examples.com/obcsapi/webdav`在部分客户端软件正常工作，但是 Remotely Save 可能出现 Don't start with ... 情况，`http://localhost:8900/webdav`代理为 `https://examples.com/webdav` 可以解决这个问题**
 
 本地服务 LocalStorage 本地存储，开启 Webdav 服务为 Remotely Save 提供同步。同时 WebDav 服务可连接 RAIDrive (Windows) ， Mix (安卓) 等进行文件管理。
 
