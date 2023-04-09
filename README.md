@@ -6,6 +6,7 @@ python 老版本 https://gitee.com/kkbt/obsidian-csapi
 
 基于 Obsidian S3 存储的后端 API ,保存到 S3 存储的 Obsidian 库。支持列表
 
+可开启 Webdav 服务，进行本地存储和文件管理
 一个简易前端（后有图）
 微信测试号 微信到Obsidian  
 支持简悦 SimpRead Webook  
