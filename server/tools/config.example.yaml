@@ -1,10 +1,10 @@
-name: obcsapi-go
-version: v4.1.0
-description: by kkbt
-host: 0.0.0.0
+name: obcsapi-go # 项目名称
+version: v4.1.0 # 项目版本
+description: by kkbt # 描述
+host: 0.0.0.0 
 port: 8900
-token_path: ./token/
-token1_live_time: 72h
+token_path: ./token/ # token 文件位置。可用于云函数挂载硬盘位置
+token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
@@ -44,13 +44,13 @@ bucket: obsidion-xxxxxxxxxxxxxx
 webdav_server: true
 webdav_username: kkbt
 webdav_password: kkbt123
-webdav_dir: testdb/
+webdav_dir: obnote/ # Obsidian 库的名字 或者 Remotely Save 中设置的名称
 
 # wechat 测试号/公众号
 wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
 wechat_appid: xxxxxxxxxxxxxx # 微信公众平台的AppID
 wechat_secret: xxxxxxxxxxxxxx # 微信公众平台的AppSecret
-wechat_openid: xxxxxxxxxxxxxx # OpenID
+wechat_openid: xxxxxxxxxxxxxx # OpenID 关注测试号后获取的
 wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.DATA}}
 
 # 任务提醒
@@ -65,4 +65,4 @@ smtp_mail:
   # 以下一个是发送者 一个是接受者
   mail_sender_address: no-reply@mail.ftls.xyz
   mail_sender_name: "ObCSAPI"
-  mail_send_to: yourmail@foxmail.com
+  mail_send_to: yourmail@foxmail.com # 接受者邮箱

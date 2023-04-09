@@ -31,6 +31,8 @@
 
 #### 配置文件说明
 
+样例 [https://gitee.com/kkbt/obcsapi-go/blob/master/server/tools/config.example.yaml](https://gitee.com/kkbt/obcsapi-go/blob/master/server/tools/config.example.yaml) 下载
+
 ```yaml
 name: obcsapi-go # 项目名称
 version: v4.1.0 # 项目版本
@@ -42,16 +44,17 @@ token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
-backend_url: api.ftls.xyz # 这个值图床也会用到
-wechat_return_str: "📩 已保存，<a href='https://note.ftls.xyz/#/ZK/202209050658'>点击查看今日笔记</a>" # 微信返回的字符串
+backend_url: api.ftls.xyz
+wechat_return_str: "📩 已保存，<a href='https://note.ftls.xyz/#/ZK/202209050658'>点击查看今日笔记</a>"
 
 # Obsidian 文件夹设置
 
 ob_daily_dir: 日志/
 ob_daily_attachment_dir: 日志/附件/
-ob_daily_other_dir: 支持类文件/ # 用于第三方软件 如静读天下，简悦
-# 图床文件 有三部分构成 文件夹及前缀，原名字，随机字符
+ob_daily_other_dir: 支持类文件/
+# 图床文件 有四部分构成 url 文件夹及前缀，原名字，随机字符
 # 图床文件夹及文件前缀 eg 2006-01-02 15:04:05 如 按月存放是 01/ ; 按 年存放 2006/ ; 文件前缀 200601 ; 文件夹和文件前缀 200601/200601_
+images_hosted_url: http://localhost:8900/images/
 images_hosted_fmt: 200601/kkbt_
 images_hosted_use_raw_name: true # 图床文件是否使用原名字 true or false
 images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字符长度
@@ -63,10 +66,10 @@ images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字�
 data_source: 3
 
 # CouchDb 配置
-couchdb_url: http://admin:password@localhost:5984/ # admin 是账户名 ; password 是密码；
-couchdb_db_name: note # 数据库
+couchdb_url: http://admin:password@localhost:5984/
+couchdb_db_name: note
 
-# S3 配置 几乎同 Remotely-Save S3 配置
+# S3 配置
 access_key: xxxxxxxxxxxxxx
 secret_key: xxxxxxxxxxxxxx
 end_point: https://cos.ap-beijing.myqcloud.com
@@ -77,13 +80,14 @@ bucket: obsidion-xxxxxxxxxxxxxx
 webdav_server: true
 webdav_username: kkbt
 webdav_password: kkbt123
-webdav_dir: testdb/
+webdav_dir: obnote/ # Obsidian 库的名字 或者 Remotely Save 中设置的名称
 
 # wechat 测试号/公众号
 wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
 wechat_appid: xxxxxxxxxxxxxx # 微信公众平台的AppID
 wechat_secret: xxxxxxxxxxxxxx # 微信公众平台的AppSecret
-wechat_openid: xxxxxxxxxxxxxx # OpenID 自己关注测试号后，获取的
+wechat_openid: xxxxxxxxxxxxxx # OpenID 关注测试号后获取的
+wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.DATA}}
 
 # 任务提醒
 email_reminder_time: 0700 # 指每天 07:00 
@@ -146,14 +150,25 @@ docker restart myObcsapi4.1.0
 
 配置文件中设置 WebDav 相关用户名，密码, `webdav_server`值设置为 `true`。并填写的 Remotely Save 插件 Webdav 方式的服务器地址，用户名，密码中。检查同步效果。服务器地址为 `http://localhost:8900/webdav` 
 
+
+服务器配置文件
+
 ```yaml
 webdav_server: true
 webdav_username: kkbt
 webdav_password: kkbt123
-webdav_dir: testdb/
+webdav_dir: obnote/ # 默认为 Obsidian 库的名
 ```
 
+设 Obcsapi 进行二级代理后，`http://localhost:8900` 代理为 `https://examples.com/obcsapi` 。
+
+Remotely Save Webdav 插件配置 服务器 `https://examples.com/obcsapi/webdav`  用户`kkbt` 密码 `kkbt123` 
+
+本地服务 LocalStorage 本地存储，开启 Webdav 服务为 Remotely Save 提供同步。同时 WebDav 服务可连接 RAIDrive (Windows) ， Mix (安卓) 等进行文件管理。
+
 注意：建议进行反向代理开启 https ，http 数据是在网络明文上传输的，并不安全。
+
+虽然未我使用的 https ，但也贴出可能出现的问题。
 
 ```
 微软的操作系统win7和win10对WebDAV默认只支持https协议的，需要修改注册表后才可以同时支持https和http
@@ -164,9 +179,13 @@ webdav_dir: testdb/
 
 #### 文件管理
 
-建议使用其他软件，比如宝塔面板，或者 Alist 等程序对 Docker 暴露的文件夹进行文件管理。或者选择 WebDav 的客户端。
+建议使用其他软件，比如宝塔面板，或者 Alist 等程序对 Docker 暴露的文件夹进行文件管理，或修改配置。一般可选择 WebDav 的客户端。 WebDav 服务可连接 RAIDrive (Windows) ， Mix (安卓) 等进行 Obsidian 库和图床文件管理。
 
-WebDav 下的 testdb 是 Remotely Save WebDav 的默认文件夹， images 是本程序图床文件夹。
+WebDav 下的 obnote 是 Remotely Save WebDav 的默认文件夹（由库文件夹决定）， images 是本程序图床文件夹。
+
+
+RailDrive 配置示例：`examples.com` `443` `/obcsapi/webdav` `kkbt` `kkbt123`
+Mix 配置示例：`https://examples.com` `kkbt` `kkbt123` 高级设置 `remote=/obcsapi/webdav`
 
 #### 通用接口
 
@@ -461,4 +480,4 @@ Go 语言开发
 4.0.7 增加 Public 目录公开访问文档功能;开启日志功能;修复了一些已知错误
 4.0.8 增加百度图片OCR功能进行测试
 4.0.9 任务提醒功能
-4.1.0 增加数据源 本地存储 （服务器 WebDav 服务），可使用 WebDav 管理图床文件，或作为 Remotely Save WebDav 存储选项服务端。
+4.1.0 增加数据源 本地存储 （服务器 WebDav 服务），可使用 WebDav 管理文件，或作为 Remotely Save WebDav 存储选项服务端。

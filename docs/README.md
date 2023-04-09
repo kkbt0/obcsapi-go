@@ -39,7 +39,8 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 | 通用 http api                            | √                | √              |
 | S3 对象存储                              | √                | √              |
 | CouchDb                                  | ×                | √              |
-| Web 网页支持                             | √                | √ <sup>5</sup> |
+| Local (Webdav Server)<sup>5</sup>        | ×                | √              |
+| Web 网页支持                             | √                | √ <sup>6</sup> |
 | 图床  和 CLI上传工具                     | ×                | √              |
 | 邮件发送登录链接                         | ×                | √              |
 | 公开文档功能                             | ×                | √              |
@@ -68,7 +69,8 @@ Docker [https://hub.docker.com/r/kkbt/obcsapi](https://hub.docker.com/r/kkbt/obc
 [2] python 版本在阿里云函数计算 FC 上，可以方便的修改文件。python 无需编译，并且生态丰富
 [3] 支持文字，图像，语音（转文字存储）等
 [4] 类似 ReadWise API 增加接口
-[5] Go 版本支持 Web 网页，S3 支持 Obsidian 库内的图片链接（需要基于库的路径）。而 CouchDb 未支持
+[5] 本地服务 LocalStorage 本地存储，开启 Webdav 服务为 Remotely Save 提供同步。同时 WebDav 服务可连接 RAIDrive (Windows) ， Mix (安卓) 等进行文件管理。
+[6] Go 版本支持 Web 网页，S3 支持 Obsidian 库内的图片链接（需要基于库的路径）。而 CouchDb,Local 未支持
 
 ---
 
