@@ -8,9 +8,9 @@ COPY . .
 RUN go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 RUN mkdir app && mkdir app/static/ && \
     cp server app/ && cp docker-entrypoint.sh app/ && \
-    cp static/jieba_dict.txt app/static/ && \
-    cp static/dictionary.txt app/static/
+    cp -R static/ app/ 
     # cp zoneinfo.zip app/
+    # docker-entrypoint.sh 运行后还会复制 static/ 到相应目录
 FROM alpine:latest
 LABEL maintainer="恐咖兵糖<0@ftls.xyz>"
 

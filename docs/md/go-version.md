@@ -127,7 +127,7 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 #### 云函数部署
 
-用于阿里云云函数部署 由于自然分词等原因 实例刚刚创建时，巅峰内存为 300Mb + ，平时运行也在 200Mb +
+用于阿里云云函数部署 由于自然分词（按 full 词典）等原因 实例刚刚创建时，巅峰内存为 300Mb + ，平时运行也在 200Mb +。可以通过选择更小的分词词典，减少内存。最低约 17Mb 。但是分词效果就并不好了。
 
 下载 releases 压缩包，修改其中配置文件。选择 Go 或 Linux 环境，运行程序填写 `bash fc-run.sh`。
 
