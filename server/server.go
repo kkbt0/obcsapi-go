@@ -45,12 +45,6 @@ func main() {
 	config.AllowAllOrigins = true
 	config.AddAllowHeaders("Token")
 	r.Use(cors.New(config)) // cors 配置
-	r.Use(func(c *gin.Context) {
-		if c.Request.Method == "OPTIONS" {
-			c.Status(200)
-		}
-		c.Next()
-	})
 
 	r.GET("/", IndexHandler)               // index.html
 	r.GET("/404", BaseHandler)             // 404
