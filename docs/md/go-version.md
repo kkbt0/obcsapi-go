@@ -90,7 +90,7 @@ wechat_openid: xxxxxxxxxxxxxx # OpenID 关注测试号后获取的
 wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.DATA}}
 
 # 任务提醒
-email_reminder_time: 0700 # 指每天 07:00 
+email_reminder_time: "0700" # 指每天 07:00 
 reminder_dictionary: dictionary-200k.txt # full 200k 100k 20k  10k  
 
 # smtp 邮箱服务
