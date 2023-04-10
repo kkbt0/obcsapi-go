@@ -210,8 +210,8 @@ Remotely Save Webdav 插件配置 服务器 `https://examples.com/webdav`  用�
 WebDav 下的 obnote 是 Remotely Save WebDav 的默认文件夹（由库文件夹决定）， images 是本程序图床文件夹。
 
 
-RailDrive 配置示例：`examples.com` `443` `/obcsapi/webdav` `kkbt` `kkbt123`
-Mix 配置示例：`https://examples.com` `kkbt` `kkbt123` 高级设置 `remote=/obcsapi/webdav`
+RailDrive 配置示例：`examples.com` `443` `/webdav` `kkbt` `kkbt123`
+Mix 配置示例：`https://examples.com` `kkbt` `kkbt123` 高级设置 `remote=/webdav`
 
 #### 通用接口
 
