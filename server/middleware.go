@@ -19,6 +19,17 @@ func LimitMiddleware() func(c *gin.Context) {
 	}
 }
 
+func LimitLoginMiddleware() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		if !loginLimter.Allow() {
+			http.Error(c.Writer, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
 func Token1AuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if !tools.VerifyToken1(c.Request.Header.Get("Token")) {
@@ -40,6 +51,17 @@ func Token2AuthMiddleware() func(c *gin.Context) {
 				"code": 401,
 				"msg":  "验证错误",
 			})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+func AllowOPTIONS() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		if c.Request.Method == "OPTIONS" {
+			c.Status(200)
 			c.Abort()
 			return
 		}

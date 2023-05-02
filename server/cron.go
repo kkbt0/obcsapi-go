@@ -29,6 +29,6 @@ func MessagesSend() error {
 	if err != nil {
 		log.Println(err)
 	}
-	err = WechatMpReminder()
+	err = EveryMinReminder()
 	return err
 }

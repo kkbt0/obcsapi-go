@@ -16,3 +16,5 @@ dir-ocr
 http/kkbt.http
 server/ob4.0.tar.gz
 .gitignore
+server/mykv.db
+server/config.run.json

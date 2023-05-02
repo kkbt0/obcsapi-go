@@ -40,7 +40,11 @@ Token: {{token2}}
 Content-Type: application/json
 
 {"content":"test From general"}
+### flomo like
+POST {{host}}/ob/general/{{token2}}
+Content-Type: application/json
 
+{"content":"test From general"}
 ################################
 ### 简易的剪裁 web 网页
 POST  {{host}}/ob/url HTTP/ 1.1

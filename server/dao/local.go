@@ -131,6 +131,16 @@ func LocalStorageGet3DaysList(webDavPath string) [3]string {
 	return ans
 }
 
+func LocalStorageGetMoreDaliyMdText(webDavPath string, addDateDay int) (string, error) {
+	date := time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02")
+	day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return day, nil
+}
+
 // ------ Tools ------
 
 // 判断是否存在 递归创建文件夹

@@ -161,6 +161,17 @@ func S3Get3DaysList(sess *session.Session) [3]string {
 	return ans
 }
 
+func S3GetMoreDaliyMdText(sess *session.Session, addDateDay int) (string, error) {
+	var cstZone = time.FixedZone("CST", 8*3600)
+	date := time.Now().AddDate(0, 0, addDateDay).In(cstZone).Format("2006-01-02")
+	day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return day, nil
+}
+
 // 获取文件预先签名 5 min 有效期 即使 file 不存在也会返回 URL
 func S3GetPreSignURL(sess *session.Session, file_key string) (string, error) {
 	svc := s3.New(sess)

@@ -35,7 +35,7 @@ func WeChatMpHandlers(c *gin.Context) {
 	case weixinmp.MsgTypeText: // 文字消息
 		// 提醒任务判断
 		// 初始化timefinder 对自然语言（中文）提取时间
-		var segmenter = timefinder.New("./static/jieba_dict.txt,./static/" + tools.ConfigGetString("reminder_dictionary"))
+		var segmenter = timefinder.New("./staticServer/jieba_dict.txt,./staticServer/" + tools.ConfigGetString("reminder_dictionary"))
 		extract := segmenter.TimeExtract(mp.Request.Content) // 如果提取出了时间
 		if strings.Contains(mp.Request.Content, "提醒我") && len(extract) != 0 {
 			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+mp.Request.Content)
@@ -57,7 +57,7 @@ func WeChatMpHandlers(c *gin.Context) {
 	case weixinmp.MsgTypeVoice: // 语言消息
 		// 提醒任务判断
 		// 初始化timefinder 对自然语言（中文）提取时间
-		var segmenter = timefinder.New("./static/jieba_dict.txt,./static/" + tools.ConfigGetString("reminder_dictionary"))
+		var segmenter = timefinder.New("./staticServer/jieba_dict.txt,./staticServer/" + tools.ConfigGetString("reminder_dictionary"))
 		extract := segmenter.TimeExtract(mp.Request.Recognition)
 		if strings.Contains(mp.Request.Recognition, "提醒我") && len(extract) != 0 {
 			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+mp.Request.Recognition)

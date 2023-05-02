@@ -1,0 +1,36 @@
+@host = http://localhost:8900
+@apiv1 = {{host}}/api/v1
+@token = {{login.response.body.token}}
+
+### 
+# @name  login
+POST {{host}}/login
+Content-Type: application/json
+
+{"username": "kkbt", "password": "kkbt123456"}
+###
+GET {{apiv1}}/sayHello
+Authorization: {{token}}
+###
+OPTIONS {{apiv1}}/daily?day=-1
+
+#######################
+### Daily ?day=-1 
+# day 0 today 1 tomorrow -1 yesterday
+GET {{apiv1}}/daily?day=-1
+Authorization: {{token}}
+### day line_num content
+# day 0 today 1 tomorrow -1 yesterday
+# line >= daily line Add new Memos
+POST {{apiv1}}/line
+Authorization: {{token}}
+Content-Type: application/json
+
+{"line_num":99,"content":"newline"}
+###
+GET {{apiv1}}/kv?key=日志%2f2023-04-10.md
+Authorization: {{token}}
+
+### Cnfig
+GET {{apiv1}}/config HTTP/1.1
+Authorization: {{token}}

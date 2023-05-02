@@ -173,6 +173,38 @@ func GeneralHeader(c *gin.Context) {
 	}
 }
 
+func GeneralHeader2(c *gin.Context) {
+	switch c.Request.Method {
+	case "OPTIONS":
+		c.Status(200)
+	case "POST":
+		token2, _ := tools.GetToken("token2")
+		if c.Param("token2") != "/"+token2.TokenString {
+			fmt.Println(token2.TokenString)
+			fmt.Println(c.Param("token2"))
+			c.Status(401)
+			return
+		}
+		decoder := json.NewDecoder(c.Request.Body)
+		var memosData MemosData
+		err := decoder.Decode(&memosData)
+		if err != nil {
+			c.Error(err)
+			c.Status(500)
+			return
+		}
+		err = DailyTextAppendMemos(memosData.Content)
+		if err != nil {
+			c.Error(err)
+			c.Status(500)
+			return
+		}
+		c.String(200, "Success")
+	default:
+		c.Status(404)
+	}
+}
+
 // Token2
 func Url2MdHandler(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)

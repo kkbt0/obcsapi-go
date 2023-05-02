@@ -113,11 +113,11 @@ func DailyEmailReminder() error {
 	for i := 0; i < len(ansList); i++ {
 		ansList[i] = strings.ReplaceAll(ansList[i], "[ ]", "")
 	}
-	return sendMail("Obcsapi 每日邮件提醒", strings.Join(ansList, "<br>"))
+	return sendMail(fmt.Sprintf("Obcsapi 每日邮件提醒 (%d)", len(ansList)), strings.Join(ansList, "<br>"))
 }
 
-// 每分钟查询 发送到微信提醒
-func WechatMpReminder() error {
+// 每分钟查询 发送到微信提醒 or Mail
+func EveryMinReminder() error {
 	md0, err := dao.GetTextObject("提醒任务.md")
 	if err != nil {
 		return err
@@ -140,14 +140,36 @@ func WechatMpReminder() error {
 	}
 
 	if len(ansList) != 0 { // 如果列表不空发送消息
+		log.Println("Wechat Reminder", len(ansList))
 		err = WeChatTemplateMesseng(strings.Join(ansList, "\n"))
+		// 邮件提醒
+		var emailAns []string
+
+		for _, iter := range ansList {
+			if strings.Contains(iter, "发邮件提醒我") {
+				emailAns = append(emailAns, iter)
+			}
+		}
+
+		if len(emailAns) != 0 {
+			log.Println("Email Reminder", len(emailAns))
+			if len(emailAns) == 1 {
+				err = sendMail(fmt.Sprintf("Obcsapi 提醒: %s", emailAns[0]), "一个提醒<br>"+emailAns[0])
+			} else {
+				err = sendMail(fmt.Sprintf("Obcsapi 提醒 (%d)", len(emailAns)), strings.Join(emailAns, "<br>"))
+			}
+			if err != nil {
+				log.Println(err)
+			}
+		}
+		// 邮件提醒结束
 	} else {
 		return nil
 	}
-
 	if err != nil {
 		return err
 	}
+
 	err = dao.TextAppend(tools.ConfigGetString("ob_daily_other_dir")+"WeChatSended/"+tools.TimeFmt("200601")+".md", "\n"+strings.Join(ansList, "\n"))
 	if err != nil {
 		return err

@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"obcsapi-go/dao"
+	"obcsapi-go/jwt"
+	"obcsapi-go/skv"
 	"obcsapi-go/tools"
 	"path"
 	"strings"
@@ -128,16 +130,29 @@ func InfoHandler(c *gin.Context) {
 func ObsidianPublicFiles(c *gin.Context) {
 	fileName := c.Param("fileName")
 	fileName = tools.ConfigGetString("ob_daily_other_dir") + "Public" + fileName
-	md, err := dao.GetTextObject(fileName)
-	if err != nil {
-		c.Error(err)
-		c.Status(500)
+	md := skv.GetByFileKey(fileName)
+	go UpdateSkvCache(fileName)
+	if md == "" {
+		c.String(404, "Not Found")
 		return
+	}
+	if c.Query("raw") == "true" {
+		c.String(200, md)
 	}
 	c.HTML(200, "markdown.html", gin.H{
 		"title":    c.Param("fileName"),
 		"markdown": md,
 	})
+}
+
+func UpdateSkvCache(fileName string) {
+	if limitPublicPage.Allow() {
+		log.Println("Updating", fileName, "...")
+		err := skv.PutByFileKey(fileName)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }
 
 // WebDavServe
@@ -167,10 +182,8 @@ func WebDavServe(prefix string, rootDir string,
 	}
 }
 
-var webDavServer = tools.ConfigGetString("webdav_server")
-
 func WebDavServeAuth(c *gin.Context) bool {
-	if webDavServer != "true" {
+	if !tools.NowRunConfig.Webdav.Server {
 		return false
 	}
 	username, password, ok := c.Request.BasicAuth()
@@ -178,9 +191,18 @@ func WebDavServeAuth(c *gin.Context) bool {
 		c.Writer.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
 		c.Status(http.StatusUnauthorized) // 401
 	}
-	if username != tools.ConfigGetString("webdav_username") && password != tools.ConfigGetString("webdav_password") {
+	if username != tools.NowRunConfig.Webdav.Username || password != tools.NowRunConfig.Webdav.Password {
 		http.Error(c.Writer, "WebDAV: need authorized!", http.StatusUnauthorized)
 		return false
 	}
 	return true
+}
+
+// JWT API v1
+// Hello
+func JwtHello(c *gin.Context) {
+	auth := c.Request.Header.Get("Authorization")
+	claims, _ := jwt.ParseToken(auth)
+	log.Println(claims)
+	c.String(http.StatusOK, "hello")
 }

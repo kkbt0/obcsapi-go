@@ -3,6 +3,7 @@ package dao
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"obcsapi-go/tools"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	_ "github.com/go-kivik/couchdb/v3"
@@ -32,6 +34,7 @@ const (
 
 func init() {
 	tools.CheckFiles() // 监测文件是否存在，不存在则创建文件
+	tools.ReloadRunConfig()
 	// 初始化 dataSource
 	switch tools.ConfigGetInt("data_source") {
 	case 1:
@@ -54,7 +57,7 @@ func init() {
 	case 3:
 		log.Println("Data Source: Local (Use Webdav)")
 		dataSource = LocalStorage
-		webDavPath = "./webdav/" + tools.ConfigGetString("webdav_dir")
+		webDavPath = "./webdav/" + tools.NowRunConfig.Webdav.ObLocalDir
 	default:
 		log.Panicln("Data Source: Unknown")
 		dataSource = Unknown
@@ -66,6 +69,10 @@ func init() {
 // 用于获取日记目录
 func GetDailyFileKey() string {
 	return tools.ConfigGetString("ob_daily_dir") + tools.TimeFmt("2006-01-02") + ".md"
+}
+
+func GetMoreDailyFileKey(addDateDay int) string {
+	return tools.ConfigGetString("ob_daily_dir") + time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02") + ".md"
 }
 
 // 获取指定位置文件 并读取为 Str
@@ -222,6 +229,19 @@ func Get3DaysList() [3]string {
 	}
 	var ans [3]string
 	return ans
+}
+
+// 0 today 1 tomorrow -1 yesterday
+func GetMoreDaliyMdText(addDateDay int) (string, error) {
+	switch dataSource {
+	case S3:
+		return S3GetMoreDaliyMdText(sess, addDateDay)
+	case CouchDb:
+		return CouchDbGetMoreDaliyMdText(couchDb, addDateDay)
+	case LocalStorage:
+		return LocalStorageGetMoreDaliyMdText(webDavPath, addDateDay)
+	}
+	return "", errors.New("没有预料的情况，可能是数据源出现了问题")
 }
 
 // ------Tools--------

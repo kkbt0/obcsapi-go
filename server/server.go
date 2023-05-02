@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
+	"obcsapi-go/jwt"
 	"obcsapi-go/tools"
 	"os"
 
@@ -16,13 +17,15 @@ import (
 	"golang.org/x/time/rate"
 )
 
-//go:embed static/index.html
+//go:embed website/h5/index.html
 var indeHtml string
 
-//go:embed templates
+//go:embed templates website/h5/static
 var files embed.FS
 
-var limiter = rate.NewLimiter(0.00001, 1) // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
+var limiter = rate.NewLimiter(0.00001, 1)     // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
+var limitPublicPage = rate.NewLimiter(0.1, 1) // 公开文档限制
+var loginLimter = rate.NewLimiter(0.1, 3)     // 登录速率限制
 
 func main() {
 	ShowConfig() // 打印基础消息
@@ -38,12 +41,16 @@ func main() {
 	templ := template.Must(template.New("").ParseFS(files, "templates/*.html")) // 加载模板
 	r.SetHTMLTemplate(templ)
 
+	tools.ReloadRunConfig() // 初始化运行配置
+
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AddAllowHeaders("Token")
 	r.Use(cors.New(config)) // cors 配置
 
-	r.GET("/", IndexHandler)               // index.html
+	r.GET("/", IndexHandler)                  // index.html
+	r.Static("static", "./website/h5/static") // h5 静态文件
+
 	r.GET("/404", BaseHandler)             // 404
 	r.GET("/time", Greet)                  // 打招呼 测试使用 GET
 	r.GET("/info", InfoHandler)            // Obcsapi info
@@ -65,8 +72,11 @@ func main() {
 		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
 		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 	}
+	r.POST("/ob/general/*token2", GeneralHeader2)   // flomo like api
 	r.POST("/ob/moonreader", MoodReaderHandler)     // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
 	r.GET("/public/*fileName", ObsidianPublicFiles) // Obsidian Public Files GET
+
+	r.POST("login", LimitLoginMiddleware(), jwt.LoginHandler)
 
 	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB
@@ -80,6 +90,19 @@ func main() {
 		"./webdav",
 		WebDavServeAuth,
 	))
+
+	r.Use(AllowOPTIONS())
+	api1Group := r.Group("/api/v1", jwt.JWTAuth())
+	{
+		api1Group.GET("/sayHello", JwtHello)
+		api1Group.GET("/daily", ObV1GetDailyHandler)                // 使用一周前有缓存的 daily
+		api1Group.GET("/daily/nocache", ObV1GetDailyNoCacheHandler) // 使用没有缓存的 daily （每次都请求服务器）
+		api1Group.POST("/line", ObV1PostLineHandler)                // 行修改
+		api1Group.POST("/cacheupdate", ObV1UpdateCacheHandler)      // 更新缓存 ?key=1.md
+		api1Group.POST("/upload", ImagesHostUplaodHanler)           // jwt 图床
+		api1Group.GET("/config", tools.GetRunConfigHandler)         // 运行时 可修改配置
+		api1Group.POST("/config", tools.PostConfigHandler)          //运行时 可修改配置
+	}
 
 	RunCronJob() //  运行定时任务
 
