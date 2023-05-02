@@ -6,6 +6,9 @@ port: 8900
 token_path: ./token/ # token 文件位置。可用于云函数挂载硬盘位置
 token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 
+user: kkbt 
+password: password
+
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
@@ -40,11 +43,6 @@ end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
 
-# LocalStorage (RemotelySave WebDav) http://localhost:8900/webdav 用户自定义账户密码
-webdav_server: true
-webdav_username: kkbt
-webdav_password: kkbt123
-webdav_dir: obnote/ # Obsidian 库的名字 或者 Remotely Save 中设置的名称
 
 # wechat 测试号/公众号
 wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
