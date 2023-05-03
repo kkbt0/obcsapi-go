@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	. "obcsapi-go/dao"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
@@ -145,6 +147,15 @@ func ObV1PostLineHandler(c *gin.Context) {
 	}
 	textList := MarkdownSpilter(dailyText)
 	if modText.LineNum >= len(textList) { // 如果超出行数则认定为 Memos
+		if len(modText.Content) > 30 && strings.HasPrefix(modText.Content, "zk ") { // zk 判读
+			modText.Content = modText.Content[3:]
+			fileKey := tools.NowRunConfig.DailyAttachmentDir() + tools.TimeFmt("20060102150405.md")
+			err := MdTextStore(fileKey, modText.Content)
+			if err != nil {
+				log.Println(err)
+			}
+			modText.Content = fmt.Sprintf("![[%s]]", fileKey)
+		}
 		textList = append(textList, tools.TimeFmt("- 15:04 ")+modText.Content)
 	} else {
 		if textList[modText.LineNum] == modText.OldContent {

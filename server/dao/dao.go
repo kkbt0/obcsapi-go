@@ -304,7 +304,7 @@ func MdShowTextDailyZk(text string) string {
 		if strings.HasPrefix(fileKey, tools.NowRunConfig.DailyAttachmentDir()) && strings.HasSuffix(fileKey, ".md") {
 			ans, _ = GetTextObject(fileKey)
 		}
-		return []byte(fmt.Sprintf("zk %s", ans))
+		return []byte(fmt.Sprintf("[zk] %s", ans))
 	}
 	return string(pattern.ReplaceAllFunc([]byte(text), replaceFunc))
 
