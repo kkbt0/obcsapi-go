@@ -160,6 +160,17 @@ func DailyTextAppend(text string) error {
 
 // 为今日日记 增加一行 Memos 格式内容
 func DailyTextAppendMemos(text string) error {
+	// zk 判断
+	if len(text) > 30 && strings.HasPrefix(text, "zk ") {
+		text = text[3:]
+		fileKey := tools.NowRunConfig.DailyAttachmentDir() + tools.TimeFmt("20060102150405.md")
+		err := MdTextStore(fileKey, text)
+		if err != nil {
+			return err
+		}
+		return DailyTextAppendMemos(fmt.Sprintf("![[%s]]", fileKey))
+	}
+
 	var todo = "todo"
 	if strings.Contains(text, todo) {
 		text = fmt.Sprintf("\n- [ ] %s %s", tools.TimeFmt("15:04"), strings.Replace(text, "todo", "", 1))

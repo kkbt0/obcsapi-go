@@ -244,3 +244,47 @@ func Url2MdHandler(c *gin.Context) {
 	}
 	c.Status(200)
 }
+
+// 通用接口
+
+type GeneralAllStruct struct {
+	Mod     string `json:"mod"`
+	FileKey string `json:"file_key"`
+	Content string `json:"content"`
+}
+
+func GeneralAllHandler(c *gin.Context) {
+	if tools.ConfigGetString("general_allowed") != "true" {
+		c.Status(404)
+		return
+	}
+	var generalJson GeneralAllStruct
+	if c.ShouldBindJSON(&generalJson) != nil {
+		c.String(400, "参数错误")
+		return
+	}
+	if generalJson.Content == "" {
+		c.String(400, "参数错误")
+		return
+	}
+	fileKey := tools.NowRunConfig.ObDaily.ObOtherDataDir + "通用接口/" + tools.TimeFmt("20060102150405.md")
+	mod := "append" // cover append
+	if generalJson.FileKey != "" {
+		fileKey = generalJson.FileKey
+	}
+	if generalJson.Mod == "cover" {
+		mod = generalJson.Mod
+	}
+	var err error
+	if mod == "cover" {
+		err = MdTextStore(fileKey, generalJson.Content)
+	} else {
+		err = TextAppend(fileKey, generalJson.Content)
+	}
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	c.String(200, "Success")
+}

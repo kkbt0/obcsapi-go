@@ -40,6 +40,20 @@ Token: {{token2}}
 Content-Type: application/json
 
 {"content":"test From general"}
+
+### 
+POST {{host}}/ob/general
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"zk 30个字符以上，并以zk 开头可以触发zk附件"}
+
+### 
+POST {{host}}/ob/generalall
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"test From generalall","mod":"cover","file_key":"xxx.md"}
 ### flomo like
 POST {{host}}/ob/general/{{token2}}
 Content-Type: application/json

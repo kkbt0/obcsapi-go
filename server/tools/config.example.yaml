@@ -10,12 +10,11 @@ token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 # 前端登录账户密码 有效时间 720h
 user: kkbt 
 password: password
+general_allowed: false
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
-
-
 
 # S3 -> 1 ; CouchDb -> 2 ; Local -> 3
 data_source: 3

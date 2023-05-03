@@ -188,19 +188,57 @@ Mix 配置示例：`https://examples.com` `kkbt` `kkbt123` 高级设置 `remote=
 
 #### 通用接口
 
+##### 接口1
 ```http
 POST {{host}}/ob/general
 Token: {{token2}}
 Content-Type: application/json
 
-{"content":"test token2"}
+{"content":"zk 30个字符以上，并以zk 开头可以触发zk附件"}
 ```
+
+以 `zk ` 开头，并且长度大于 30 可触发 zk 格式附件。
 
 如 IOS 捷径可使用此接口
 
 ![](../images/IMG_5471_recompress.jpg)
 
 ![](../images/IMG_5472_recompress.jpg)
+
+##### 接口2 flomo like
+
+```http
+POST {{host}}/ob/general/{{token2}}
+Content-Type: application/json
+
+{"content":"test From general"}
+```
+
+类似 flomo api , 除了认证方式和接口1不同，其他相同
+
+##### 接口3 全文件通用接口
+配置文件中开启功能
+```yaml
+general_allowed: true
+```
+
+```http
+POST {{host}}/ob/generalall
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"test From generalall","mod":"cover","file_key":"xxx.md"}
+```
+
+
+| 字段     | 必须 | 说明                                  |
+| -------- | ---- | ------------------------------------- |
+| content  | v    | 内容                                  |
+| mod      | x    | 留空默认append ，可选 cover,append    |
+| file_key | x    | 留空自动时间戳命名 eg: `dir/title.md` | 
+
+file_key 默认 `支持类文件/通用接口/20060102150405.md` 格式
+
 
 #### Public 公开文档功能
 
@@ -247,7 +285,7 @@ Enjoy it !
 #### 任务提醒
 
 
-##### 微信分钟级别提醒
+##### 微信/邮件分钟级别提醒
 
 [登录微信测试号](https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index),模板消息接口新增测试模板，标题随意。内容处包含 `{{content.DATA}}` 即可。如
 
@@ -270,6 +308,8 @@ Enjoy it !
 该功能每分钟查询一次，所以此 `提醒任务.md` 文件不要过大。否则会引起流量过大等问题。**程序不会自动删除过期任务，或者是不符合任务提醒格式的行，需要手动确认删除无用内容**
 
 快捷创建方式: 微信语音或文章发送包含 `提醒我` 的句子，即可添加到 `提醒任务.md`。如发送 `提醒我后天早上10:35的会议，需要及时参与` ，`提醒任务.md` 会新增 `20230407 1322 测试提醒1` 。同时后天的日记中会出现 `- [ ] 提醒我后天早上10:35的会议，需要及时参与`。
+
+如果文字带 `发邮件提醒我` ，则到时间会发邮件提醒
 
 ![](../images/20230407175219.jpg)
 
@@ -327,7 +367,7 @@ Enjoy it !
 </details>
 
 
-##### 邮件每日提醒
+##### 邮件提醒
 
 邮件配置正确情况下，并且配置文件中 `email_reminder_time` 处于可取的值。 Obcsapi 会读取根目录 `每日提醒.md` 和三天日记（今天，昨天，前天）中的 `- [ ]` 开头的行发送到指定邮箱中。
 
@@ -489,3 +529,5 @@ Go 语言开发
 每日邮件提醒 有数量提示
 分钟级别邮件提醒 触发语言 `发邮件提醒我`
 更多可更改配置
+Uniapp 前端
+通用all 接口
