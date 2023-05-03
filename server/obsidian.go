@@ -85,7 +85,7 @@ func MoodReaderHandler(c *gin.Context) {
 	text := moodReader.Highlights[0].Text
 	author := moodReader.Highlights[0].Author
 	note := moodReader.Highlights[0].Note
-	file_key := fmt.Sprintf("支持类文件/MoonReader/%s.md", tools.ReplaceUnAllowedChars(title))
+	file_key := fmt.Sprintf("%sMoonReader/%s.md", tools.NowRunConfig.OtherDataDir(), tools.ReplaceUnAllowedChars(title))
 	append_text := fmt.Sprintf("文: %s\n批: %s\n于: %s\n\n---\n", text, note, tools.TimeFmt("2006-01-02 15:04"))
 	exist, _ := CheckObject(file_key)
 	if exist {
@@ -111,7 +111,7 @@ func fvHandler(c *gin.Context) {
 		return
 	} else if c.GetHeader("Content-Type") == "application/octet-stream" {
 		content, _ := ioutil.ReadAll(c.Request.Body)
-		file_key := fmt.Sprintf("%s%s/%s.jpg", tools.ConfigGetString("ob_daily_attachment_dir"), tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
+		file_key := fmt.Sprintf("%s%s/%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
 		ObjectStore(file_key, content)
 		DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
 		c.String(200, "Success")
@@ -143,7 +143,7 @@ func SRWebHook(c *gin.Context) {
 	serverTime := tools.TimeFmt("200601021504")
 	yaml := fmt.Sprintf("---\ntitle: %s\nsctime: %s\n---\n", simpReadJson.Title, serverTime)
 	file_str := fmt.Sprintf("%s[[简悦WebHook生成]]\n生成时间: %s\n原文: %s\n标题: %s\n描述: %s\n标签: %s\n内容: \n%s", yaml, serverTime, simpReadJson.Url, simpReadJson.Title, simpReadJson.Description, simpReadJson.Tags, simpReadJson.Content)
-	file_key := fmt.Sprintf("支持类文件/SimpRead/%s %s.md", tools.ReplaceUnAllowedChars(simpReadJson.Title), serverTime)
+	file_key := fmt.Sprintf("%sSimpRead/%s %s.md", tools.NowRunConfig.OtherDataDir(), tools.ReplaceUnAllowedChars(simpReadJson.Title), serverTime)
 	MdTextStore(file_key, file_str)
 }
 
@@ -235,7 +235,7 @@ func Url2MdHandler(c *gin.Context) {
 	}
 	serverTime := tools.TimeFmt("200601021504")
 	yaml := fmt.Sprintf("---\nurl: %s\nsctime: %s\n---\n", urlStruct.Url, serverTime)
-	file_key := fmt.Sprintf("支持类文件/HtmlPages/%s.md", serverTime)
+	file_key := fmt.Sprintf("%sHtmlPages/%s.md", tools.NowRunConfig.OtherDataDir(), serverTime)
 	err = MdTextStore(file_key, yaml+markdown)
 	if err != nil {
 		c.Error(err)

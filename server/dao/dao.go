@@ -68,11 +68,11 @@ func init() {
 
 // 用于获取日记目录
 func GetDailyFileKey() string {
-	return tools.ConfigGetString("ob_daily_dir") + tools.TimeFmt("2006-01-02") + ".md"
+	return tools.NowRunConfig.DailyDir() + tools.TimeFmt("2006-01-02") + ".md"
 }
 
 func GetMoreDailyFileKey(addDateDay int) string {
-	return tools.ConfigGetString("ob_daily_dir") + time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02") + ".md"
+	return tools.NowRunConfig.DailyDir() + time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02") + ".md"
 }
 
 // 获取指定位置文件 并读取为 Str
@@ -242,6 +242,18 @@ func GetMoreDaliyMdText(addDateDay int) (string, error) {
 		return LocalStorageGetMoreDaliyMdText(webDavPath, addDateDay)
 	}
 	return "", errors.New("没有预料的情况，可能是数据源出现了问题")
+}
+
+func MdShowText(text string) string {
+	switch dataSource {
+	case S3:
+		return string(S3ReplaceMdUrl2PreSignedUrl([]byte(text)))
+	case CouchDb:
+		return text
+	case LocalStorage:
+		return text
+	}
+	return text
 }
 
 // ------Tools--------

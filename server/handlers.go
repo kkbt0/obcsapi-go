@@ -66,21 +66,21 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		c.Status(500)
 		return
 	}
+	config := tools.NowRunConfig.ImageHosting
 	log.Println("ImagesHost Upload:", file.Filename, "=>", tools.ReplaceUnAllowedChars(file.Filename))
 	// filePath: /webdav/images/202303/test.jpg
 	typeName := path.Ext(file.Filename)
-	filePath := []string{tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt"))}
-	// filePath := fmt.Sprintf("%s%s", tools.TimeFmt(tools.ConfigGetString("images_hosted_fmt")), file.Filename)
-	if tools.ConfigGetString("images_hosted_use_raw_name") == "true" {
+	filePath := []string{tools.TimeFmt(config.Prefix)}
+	if config.UseRawName {
 		filePath = append(filePath, strings.TrimSuffix(tools.ReplaceUnAllowedChars(file.Filename), typeName)) // 200601/test
 	}
-	if tools.ConfigGetInt("images_hosted_random_name_length") != 0 {
-		filePath = append(filePath, "_"+tools.RandomString(tools.ConfigGetInt("images_hosted_random_name_length"))) // 200601/test_e5md1
+	if config.RandomCharLength != 0 {
+		filePath = append(filePath, "_"+tools.RandomString(config.RandomCharLength)) // 200601/test_e5md1
 	}
 	filePath = append(filePath, typeName) // 200601/test_e5md1.jpg
 	c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
 	// Bd ocr
-	if tools.ConfigGetString("bd_ocr_access_token") != "" {
+	if config.BdOcrAccessToken != "" {
 		switch typeName {
 		case ".jpg", ".jpeg", ".png", ".bmp":
 			ans, err := tools.BdGeneralBasicOcr("./webdav/images/" + strings.Join(filePath, ""))
@@ -91,9 +91,9 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 			for _, v := range ans {
 				textList = append(textList, v.Words)
 			}
-			inMdText := fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, ""))
+			inMdText := fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, ""))
 			inMdText += fmt.Sprintf("\n%s\n\n---\n", strings.Join(textList, "\n"))
-			dao.TextAppend(tools.ConfigGetString("ob_daily_other_dir")+"OcrData/bdocr-"+tools.TimeFmt("200601")+".md", inMdText)
+			dao.TextAppend(tools.NowRunConfig.OtherDataDir()+"OcrData/bdocr-"+tools.TimeFmt("200601")+".md", inMdText)
 			fmt.Println(ans)
 		default:
 			log.Println("UnSupported file type: ", typeName)
@@ -102,8 +102,8 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 	// END ocr
 	c.JSON(200, gin.H{
 		"data": gin.H{
-			"url":  fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, "")),
-			"url2": fmt.Sprintf("%s%s", tools.ConfigGetString("images_hosted_url"), strings.Join(filePath, "")),
+			"url":  fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, "")),
+			"url2": fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, "")),
 		},
 	})
 }
@@ -129,7 +129,7 @@ func InfoHandler(c *gin.Context) {
 // Obsidian 公开文档功能
 func ObsidianPublicFiles(c *gin.Context) {
 	fileName := c.Param("fileName")
-	fileName = tools.ConfigGetString("ob_daily_other_dir") + "Public" + fileName
+	fileName = tools.NowRunConfig.OtherDataDir() + "Public" + fileName
 	md := skv.GetByFileKey(fileName)
 	go UpdateSkvCache(fileName)
 	if md == "" {
@@ -205,4 +205,14 @@ func JwtHello(c *gin.Context) {
 	claims, _ := jwt.ParseToken(auth)
 	log.Println(claims)
 	c.String(http.StatusOK, "hello")
+}
+
+func MailTesterHandler(c *gin.Context) {
+	err := sendMail("测试邮件", "测试内容")
+	if err != nil {
+		c.Error(err)
+		c.String(500, err.Error())
+		return
+	}
+	c.String(200, "Successfully Send")
 }

@@ -20,8 +20,46 @@ type WebDavConfig struct {
 	ObLocalDir string `json:"ob_local_dir"`
 }
 
+type MailSmtpConfig struct {
+	SmtpHost      string `json:"smtp_host"`
+	Port          int    `json:"smtp_port"`
+	UserName      string `json:"user_name"`
+	Password      string `json:"password"`
+	SenderEmail   string `json:"sender_email"`
+	SenderName    string `json:"sender_name"`
+	ReceiverEmail string `json:"receiver_email"`
+}
+
+type ImageHostingConfig struct {
+	BaseURL          string `json:"base_url"`
+	Prefix           string `json:"prefix"`
+	UseRawName       bool   `json:"use_raw_name"`
+	RandomCharLength int    `json:"random_char_length"`
+	BdOcrAccessToken string `json:"bd_ocr_access_token"`
+}
+
+type WeChatMpConfig struct {
+	ReturnStr string `json:"return_str"`
+}
+
+type ObsidianDailyConfig struct {
+	ObDailyDir           string `json:"ob_daily_dir"`
+	ObDailyAttachmentDir string `json:"ob_daily_attachment_dir"`
+	ObOtherDataDir       string `json:"ob_other_data_dir"`
+}
+
+type ReminderConfig struct {
+	DailyEmailRemderTime string `json:"daily_email_remder_time"`
+	ReminderDicionary    string `json:"reminder_dicionary"`
+}
+
 type RunConfig struct {
-	Webdav WebDavConfig `json:"webdav"`
+	Webdav       WebDavConfig        `json:"webdav"`
+	Mail         MailSmtpConfig      `json:"mail"`
+	ImageHosting ImageHostingConfig  `json:"image_hosting"`
+	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
+	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
+	Reminder     ReminderConfig      `json:"reminder"`
 }
 
 func GetRunConfigHandler(c *gin.Context) {
@@ -31,7 +69,9 @@ func GetRunConfigHandler(c *gin.Context) {
 
 func PostConfigHandler(c *gin.Context) {
 	var config RunConfig
-	if c.ShouldBindJSON(&config) != nil {
+	err := c.ShouldBindJSON(&config)
+	if err != nil {
+		c.Error(err)
 		c.String(400, "参数错误")
 		return
 	}
@@ -72,4 +112,16 @@ func ReloadRunConfig() error {
 	}
 	NowRunConfig = config
 	return nil
+}
+
+// 支持格式化时间
+func (runConfig *RunConfig) DailyDir() string {
+	return TimeFmt(runConfig.ObDaily.ObDailyDir)
+}
+func (runConfig *RunConfig) DailyAttachmentDir() string {
+	return TimeFmt(runConfig.ObDaily.ObDailyAttachmentDir)
+}
+
+func (runConfig *RunConfig) OtherDataDir() string {
+	return TimeFmt(runConfig.ObDaily.ObOtherDataDir)
 }

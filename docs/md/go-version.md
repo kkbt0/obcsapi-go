@@ -35,32 +35,23 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.1.1 # 项目版本
+version: v4.1.2 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
 token_path: ./token/ # token 文件位置。可用于云函数挂载硬盘位置
 token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 
+
+# 前端登录账户密码 有效时间 720h
+user: kkbt 
+password: password
+
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
-wechat_return_str: "📩 已保存，<a href='https://note.ftls.xyz/#/ZK/202209050658'>点击查看今日笔记</a>"
 
-# Obsidian 文件夹设置
 
-ob_daily_dir: 日志/
-ob_daily_attachment_dir: 日志/附件/
-ob_daily_other_dir: 支持类文件/
-# 图床文件 有四部分构成 url 文件夹及前缀，原名字，随机字符
-# 图床文件夹及文件前缀 eg 2006-01-02 15:04:05 如 按月存放是 01/ ; 按 年存放 2006/ ; 文件前缀 200601 ; 文件夹和文件前缀 200601/200601_
-images_hosted_url: http://localhost:8900/images/
-images_hosted_fmt: 200601/kkbt_
-images_hosted_use_raw_name: true # 图床文件是否使用原名字 true or false
-images_hosted_random_name_length: 5 # 图床文件随机字符命名 随机字符长度
-# 百度 OCR https://ai.baidu.com/ai-doc/OCR/zk3h7xz52 该项置空或删除此项则不进行 OCR 注意该项有效期 30 天
-# https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu
-# bd_ocr_access_token: xxxxx.xxxxx.xxxxx.xxxxx.xxxxx-xxxxx
 
 # S3 -> 1 ; CouchDb -> 2 ; Local -> 3
 data_source: 3
@@ -76,11 +67,6 @@ end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
 
-# LocalStorage (RemotelySave WebDav) http://localhost:8900/webdav 用户自定义账户密码
-webdav_server: true
-webdav_username: kkbt
-webdav_password: kkbt123
-webdav_dir: obnote/ # Obsidian 库的名字 或者 Remotely Save 中设置的名称
 
 # wechat 测试号/公众号
 wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
@@ -91,19 +77,6 @@ wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.D
 
 # 任务提醒
 cron: "1/60 * * * * ?" # 每分钟检查一次 
-email_reminder_time: "0700" # 指每天 07:00 
-reminder_dictionary: dictionary-200k.txt # full 200k 100k 20k  10k  
-
-# smtp 邮箱服务
-smtp_mail:
-  smtp_host: smtpdm.aliyun.com
-  port: 80
-  username: no-reply@mail.ftls.xyz
-  password: xxxxxxxxxxxxxx
-  # 以下一个是发送者 一个是接受者
-  mail_sender_address: no-reply@mail.ftls.xyz
-  mail_sender_name: "ObCSAPI"
-  mail_send_to: yourmail@foxmail.com # 接受者邮箱
 ```
 
 任务提醒 reminder_dictionary 可选择五个中文分词词典，即 static/ 目录下的几个文件。相应使用内存大概如下。可以调用 `ChineseSegmenterTest` 查看相应效果。[测试代码](segmenter.md)
@@ -140,12 +113,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.1.1 . 
+docker build -t kkbt/obcsapi:v4.1.2 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.1.1 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.1
+docker run -d -p 8900:8900 --name myObcsapi4.1.2 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.2
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.1.1:/app/data/config.yaml
-docker restart myObcsapi4.1.1
+docker cp config.yaml myObcsapi4.1.2:/app/data/config.yaml
+docker restart myObcsapi4.1.2
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -515,3 +488,4 @@ Go 语言开发
 4.1.2 flomo api like 
 每日邮件提醒 有数量提示
 分钟级别邮件提醒 触发语言 `发邮件提醒我`
+更多可更改配置

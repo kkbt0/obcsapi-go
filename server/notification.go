@@ -170,7 +170,7 @@ func EveryMinReminder() error {
 		return err
 	}
 
-	err = dao.TextAppend(tools.ConfigGetString("ob_daily_other_dir")+"WeChatSended/"+tools.TimeFmt("200601")+".md", "\n"+strings.Join(ansList, "\n"))
+	err = dao.TextAppend(tools.NowRunConfig.OtherDataDir()+"WeChatSended/"+tools.TimeFmt("200601")+".md", "\n"+strings.Join(ansList, "\n"))
 	if err != nil {
 		return err
 	}

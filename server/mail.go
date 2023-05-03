@@ -35,27 +35,21 @@ func emailSendToken() error {
 
 // 发送邮件 需要传入 主题 和 内容 ，其余配置选项均从配置中读取使用
 func sendMail(subjct string, content string) error {
-	// read configuration
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
-	mail_config := viper.GetStringMap("smtp_mail")
+
+	config := tools.NowRunConfig.Mail
 
 	// 配置邮件
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	em := email.NewEmail()
-	em.From = fmt.Sprintf("%s <%s>", mail_config["mail_sender_name"], mail_config["mail_sender_address"])
-	em.To = []string{mail_config["mail_send_to"].(string)}
+	em.From = fmt.Sprintf("%s <%s>", config.SenderName, config.SenderEmail)
+	em.To = []string{config.ReceiverEmail}
 	em.Subject = subjct
 	// em.Text = content
 	em.HTML = []byte(subjct + ":<br>" + content)
 
 	// 发送邮件
-	sender_addr := fmt.Sprintf("%s:%d", mail_config["smtp_host"], mail_config["port"]) // smtpdm.aliyun.com:80"
-	err = em.Send(sender_addr, smtp.PlainAuth("", mail_config["username"].(string), mail_config["password"].(string), mail_config["smtp_host"].(string)))
+	sender_addr := fmt.Sprintf("%s:%d", config.SmtpHost, config.Port) // smtpdm.aliyun.com:80"
+	err := em.Send(sender_addr, smtp.PlainAuth("", config.UserName, config.Password, config.SmtpHost))
 	if err != nil {
 		log.Println(err)
 		return err

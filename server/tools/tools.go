@@ -33,6 +33,16 @@ func CheckFiles() {
 			log.Panicln("Error: Stat config.yaml")
 		}
 	}
+	_, err = os.Stat("config.run.json")
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			data, _ := json.Marshal(&RunConfig{})
+			os.WriteFile("config.run.json", data, 0666)
+		} else {
+			log.Panicln("Error: Stat config.run.json")
+		}
+	}
 	_, err = os.Stat("token/")
 	if err != nil {
 		if os.IsNotExist(err) {

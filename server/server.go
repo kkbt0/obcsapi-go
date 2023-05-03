@@ -102,6 +102,7 @@ func main() {
 		api1Group.POST("/upload", ImagesHostUplaodHanler)           // jwt 图床
 		api1Group.GET("/config", tools.GetRunConfigHandler)         // 运行时 可修改配置
 		api1Group.POST("/config", tools.PostConfigHandler)          //运行时 可修改配置
+		api1Group.GET("/mailtest", MailTesterHandler)               // 邮件测试
 	}
 
 	RunCronJob() //  运行定时任务

@@ -104,7 +104,7 @@ func LocalStorageGet3DaysDailyList(webDavPath string) [3]Daily {
 	var ans [3]Daily
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
 		date := time.Now().AddDate(0, 0, i-2).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02")
-		day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+		day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
 		if err != nil {
 			log.Println(err)
 		}
@@ -122,7 +122,7 @@ func LocalStorageGet3DaysList(webDavPath string) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
 		date := time.Now().AddDate(0, 0, i-2).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02")
-		day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+		day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
 		if err != nil {
 			log.Println(err)
 		}
@@ -133,7 +133,7 @@ func LocalStorageGet3DaysList(webDavPath string) [3]string {
 
 func LocalStorageGetMoreDaliyMdText(webDavPath string, addDateDay int) (string, error) {
 	date := time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02")
-	day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+	day, err := LocalStorageGetTextObject(webDavPath, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
 	if err != nil {
 		log.Println(err)
 		return "", err

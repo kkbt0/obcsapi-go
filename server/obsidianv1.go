@@ -74,7 +74,7 @@ func ObV1GetDailyHandler(c *gin.Context) {
 	}
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
-		MdShowText: MarkdownSpilter(text), // TODO 显示图像
+		MdShowText: MarkdownSpilter(MdShowText(text)), // TODO 显示图像
 		Date:       time.Now().AddDate(0, 0, addDataInt).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02"),
 	})
 
@@ -108,7 +108,7 @@ func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 	}
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
-		MdShowText: MarkdownSpilter(text), // TODO 显示图像
+		MdShowText: MarkdownSpilter(MdShowText(text)), // TODO 显示图像
 		Date:       time.Now().AddDate(0, 0, addDataInt).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02"),
 	})
 
@@ -132,7 +132,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 	if modText.DayFileKey == "" {
 		modText.DayFileKey = tools.TimeFmt("2006-01-02")
 	}
-	fileKey := tools.ConfigGetString("ob_daily_dir") + modText.DayFileKey + ".md"
+	fileKey := tools.NowRunConfig.DailyDir() + modText.DayFileKey + ".md"
 	dailyText, err := GetTextObject(fileKey)
 	// ailyText, err := GetMoreDaliyMdText(modText.DayBefore)
 	if err != nil {
@@ -159,7 +159,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 	skv.PutFile(fileKey, newText) // 存入缓存
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(newText),
-		MdShowText: MarkdownSpilter(newText), // TODO 显示图像
+		MdShowText: MarkdownSpilter(MdShowText(newText)),
 		Date:       modText.DayFileKey,
 	})
 }

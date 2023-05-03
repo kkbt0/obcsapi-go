@@ -133,7 +133,7 @@ func S3Get3DaysDailyList(sess *session.Session) [3]Daily {
 	var ans [3]Daily
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
 		date := time.Now().AddDate(0, 0, i-2).In(cstZone).Format("2006-01-02")
-		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -152,7 +152,7 @@ func S3Get3DaysList(sess *session.Session) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
 		date := time.Now().AddDate(0, 0, i-2).In(cstZone).Format("2006-01-02")
-		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
 		if err != nil {
 			log.Println(err)
 		}
@@ -164,7 +164,7 @@ func S3Get3DaysList(sess *session.Session) [3]string {
 func S3GetMoreDaliyMdText(sess *session.Session, addDateDay int) (string, error) {
 	var cstZone = time.FixedZone("CST", 8*3600)
 	date := time.Now().AddDate(0, 0, addDateDay).In(cstZone).Format("2006-01-02")
-	day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.ConfigGetString("ob_daily_dir"), date))
+	day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
 	if err != nil {
 		log.Println(err)
 		return "", err

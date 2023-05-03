@@ -23,7 +23,7 @@ func RunCronJob() {
 
 func MessagesSend() error {
 	var err error = nil
-	if tools.ConfigGetString("email_reminder_time") == tools.TimeFmt("1504") {
+	if tools.NowRunConfig.Reminder.DailyEmailRemderTime == tools.TimeFmt("1504") {
 		err = DailyEmailReminder()
 	}
 	if err != nil {
