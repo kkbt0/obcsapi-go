@@ -140,8 +140,15 @@ docker restart myObcsapi4.1.2
 | POST     |     token2     | /ob/moonreader      | 静读天下高亮和笔记          |
 | POST     |     token2     | /api/upload         | 图床 PicGo 可用             |
 | GET      |       /        | /public/*           | 公开文档功能                |
+| ...      |      ...       | ...                 | ...                         |
 
 一些访问方式可见文件 http/server.http
+
+#### 前端
+
+Obweb [https://gitee.com/kkbt/obweb](https://gitee.com/kkbt/obweb)
+
+Uniapp 支持 PWA ，部署后访问根路径即可。如 `http://localhost:8900/`
 
 #### 本地存储 （服务器 WebDav 服务）
 
@@ -233,9 +240,9 @@ Content-Type: application/json
 
 | 字段     | 必须 | 说明                                  |
 | -------- | ---- | ------------------------------------- |
-| content  | v    | 内容                                  |
-| mod      | x    | 留空默认append ，可选 cover,append    |
-| file_key | x    | 留空自动时间戳命名 eg: `dir/title.md` | 
+| content  | √    | 内容                                  |
+| mod      | ×    | 留空默认append ，可选 cover,append    |
+| file_key | ×    | 留空自动时间戳命名 eg: `dir/title.md` | 
 
 file_key 默认 `支持类文件/通用接口/20060102150405.md` 格式
 
@@ -525,9 +532,9 @@ Go 语言开发
 4.0.9 任务提醒功能
 4.1.0 增加数据源 本地存储 （服务器 WebDav 服务），可使用 WebDav 管理文件，或作为 Remotely Save WebDav 存储选项服务端。
 4.1.1 优化使用内存
-4.1.2 flomo api like 
-每日邮件提醒 有数量提示
-分钟级别邮件提醒 触发语言 `发邮件提醒我`
-更多可更改配置
-Uniapp 前端
-通用all 接口
+4.1.2 Uniapp 前端 支持 PWA 
+ 每日邮件提醒 有数量提示
+ 分钟级别邮件提醒 触发语言 `发邮件提醒我`
+ 更多前端可更改配置
+ flomo api like
+ 通用all 接口

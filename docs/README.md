@@ -28,7 +28,7 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 
 |                                          | python           | go             |
 | ---------------------------------------- | ---------------- | -------------- |
-| 体积                                     | 未压缩 100Mb+    | 未压缩50Mb-     |
+| 体积                                     | 未压缩 100Mb+    | 未压缩50Mb-    |
 | 修改难度                                 | 简单<sup>2</sup> | 比python复杂   |
 | 微信公众号(测试号)<sup>3</sup>           | √                | √              |
 | 微信文章裁剪                             | √                | ×              |
@@ -44,6 +44,7 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 | 邮件发送登录链接                         | ×                | √              |
 | 公开文档功能                             | ×                | √              |
 | 邮件/微信任务提醒                        | ×                | √              |
+| Uniapp 前端                              | ×                | √              |
 | Docker                                   | <=3              | >=4            |
 
 Docker 3.0 之前的是 python 版本，之后的是 Go 版本。
