@@ -1,2 +1,7 @@
 <!DOCTYPE html><html lang=zh-CN><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>obcsapi-uniapp</title><script>var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
-            document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')</script><link rel=stylesheet href=./static/index.63b34199.css></head><body><noscript><strong>Please enable JavaScript to continue.</strong></noscript><div id=app></div><script src=./static/js/chunk-vendors.0315f3b1.js></script><script src=./static/js/index.7d2491f9.js></script></body></html>
+			document.write('<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')</script><link rel=manifest href=./static/pwa/site.webmanifest><link rel=stylesheet href=./static/index.63b34199.css></head><body><noscript><strong>Please enable JavaScript to continue.</strong></noscript><div id=app></div><script>if ("serviceWorker" in navigator && 'PushManager' in window ) {
+				window.addEventListener('load', async () => { // 这个load 可以删除 如果你的浏览器没加载出来 可以添加一下这个
+					navigator.serviceWorker.register("/static/js/sw.js").then(function (registration) {
+					});
+				})
+			}</script><script src=./static/js/chunk-vendors.f34acc7d.js></script><script src=./static/js/index.99341571.js></script></body></html>
