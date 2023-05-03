@@ -301,7 +301,7 @@ func MdShowTextDailyZk(text string) string {
 		// 获取匹配到的链接 并转为 预签名 url
 		ans := text
 		fileKey := pattern.ReplaceAllString(string(match), "$1")
-		if strings.HasPrefix(fileKey, tools.NowRunConfig.OtherDataDir()) && strings.HasSuffix(fileKey, ".md") {
+		if strings.HasPrefix(fileKey, tools.NowRunConfig.DailyAttachmentDir()) && strings.HasSuffix(fileKey, ".md") {
 			ans, _ = GetTextObject(fileKey)
 		}
 		return []byte(fmt.Sprintf("zk %s", ans))
