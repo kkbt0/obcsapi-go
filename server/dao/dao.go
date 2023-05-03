@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"obcsapi-go/tools"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -256,6 +257,7 @@ func GetMoreDaliyMdText(addDateDay int) (string, error) {
 }
 
 func MdShowText(text string) string {
+	text = MdShowTextDailyZk(text)
 	switch dataSource {
 	case S3:
 		return string(S3ReplaceMdUrl2PreSignedUrl([]byte(text)))
@@ -289,4 +291,21 @@ func PicDownloader(url string) ([]byte, error) {
 		return nil, err
 	}
 	return buf, nil
+}
+
+// 读取 ![[支持类文件/xxx.md]]
+func MdShowTextDailyZk(text string) string {
+	regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
+	pattern := regexp.MustCompile(`!\[\[(.*?)\]\]`)
+	replaceFunc := func(match []byte) []byte {
+		// 获取匹配到的链接 并转为 预签名 url
+		ans := text
+		fileKey := pattern.ReplaceAllString(string(match), "$1")
+		if strings.HasPrefix(fileKey, tools.NowRunConfig.OtherDataDir()) && strings.HasSuffix(fileKey, ".md") {
+			ans, _ = GetTextObject(fileKey)
+		}
+		return []byte(fmt.Sprintf("zk %s", ans))
+	}
+	return string(pattern.ReplaceAllFunc([]byte(text), replaceFunc))
+
 }
