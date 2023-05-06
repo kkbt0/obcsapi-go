@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// TODO: No such file 早晚得改 暂时将就着用吧
 func LocalStorageGetTextObject(webDavPath string, text_file_key string) (string, error) {
 	_, err := os.Stat(webDavPath + text_file_key)
 	if err != nil && os.IsNotExist(err) {
@@ -23,6 +24,20 @@ func LocalStorageGetTextObject(webDavPath string, text_file_key string) (string,
 		return "", err
 	}
 	return string(buf), nil
+}
+
+func LocalStorageGetObject(webDavPath string, text_file_key string) ([]byte, error) {
+	_, err := os.Stat(webDavPath + text_file_key)
+	if err != nil && os.IsNotExist(err) {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	buf, err := ioutil.ReadFile(webDavPath + text_file_key)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
 }
 
 func LocalStorageCheckObject(webDavPath string, file_key string) (bool, error) {

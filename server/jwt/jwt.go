@@ -1,14 +1,10 @@
 package jwt
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"obcsapi-go/tools"
-	"os"
 	"strings"
 	"time"
 
@@ -16,7 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var MySecret = []byte(GenerateSecret()) // 生成签名的密钥
+var MySecret = []byte(tools.YamlConfigMd5) // 生成签名的密钥
 
 const TokenExpireDuration = time.Hour * 720
 
@@ -122,16 +118,4 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	c.String(400, "登录失败")
-}
-
-func GenerateSecret() string {
-	md5 := md5.New()
-	fileStr, err := os.ReadFile("config.yaml")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	md5.Write(fileStr)
-	MD5Str := hex.EncodeToString(md5.Sum(nil))
-	fmt.Println(MD5Str)
-	return MD5Str
 }

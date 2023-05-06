@@ -44,6 +44,39 @@ func CouchDbGetTextObject(db *kivik.DB, text_file_key string) (string, error) {
 	return strings.Join(ans, ""), nil
 }
 
+// 根据文件 key
+func CouchDbGetObject(db *kivik.DB, text_file_key string) ([]byte, error) {
+	var fileNodeDoc FileDoc
+	err := db.Get(context.TODO(), text_file_key).ScanDoc(&fileNodeDoc)
+	if err != nil {
+		if strings.Contains(err.Error(), "Not Found") {
+			return nil, nil
+		}
+		return []byte(""), err
+	}
+	if fileNodeDoc.Deleted {
+		return nil, nil
+	}
+	if fileNodeDoc.Type == "newnote" {
+		var fileChild LeftDoc
+		err := db.Get(context.TODO(), fileNodeDoc.Children[0]).ScanDoc(&fileChild)
+		if err != nil {
+			return []byte(""), err
+		}
+		return base64.RawStdEncoding.DecodeString(fileChild.Data)
+
+	} else if fileNodeDoc.Type == "plain" {
+		var ans []string
+		for _, v := range fileNodeDoc.Children {
+			tem, _ := CouchDbGetLeftData(db, v)
+			ans = append(ans, tem)
+		}
+		return []byte(strings.Join(ans, "")), nil
+	}
+	return []byte(""), fmt.Errorf("未知的节点类型")
+
+}
+
 // 判断文件是否存在 第一个是存在（在 Ob 内），第二个是否有删除标记（Ob内不在，但 Db 可能有删除标记）
 func CouchDbCheckObject(db *kivik.DB, text_file_key string) (bool, bool) {
 	var fileNodeDoc FileDoc

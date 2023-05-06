@@ -2,6 +2,7 @@ package tools
 
 import (
 	"bufio"
+	"crypto/md5"
 	_ "embed"
 	"encoding/base64"
 	"encoding/hex"
@@ -22,6 +23,8 @@ import (
 
 //go:embed config.example.yaml
 var configExample string
+
+var YamlConfigMd5 string = GenerateMd5()
 
 func CheckFiles() {
 	log.Println("Check Need Files")
@@ -206,4 +209,22 @@ type OcrResult struct {
 }
 type WordResult struct {
 	Words string `json:"words"`
+}
+
+//jwt secret + 日期 进行 MD5  保证来自服务器签发
+func ObFileAccessToken() string {
+	md5Str := md5.New()
+	md5Str.Write([]byte(YamlConfigMd5 + TimeFmt("2006-01-02")))
+	return hex.EncodeToString(md5Str.Sum(nil))
+}
+
+func GenerateMd5() string {
+	md5 := md5.New()
+	fileStr, err := os.ReadFile("config.yaml")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	md5.Write(fileStr)
+	MD5Str := hex.EncodeToString(md5.Sum(nil))
+	return MD5Str
 }

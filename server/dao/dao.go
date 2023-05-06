@@ -89,6 +89,19 @@ func GetTextObject(text_file_key string) (string, error) {
 	return "", fmt.Errorf("err GetTextObject Data Source: Unknown")
 }
 
+// 获取指定位置文件 can nil , nil means no such object
+func GetObject(fileKey string) ([]byte, error) {
+	switch dataSource {
+	case S3:
+		return S3GetObject(sess, fileKey)
+	case CouchDb:
+		return CouchDbGetObject(couchDb, fileKey)
+	case LocalStorage:
+		return LocalStorageGetObject(webDavPath, fileKey)
+	}
+	return nil, fmt.Errorf("err GetTextObject Data Source: Unknown")
+}
+
 func CheckObject(file_key string) (bool, error) {
 	switch dataSource {
 	case S3:
@@ -262,9 +275,9 @@ func MdShowText(text string) string {
 	case S3:
 		return string(S3ReplaceMdUrl2PreSignedUrl([]byte(text)))
 	case CouchDb:
-		return text
+		return ObFileUrl(text)
 	case LocalStorage:
-		return text
+		return ObFileUrl(text)
 	}
 	return text
 }
@@ -308,4 +321,21 @@ func MdShowTextDailyZk(text string) string {
 	}
 	return string(pattern.ReplaceAllFunc([]byte(text), replaceFunc))
 
+}
+
+func ObFileUrl(text string) string {
+	pattern := regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
+	//pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
+	replaceFunc := func(match []byte) []byte {
+		description := pattern.ReplaceAllString(string(match), "$1")
+		link := pattern.ReplaceAllString(string(match), "$2")
+		link2 := link
+		// 若请求 以 .md 结尾，则拒绝，避免文本泄露
+		if !strings.HasSuffix(link, ".md") {
+			link2 = fmt.Sprintf("%s/ob/file?accessToken=%s&fileKey=%s", tools.ConfigGetString("backend_url_full"), tools.ObFileAccessToken(), link)
+		}
+		// fmt.Println(link2)
+		return []byte(fmt.Sprintf("![%s](%s)", description, link2))
+	}
+	return string(pattern.ReplaceAllFunc([]byte(text), replaceFunc))
 }

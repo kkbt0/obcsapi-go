@@ -106,6 +106,8 @@ func main() {
 		api1Group.GET("/mailtest", MailTesterHandler)               // 邮件测试
 	}
 
+	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数
+
 	RunCronJob() //  运行定时任务
 
 	r.Run(fmt.Sprintf("%s:%s", tools.ConfigGetString("host"), tools.ConfigGetString("port"))) // 运行服务

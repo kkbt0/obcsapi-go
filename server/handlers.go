@@ -216,3 +216,27 @@ func MailTesterHandler(c *gin.Context) {
 	}
 	c.String(200, "Successfully Send")
 }
+
+// 根据 ?fileKey=xxx.jpg 获取文件
+func ObFileHanlder(c *gin.Context) {
+	// 处理验证
+	accessToken := c.Query("accessToken")
+	if accessToken != tools.ObFileAccessToken() {
+		c.Status(401)
+		return
+	}
+
+	// 获取文件部分
+	fileKey := c.Query("fileKey")
+	if fileKey == "" {
+		c.Status(404)
+		return
+	}
+	data, err := dao.GetObject(fileKey)
+	if err != nil || data == nil {
+		log.Println(err)
+		c.Status(404)
+		return
+	}
+	c.Writer.Write(data)
+}
