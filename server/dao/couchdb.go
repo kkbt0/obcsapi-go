@@ -63,7 +63,7 @@ func CouchDbGetObject(db *kivik.DB, text_file_key string) ([]byte, error) {
 		if err != nil {
 			return []byte(""), err
 		}
-		return base64.RawStdEncoding.DecodeString(fileChild.Data)
+		return base64.StdEncoding.DecodeString(fileChild.Data)
 
 	} else if fileNodeDoc.Type == "plain" {
 		var ans []string
