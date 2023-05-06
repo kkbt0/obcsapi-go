@@ -113,7 +113,7 @@ func DailyEmailReminder() error {
 	for i := 0; i < len(ansList); i++ {
 		ansList[i] = strings.ReplaceAll(ansList[i], "[ ]", "")
 	}
-	return sendMail(fmt.Sprintf("Obcsapi 每日邮件提醒 (%d)", len(ansList)), strings.Join(ansList, "<br>"))
+	return sendMail(fmt.Sprintf("Obcsapi 每日邮件提醒 (%d)", len(ansList)-6), strings.Join(ansList, "<br>"))
 }
 
 // 每分钟查询 发送到微信提醒 or Mail
