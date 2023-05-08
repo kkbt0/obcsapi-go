@@ -4,6 +4,7 @@ import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { ref, onMounted } from "vue";
 import { memosData } from "@/stores/memos";
 import marked from "marked";
+import MemosUpload  from "@/components/obcsapi/MemosUpload.vue";
 
 // filekey: string, line: number, oldText: string, newText: string
 const props = defineProps<{
@@ -16,6 +17,8 @@ const props = defineProps<{
 const memos = memosData();
 const edit = ref(false);
 const inputText = ref(""); // newText
+const showUpload = ref(false);
+
 let picList = new Array<string>(); //
 let tasksList = new Array<string>(); //
 let tasksCheckedList = new Array<boolean>(); //
@@ -35,6 +38,7 @@ function saveMemos() {
         memos.memosMap.set(data.date, data)
         window.$message.success("Suceess Send");
         edit.value = false;
+        showUpload.value = false;
     }).catch(e => {
         console.log(e);
         window.$message.warning("Err Save: " + e);
@@ -97,6 +101,10 @@ function handleCheckedChange(taskIndex: number) {
     saveMemos();
 }
 
+function imgUrlDeal(text:string) {
+  inputText.value += `\n${text}\n`;
+}
+
 </script>
 
 <template>
@@ -130,8 +138,10 @@ function handleCheckedChange(taskIndex: number) {
                     :autosize="{ minRows: 3 }" />
                 <n-space justify="space-between">
                     <n-button ghost type="error" @click="delMemos">Del</n-button>
+                    <n-button ghost type="info" @click="showUpload=!showUpload">Img</n-button>
                     <n-button ghost type="primary" @click="saveMemos">Save</n-button>
                 </n-space>
+                <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />
             </n-space>
         </template>
 
