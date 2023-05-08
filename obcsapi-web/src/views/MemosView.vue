@@ -12,7 +12,7 @@ const memos = memosData();
 const router = useRouter();
 
 onMounted(() => {
-    console.log(`the component is now mounted.`)
+    console.log(`Initiating`)
     ObcsapiTestJwt().then(text => {
         if (text!="hello") {
             router.push("/login");
@@ -32,6 +32,7 @@ onMounted(() => {
 </script>
 
 <template>
+    <br>
     <main>
         <n-space vertical>
             <MemosInput />

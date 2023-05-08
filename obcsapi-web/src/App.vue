@@ -24,10 +24,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- Info Components -->
-  <n-message-provider>
-    <usemessageComponents />
-  </n-message-provider>
   <!-- Main Header -->
   <header>
     <div class="wrapper">
@@ -41,6 +37,10 @@ export default defineComponent({
   </header>
   <!-- Main-->
   <n-config-provider :theme="darkTheme" :locale="zhCN" :date-locale="dateZhCN">
+    <!-- Info Components -->
+    <n-message-provider>
+      <usemessageComponents />
+    </n-message-provider>
     <RouterView />
   </n-config-provider>
 </template>
@@ -60,7 +60,7 @@ nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 3px;
 }
 
 nav a.router-link-exact-active {
