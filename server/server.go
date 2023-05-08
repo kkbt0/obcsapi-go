@@ -45,7 +45,7 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
-	config.AddAllowHeaders("Token")
+	config.AddAllowHeaders("Token", "Authorization")
 	r.Use(cors.New(config)) // cors 配置
 
 	r.GET("/", IndexHandler)                  // index.html
