@@ -16,6 +16,7 @@
     "@lljj/vue3-form-naive": "^1.17.0",
     "markd": "^1.2.0",
     "pinia": "^2.0.35",
+    "vite-plugin-pwa": "^0.14.7",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },

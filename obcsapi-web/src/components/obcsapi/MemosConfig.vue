@@ -2,6 +2,7 @@
 import { ref,onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiConfigGet ,ObcsapiConfigPost} from "@/api/obcsapi"
+import { NScrollbar } from "naive-ui"
 
 const formData = ref({});
 const schema = ref({
@@ -234,6 +235,8 @@ function handlerSubmit() {
 </script>
 <template>
     <h1>Setting</h1>
-    <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" >
-    </vue-form>
+    <n-scrollbar style="max-height: 75vh">
+        <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" />
+    </n-scrollbar>
+
 </template>

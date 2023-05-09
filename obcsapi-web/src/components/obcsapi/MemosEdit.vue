@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { NThing, NInput, NSpace, NButton, NImage, NCheckbox,NImageGroup } from "naive-ui";
+import { NThing, NInput, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUpdated } from "vue";
 import { memosData } from "@/stores/memos";
 import marked from "marked";
-import MemosUpload  from "@/components/obcsapi/MemosUpload.vue";
+import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 
 // filekey: string, line: number, oldText: string, newText: string
 const props = defineProps<{
@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const memos = memosData();
 const edit = ref(false);
-const inputText = ref(""); // newText
+const inputText = ref(props.memosRaw); // newText
 const showUpload = ref(false);
 
 let picList = new Array<string>(); //
@@ -24,12 +24,11 @@ let tasksList = new Array<string>(); //
 let tasksCheckedList = new Array<boolean>(); //
 let nowMd = "";
 
-onMounted(() => {
+onUpdated(() => {
     inputText.value = props.memosRaw;
 })
 
 function moreAction() {
-    inputText.value = props.memosRaw;
     edit.value = !edit.value;
 }
 
@@ -101,8 +100,58 @@ function handleCheckedChange(taskIndex: number) {
     saveMemos();
 }
 
-function imgUrlDeal(text:string) {
-  inputText.value += `\n${text}\n`;
+function imgUrlDeal(text: string) {
+    inputText.value += `\n${text}\n`;
+}
+
+const options = ref([
+    {
+        label: '修改',
+        key: 0
+    },
+    {
+        label: '移动今日',
+        key: 1
+    },
+    {
+        label: '删除',
+        key: 2
+    }
+])
+
+function handleSelect(key: string | number) {
+    if (key == 0) {
+        edit.value = !edit.value;
+    } else if (key == 1) {
+        let realText = ""
+        if (inputText.value.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)) {
+            realText = inputText.value.slice(7)
+        } else {
+            realText = inputText.value.slice(2)
+        }
+        console.log(realText)
+        ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, "").then(data => { // 先删除
+            memos.setMap(data.date, data)
+            window.$message.success("Suceess Del");
+            edit.value = false;
+            ObcsapiPostMemos("", 9999, "", realText).then(data => { //再新增
+                memos.setMap(data.date, data)
+                window.$message.success("Suceess ReSend");
+                edit.value = false;
+                showUpload.value = false;
+            }).catch(e => {
+                console.log(e);
+                window.$message.warning("Err ReSend: " + e);
+            });
+        }).catch(e => {
+            console.log(e);
+            window.$message.warning("Err Del: " + e);
+        });
+
+
+    } else if (key == 2) {
+        delMemos()
+    }
 }
 
 </script>
@@ -116,7 +165,11 @@ function imgUrlDeal(text:string) {
             <small>{{ dayKey }}</small>
         </template>
 
-        <template #header-extra><a @click="moreAction">More</a></template>
+        <template #header-extra>
+            <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+                <n-button quaternary>More</n-button>
+            </n-dropdown>
+        </template>
 
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
             <div v-html="markdown(memosShowText.slice(7))" class="memos"></div>
@@ -125,9 +178,9 @@ function imgUrlDeal(text:string) {
                     v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
             </n-space>
             <n-image-group v-if="picList.length != 0">
-                <n-space >
-                <n-image v-for="(picUrl,urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
-            </n-space>
+                <n-space>
+                    <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+                </n-space>
             </n-image-group>
 
         </template>
@@ -137,9 +190,10 @@ function imgUrlDeal(text:string) {
                 <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Input Memos"
                     :autosize="{ minRows: 3 }" />
                 <n-space justify="space-between">
-                    <n-button ghost type="error" @click="delMemos">Del</n-button>
-                    <n-button ghost type="info" @click="showUpload=!showUpload">Img</n-button>
-                    <n-button ghost type="primary" @click="saveMemos">Save</n-button>
+                    <n-button quaternary type="error" @click="delMemos">Del</n-button>
+                    <n-button quaternary type="info" @click="showUpload=!showUpload">Img</n-button>
+                    <n-button quaternary @click="edit=!edit">Cancle</n-button>
+                    <n-button quaternary type="primary" @click="saveMemos">Save</n-button>
                 </n-space>
                 <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />
             </n-space>

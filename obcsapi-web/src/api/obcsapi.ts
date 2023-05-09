@@ -28,10 +28,10 @@ export const ObcsapiLogin = async (username: string, password: string) => {
   return response.json();
 }
 
-export const ObcsapiGetMemos = async () => {
-  const response = await fetch(host + '/api/v1/daily?day', {
+export const ObcsapiGetMemos = async (day:number) => {
+  const response = await fetch(host + '/api/v1/daily?day=' + day, {
     headers: {
-      'Authorization': localStorage.getItem('token'),
+      'Authorization': localStorage.getItem('token')||"",
     },
   });
   return response.json();
@@ -41,7 +41,7 @@ export const ObcsapiPostMemos = async (filekey: string, line: number, oldText: s
   const response = await fetch(host + '/api/v1/line', {
     method: 'POST',
     headers: {
-      'Authorization': localStorage.getItem('token'),
+      'Authorization': localStorage.getItem('token')||"",
     },
     body: JSON.stringify({
       "line_num": line,
@@ -56,7 +56,7 @@ export const ObcsapiPostMemos = async (filekey: string, line: number, oldText: s
 export const ObcsapiConfigGet = async () => {
   const response = await fetch(host + '/api/v1/config', {
     headers: {
-      'Authorization': localStorage.getItem('token'),
+      'Authorization': localStorage.getItem('token')||"",
     }
   });
   return response.json();
@@ -66,7 +66,7 @@ export const ObcsapiConfigPost = async (bodyObject: any) => {
   const response = await fetch(host + '/api/v1/config', {
     method: 'POST',
     headers: {
-      'Authorization': localStorage.getItem('token'),
+      'Authorization': localStorage.getItem('token')||"",
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(bodyObject)
@@ -77,7 +77,16 @@ export const ObcsapiConfigPost = async (bodyObject: any) => {
 export const ObcsapiTestJwt = async () => {
   const response = await fetch(host + '/api/v1/sayHello', {
     headers: {
-      'Authorization': localStorage.getItem('token'),
+      'Authorization': localStorage.getItem('token')||"",
+    },
+  });
+  return response.text();
+}
+
+export const ObcsapiTestMail = async () => {
+  const response = await fetch(host + '/api/v1/mailtest', {
+    headers: {
+      'Authorization': localStorage.getItem('token')||"",
     },
   });
   return response.text();

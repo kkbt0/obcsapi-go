@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 export const memosData = defineStore('memos', () => {
     // ref -> basic ; reactive -> object
+    const dayBefore = ref(0); // day before 保证每次加载 从应用上次加载的部分开始
     const memosIndexList = ref(new Array<String>());
     const memosMap = ref(new Map<String, any>());
     if (localStorage.getItem("mainMdList") != undefined) {
@@ -13,7 +14,7 @@ export const memosData = defineStore('memos', () => {
         let set = new Set(memosIndexList.value);
         set.add(key);
         memosIndexList.value = Array.from(set);
-        memosIndexList.value.sort();
+        // memosIndexList.value.sort();
         setMap(key, value);
     }
 
@@ -22,5 +23,5 @@ export const memosData = defineStore('memos', () => {
         localStorage.setItem("mainMdList", JSON.stringify([...memosMap.value]));
 
     }
-    return { memosIndexList, memosMap ,addDaily , setMap}
+    return { memosIndexList, memosMap , dayBefore,addDaily , setMap}
 })
