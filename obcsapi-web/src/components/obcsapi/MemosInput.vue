@@ -33,11 +33,11 @@ function imgUrlDeal(text:string) {
 
 <template>
   <n-space vertical>
-    <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Input Memos"
-      :autosize="{ minRows: 2 }" />
+    <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
+      :autosize="{ minRows: 3 }" />
     <n-space justify="space-between">
-      <n-button quaternary type="info" @click="showUpload=!showUpload">Img</n-button>
-      <n-button quaternary type="primary" @click="sendMemos">Send</n-button>
+      <n-button quaternary type="info" @click="showUpload=!showUpload">⚙️</n-button>
+      <n-button quaternary type="primary" @click="sendMemos">🚀</n-button>
     </n-space>
     <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />
   </n-space>

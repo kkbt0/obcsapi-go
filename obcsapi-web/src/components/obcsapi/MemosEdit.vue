@@ -167,7 +167,7 @@ function handleSelect(key: string | number) {
 
         <template #header-extra>
             <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-                <n-button quaternary>More</n-button>
+                <n-button quaternary>...</n-button>
             </n-dropdown>
         </template>
         <!-- - 12:34 xxx -->
@@ -199,7 +199,7 @@ function handleSelect(key: string | number) {
 
         <template #description v-else-if="edit">
             <n-space vertical>
-                <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Input Memos"
+                <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
                     :autosize="{ minRows: 3 }" />
                 <n-space justify="space-between">
                     <n-button quaternary type="error" @click="delMemos">Del</n-button>

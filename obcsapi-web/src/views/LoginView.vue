@@ -9,7 +9,7 @@ const formValue = ref({ "host": "http://localhost:8900", "username": "", "passwo
 const router = useRouter()
 
 onMounted(() => {
-  formValue.value.host = localStorage.getItem("host") || "http://localhost:8900";
+  formValue.value.host = localStorage.getItem("host") || window.location.protocol + "//" + window.location.host;
 })
 
 function Login() {

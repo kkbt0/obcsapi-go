@@ -43,7 +43,7 @@ export default defineComponent({
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/setting">Setting</RouterLink>
-        <a @click="switchTheme">🌞</a>
+        <!-- <a @click="switchTheme">🌞</a> -->
         <!-- <RouterLink to="/login">Login</RouterLink>
         <RouterLink to="/about">About</RouterLink> -->
       </nav>
