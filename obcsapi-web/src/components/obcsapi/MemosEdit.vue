@@ -170,7 +170,7 @@ function handleSelect(key: string | number) {
                 <n-button quaternary>More</n-button>
             </n-dropdown>
         </template>
-
+        <!-- - 12:34 xxx -->
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
             <div v-html="markdown(memosShowText.slice(7))" class="memos"></div>
             <n-space v-if="tasksList.length != 0" vertical>
@@ -182,7 +182,19 @@ function handleSelect(key: string | number) {
                     <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
                 </n-space>
             </n-image-group>
-
+        </template>
+        <!-- - xxx -->
+        <template #description v-else-if="!edit">
+            <div v-html="markdown(memosShowText)" class="memos"></div>
+            <n-space v-if="tasksList.length != 0" vertical>
+                <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
+                    v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
+            </n-space>
+            <n-image-group v-if="picList.length != 0">
+                <n-space>
+                    <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+                </n-space>
+            </n-image-group>
         </template>
 
         <template #description v-else-if="edit">
