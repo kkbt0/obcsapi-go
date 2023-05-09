@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { NConfigProvider, zhCN, dateZhCN, darkTheme, NMessageProvider } from 'naive-ui';
-import { defineComponent } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import usemessageComponents from '@/components/api/usemessageComponents.vue';
 
 export default defineComponent({
@@ -12,11 +12,23 @@ export default defineComponent({
     usemessageComponents,
     HelloWorld, // View Components
   },
+
   setup() {
+    const theme = ref();
+    function switchTheme() {
+      theme.value = theme.value == null ? darkTheme : null;
+    }
+    onMounted(() => {
+      if (!window.matchMedia('(prefers-color-scheme: light)').matches) {
+        switchTheme()
+      }
+    })
     return {
+      theme,
       darkTheme,
       zhCN,
       dateZhCN,
+      switchTheme
     }
   }
 })
@@ -27,17 +39,18 @@ export default defineComponent({
   <!-- Main Header -->
   <header>
     <div class="wrapper">
-      <HelloWorld msg="Weclome!" />
+      <HelloWorld msg="Weclome!" @click="" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/setting">Setting</RouterLink>
+        <a @click="switchTheme">🌞</a>
         <!-- <RouterLink to="/login">Login</RouterLink>
         <RouterLink to="/about">About</RouterLink> -->
       </nav>
     </div>
   </header>
   <!-- Main-->
-  <n-config-provider :theme="darkTheme" :locale="zhCN" :date-locale="dateZhCN">
+  <n-config-provider :theme="theme" :locale="zhCN" :date-locale="dateZhCN">
     <!-- Info Components -->
     <n-message-provider>
       <usemessageComponents />
