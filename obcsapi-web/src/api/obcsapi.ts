@@ -53,6 +53,27 @@ export const ObcsapiPostMemos = async (filekey: string, line: number, oldText: s
   return response.json();
 }
 
+export const ObcsapiConfigGet = async () => {
+  const response = await fetch(host + '/api/v1/config', {
+    headers: {
+      'Authorization': localStorage.getItem('token'),
+    }
+  });
+  return response.json();
+}
+
+export const ObcsapiConfigPost = async (bodyObject: any) => {
+  const response = await fetch(host + '/api/v1/config', {
+    method: 'POST',
+    headers: {
+      'Authorization': localStorage.getItem('token'),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(bodyObject)
+  });
+  return response.text();
+}
+
 export const ObcsapiTestJwt = async () => {
   const response = await fetch(host + '/api/v1/sayHello', {
     headers: {

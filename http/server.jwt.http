@@ -31,6 +31,12 @@ Content-Type: application/json
 GET {{apiv1}}/kv?key=日志%2f2023-04-10.md
 Authorization: {{token}}
 
-### Cnfig
+### Config
 GET {{apiv1}}/config HTTP/1.1
 Authorization: {{token}}
+
+### Config
+POST {{apiv1}}/config HTTP/1.1
+Authorization: {{token}}
+
+{}

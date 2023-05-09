@@ -13,7 +13,7 @@ const showUpload = ref(false);
 function sendMemos() {
   if (inputText.value) {
     ObcsapiPostMemos("", 9999, "", inputText.value).then(data => {
-      memos.memosMap.set(data.date, data)
+      memos.setMap(data.date, data)
       inputText.value = "";
       showUpload.value = false;
       window.$message.success("Suceess Send");

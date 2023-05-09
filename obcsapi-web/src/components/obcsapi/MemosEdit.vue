@@ -35,7 +35,7 @@ function moreAction() {
 
 function saveMemos() {
     ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, inputText.value).then(data => {
-        memos.memosMap.set(data.date, data)
+        memos.setMap(data.date, data)
         window.$message.success("Suceess Send");
         edit.value = false;
         showUpload.value = false;
@@ -47,7 +47,7 @@ function saveMemos() {
 
 function delMemos() {
     ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, "").then(data => {
-        memos.memosMap.set(data.date, data)
+        memos.setMap(data.date, data)
         window.$message.success("Suceess Del");
         edit.value = false;
     }).catch(e => {

@@ -1,40 +1,239 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
-import { NForm,NFormItem,NInput,NInputNumber,NButton } from "naive-ui";
+import { ObcsapiConfigGet ,ObcsapiConfigPost} from "@/api/obcsapi"
 
 const formData = ref({});
 const schema = ref({
-    type: 'object',
-    required: [
-        'userName',
-        'age',
-    ],
+    type: "object",
     properties: {
-        userName: {
-            type: 'string',
-            title: '用户名',
-            default: 'Liu.Jun',
+        ob_daily_config: {
+            title: "Obsidian Daily 设置",
+            type: "object",
+            description: "日记及附件存放位置。日期格式化 2006-01-02 15:04:05",
+            properties: {
+                ob_daily_dir: {
+                    type: "string",
+                    title: "日记文件夹",
+                    'ui:options': {
+                        placeholder: "日记/",
+                    }
+                },
+                ob_daily: {
+                    type: "string",
+                    title: "日记文件格式",
+                    description: "格式化时间",
+                    'ui:options': {
+                        placeholder: "200601/2006-01-02",
+                    }
+                },
+                ob_daily_attachment_dir: {
+                    type: "string",
+                    title: "日记附件文件夹",
+                    description: "该文件夹会在日记文件夹之下 格式化时间",
+                    'ui:options': {
+                        placeholder: "附件/200601/",
+                    }
+                },
+                ob_other_data_dir: {
+                    type: "string",
+                    title: "其他文件夹",
+                    'ui:options': {
+                        placeholder: "其他文件/",
+                    }
+                },
+
+            }
         },
-        age: {
-            type: 'number',
-            title: '年龄'
+        wechat_mp: {
+            title: "微信公众号",
+            type: "object",
+            properties: {
+                return_str: {
+                    type: "string",
+                    title: "返回字符串",
+                    'ui:options': {
+                        placeholder: "📩 已保存，\u003ca href='https://note.ftls.xyz/#/ZK/202209050658'\u003e点击查看今日笔记\u003c/a\u003e",
+                    }
+                }
+            }
         },
-        bio: {
-            type: 'string',
-            title: '签名',
-            minLength: 10,
-            default: '知道的越多、就知道的越少',
+        webdav: {
+            title: "WebDAV",
+            type: "object",
+            description: "LocalStorage (RemotelySave WebDav) 用户自定义账户密码",
+            properties: {
+                server: {
+                    type: "boolean",
+                    title: "服务开关",
+                },
+                username: {
+                    type: "string",
+                    title: "WebDAV 自定义用户名",
+                    'ui:options': {
+                        placeholder: "kkbt",
+                    }
+                },
+                password: {
+                    type: "string",
+                    title: "WebDAV 自定义密码",
+                    'ui:options': {
+                        placeholder: "webdavpassword",
+                    }
+                },
+                ob_local_dir: {
+                    type: "string",
+                    title: "日记位置",
+                    description: "数据源选择本地时，存放的本地文件夹位置。需要和removely save文件夹一样，正常为 Ob 库的名。",
+                    'ui:options': {
+                        placeholder: "日记/",
+                    }
+                }
+            }
+        },
+        mail: {
+            title: "邮件服务",
+            type: "object",
+            description: "用于提醒服务",
+            properties: {
+                smtp_host: {
+                    type: "string",
+                    title: "smtp_host",
+                    'ui:options': {
+                        placeholder: "smtpdm.aliyun.com",
+                    }
+                },
+                smtp_port: {
+                    type: "number",
+                    title: "smtp_port",
+                    'ui:options': {
+                        placeholder: "80",
+                    }
+                },
+                user_name: {
+                    type: "string",
+                    title: "账户",
+                    'ui:options': {
+                        placeholder: "no-reply@example.com",
+                    }
+                },
+                password: {
+                    type: "string",
+                    title: "密码",
+                    'ui:options': {
+                        placeholder: "xxxxxxxx",
+                    }
+                },
+                sender_email: {
+                    type: "string",
+                    title: "发送者邮箱",
+                    'ui:options': {
+                        placeholder: "no-reply@example.com",
+                    }
+                },
+                sender_name: {
+                    type: "string",
+                    title: "发送者名",
+                    'ui:options': {
+                        placeholder: "ObCSAPI",
+                    }
+                },
+                receiver_email: {
+                    type: "string",
+                    title: "接收者邮箱",
+                    'ui:options': {
+                        placeholder: "xxx@gmail.com",
+                    }
+                },
+            }
+        },
+        image_hosting: {
+            title: "图床",
+            type: "object",
+            description: "ImageHosting 图床文件 有四部分构成 url 文件夹及前缀，原名字，随机字符。图床文件夹及文件前缀 eg 2006-01-02 15:04:05 如 按月存放是 01/ ; 按 年存放 2006/ ; 文件前缀 200601 ; 文件夹和文件前缀 200601/200601_",
+            properties: {
+                base_url: {
+                    type: "string",
+                    title: "BaseUrl ",
+                    'ui:options': {
+                        placeholder: "http://localhost:8900/images/",
+                    }
+                },
+                prefix: {
+                    type: "string",
+                    title: "时间格式化 Prefix",
+                    description: "时间格式化",
+                    'ui:options': {
+                        placeholder: "200601/kkbt_",
+                    }
+                },
+                use_raw_name: {
+                    type: "boolean",
+                    title: "是否保留文件原名",
+                },
+                random_char_length: {
+                    type: "number",
+                    title: "随机字符串长度",
+                    'ui:options': {
+                        placeholder: "5",
+                    }
+                },
+                bd_ocr_access_token: {
+                    type: "string",
+                    title: "百度 OCR Access Token",
+                    'ui:options': {
+                        placeholder: "xxxxx.xxxxx.xxxxx.xxxxx.xxxxx-xxxxx",
+                    }
+                },
+            }
+        },
+        reminder: {
+            title: "提醒服务",
+            type: "object",
+            properties: {
+                daily_email_remder_time: {
+                    type: "string",
+                    title: "每日提醒时间",
+                    'ui:options': {
+                        placeholder: "0800",
+                    }
+                },
+                reminder_dicionary: {
+                    type: "string",
+                    title: "微信识别时间所用字典",
+                    description: "可选 full  200k 100k 20k  10k",
+                    'ui:options': {
+                        placeholder: "dictionary-200k.txt",
+                    }
+                },
+            }
         }
     }
 });
+
+onMounted(() => {
+    getConfiguration()
+})
+
+function getConfiguration() {
+    ObcsapiConfigGet().then( data => {
+        formData.value = data
+    }).catch( (e) => {
+        window.$message.error(e.message)
+    });
+}
+
 function handlerSubmit() {
-    console.log(formData.value);
-    console.log("Client")
+    ObcsapiConfigPost(formData.value).then(res => {
+        window.$message.success("保存" + res)
+        getConfiguration()
+    }).catch( e => {
+        window.$message.error(e)
+    })
 }
 </script>
 <template>
-    <h1>xxx</h1>
-    <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit">
+    <h1>Setting</h1>
+    <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" >
     </vue-form>
 </template>
