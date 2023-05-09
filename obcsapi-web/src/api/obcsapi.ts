@@ -62,6 +62,7 @@ export const ObcsapiConfigGet = async () => {
   return response.json();
 }
 
+
 export const ObcsapiConfigPost = async (bodyObject: any) => {
   const response = await fetch(host + '/api/v1/config', {
     method: 'POST',
@@ -81,6 +82,11 @@ export const ObcsapiTestJwt = async () => {
     },
   });
   return response.text();
+}
+
+export const ObcsapiServerInfo = async () => {
+  const response = await fetch(host + '/info');
+  return response.json();
 }
 
 export const ObcsapiTestMail = async () => {

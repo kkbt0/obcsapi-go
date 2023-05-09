@@ -47,15 +47,14 @@ function LoadMoreMemosList() {
             <!-- 每天的列表 -->
             <n-list bordered v-if="memosIndexList.get(dayKey) != undefined">
                 <!-- 列表中的 Memos -->
-                <div v-for="(memosShowText, key2) in memosIndexList.get(dayKey).md_show_text.slice().reverse()" :key="key2" >
+                <div v-for="(memosShowText, key2) in memosIndexList.get(dayKey).md_show_text.slice().reverse()" :key="key2">
                     <n-list-item v-if="memosShowText.trim() != ''">
                         <MemosEdit :memosShowText="memosShowText"
                             :memosRaw="memosIndexList.get(dayKey).md_text[memosIndexList.get(dayKey).md_text.length - key2 - 1]"
                             :dayKey="dayKey" :line="memosIndexList.get(dayKey).md_text.length - key2 - 1" />
                     </n-list-item>
-                    <div/>
+                    <div />
                 </div>
-
             </n-list>
         </div>
     </n-scrollbar>

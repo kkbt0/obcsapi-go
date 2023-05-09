@@ -19,8 +19,7 @@ import (
 )
 
 func IndexHandler(c *gin.Context) {
-	c.Writer.Header().Set("Content-Type", "text/html")
-	c.String(200, indeHtml)
+	c.Redirect(http.StatusMovedPermanently, "/web/")
 }
 
 func Greet(c *gin.Context) {

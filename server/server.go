@@ -17,10 +17,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-//go:embed website/h5/index.html
-var indeHtml string
-
-//go:embed templates website/h5/static
+//go:embed templates
 var files embed.FS
 
 var limiter = rate.NewLimiter(0.00001, 1)     // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
@@ -48,8 +45,8 @@ func main() {
 	config.AddAllowHeaders("Token", "Authorization")
 	r.Use(cors.New(config)) // cors 配置
 
-	r.GET("/", IndexHandler)                  // index.html
-	r.Static("static", "./website/h5/static") // h5 静态文件
+	r.GET("/", IndexHandler)      // index.html vue3 pwa
+	r.Static("/web", "./website") // h5 静态文件
 
 	r.GET("/404", BaseHandler)             // 404
 	r.GET("/time", Greet)                  // 打招呼 测试使用 GET

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref,onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
-import { ObcsapiConfigGet ,ObcsapiConfigPost} from "@/api/obcsapi"
+import { ObcsapiConfigGet, ObcsapiConfigPost, ObcsapiServerInfo } from "@/api/obcsapi"
 import { NScrollbar } from "naive-ui"
 
 const formData = ref({});
@@ -211,15 +211,19 @@ const schema = ref({
         }
     }
 });
-
+const info = ref();
+const showInfo = ref(false);
 onMounted(() => {
     getConfiguration()
+    ObcsapiServerInfo().then(res => {
+        info.value = res;
+    })
 })
 
 function getConfiguration() {
-    ObcsapiConfigGet().then( data => {
+    ObcsapiConfigGet().then(data => {
         formData.value = data
-    }).catch( (e) => {
+    }).catch((e) => {
         window.$message.error(e.message)
     });
 }
@@ -228,15 +232,21 @@ function handlerSubmit() {
     ObcsapiConfigPost(formData.value).then(res => {
         window.$message.success("保存" + res)
         getConfiguration()
-    }).catch( e => {
+    }).catch(e => {
         window.$message.error(e)
     })
 }
 </script>
 <template>
-    <h1>Setting</h1>
+    <h1 @click="showInfo = !showInfo"><a>Setting</a></h1>
+    <div v-if="showInfo && info">
+        <a href="https://gitee.com/kkbt/obcsapi-go">Obsidian 云存储后端 API Go 版本项目地址 </a>
+        <a href="https://kkbt.gitee.io/obcsapi-go/#/"> 📄文档</a><br>
+        {{ info.server_time }}<br>
+        ServerVersion: {{ info.server_version }}<br>
+        ServerConfigVersion: {{ info.config_version }} <br>
+    </div>
     <n-scrollbar style="max-height: 75vh">
         <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" />
     </n-scrollbar>
-
 </template>

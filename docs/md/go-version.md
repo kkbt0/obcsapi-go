@@ -35,7 +35,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.1.2 # 项目版本
+version: v4.1.3 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -113,12 +113,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.1.2 . 
+docker build -t kkbt/obcsapi:v4.1.3 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.1.2 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.2
+docker run -d -p 8900:8900 --name myObcsapi4.1.3 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.3
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.1.2:/app/data/config.yaml
-docker restart myObcsapi4.1.2
+docker cp config.yaml myObcsapi4.1.3:/app/data/config.yaml
+docker restart myObcsapi4.1.3
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -538,3 +538,6 @@ Go 语言开发
  更多前端可更改配置
  flomo api like
  通用all 接口
+4.1.3 更新成 Vue3 + TS + Vite + Naive UI 前端 支持 PWA , 黑暗模式
+ 前端支持：Memos，勾选框（可能会搞乱原格式），画廊，图片上传，配置更新
+ 后端支持日记文件夹和文件格式配置
