@@ -12,7 +12,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	_ "github.com/go-kivik/couchdb/v3"
@@ -69,11 +68,11 @@ func init() {
 
 // 用于获取日记目录
 func GetDailyFileKey() string {
-	return tools.NowRunConfig.DailyDir() + tools.TimeFmt("2006-01-02") + ".md"
+	return tools.NowRunConfig.DailyFileKey()
 }
 
 func GetMoreDailyFileKey(addDateDay int) string {
-	return tools.NowRunConfig.DailyDir() + time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02") + ".md"
+	return tools.NowRunConfig.DailyFileKeyMore(addDateDay)
 }
 
 // 获取指定位置文件 并读取为 Str
@@ -306,7 +305,7 @@ func PicDownloader(url string) ([]byte, error) {
 	return buf, nil
 }
 
-// 读取 ![[支持类文件/xxx.md]]
+// 读取 ![[日志/附件/202305/xxx.md]]
 func MdShowTextDailyZk(text string) string {
 	regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
 	pattern := regexp.MustCompile(`!\[\[(.*?)\]\]`)

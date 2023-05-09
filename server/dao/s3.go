@@ -129,18 +129,16 @@ func S3GetTodayDailyList(sess *session.Session) []Daily {
 
 func S3Get3DaysDailyList(sess *session.Session) [3]Daily {
 	// fmt.Println(time.Now().In(cstZone).Format("2006-01-02 15:04:05"))
-	var cstZone = time.FixedZone("CST", 8*3600)
 	var ans [3]Daily
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		date := time.Now().AddDate(0, 0, i-2).In(cstZone).Format("2006-01-02")
-		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
+		day, err := S3GetTextObject(sess, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			fmt.Println(err)
 		}
 		ans[i] = Daily{
 			Data:       day,
 			MdShowData: string(S3ReplaceMdUrl2PreSignedUrl([]byte(day))),
-			Date:       date,
+			Date:       tools.NowRunConfig.DailyDateKeyMore(i - 2),
 			ServerTime: tools.TimeFmt("200601021504"),
 		}
 	}
@@ -148,11 +146,9 @@ func S3Get3DaysDailyList(sess *session.Session) [3]Daily {
 }
 
 func S3Get3DaysList(sess *session.Session) [3]string {
-	var cstZone = time.FixedZone("CST", 8*3600)
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		date := time.Now().AddDate(0, 0, i-2).In(cstZone).Format("2006-01-02")
-		day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
+		day, err := S3GetTextObject(sess, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			log.Println(err)
 		}
@@ -162,9 +158,7 @@ func S3Get3DaysList(sess *session.Session) [3]string {
 }
 
 func S3GetMoreDaliyMdText(sess *session.Session, addDateDay int) (string, error) {
-	var cstZone = time.FixedZone("CST", 8*3600)
-	date := time.Now().AddDate(0, 0, addDateDay).In(cstZone).Format("2006-01-02")
-	day, err := S3GetTextObject(sess, fmt.Sprintf("%s%s.md", tools.NowRunConfig.DailyDir(), date))
+	day, err := S3GetTextObject(sess, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
 	if err != nil {
 		log.Println(err)
 		return "", err

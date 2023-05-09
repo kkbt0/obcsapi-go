@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,6 +45,7 @@ type WeChatMpConfig struct {
 
 type ObsidianDailyConfig struct {
 	ObDailyDir           string `json:"ob_daily_dir"`
+	ObDaily              string `json:"ob_daily"`
 	ObDailyAttachmentDir string `json:"ob_daily_attachment_dir"`
 	ObOtherDataDir       string `json:"ob_other_data_dir"`
 }
@@ -54,11 +56,11 @@ type ReminderConfig struct {
 }
 
 type RunConfig struct {
+	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
+	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
 	Webdav       WebDavConfig        `json:"webdav"`
 	Mail         MailSmtpConfig      `json:"mail"`
 	ImageHosting ImageHostingConfig  `json:"image_hosting"`
-	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
-	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
 	Reminder     ReminderConfig      `json:"reminder"`
 }
 
@@ -114,12 +116,37 @@ func ReloadRunConfig() error {
 	return nil
 }
 
-// 支持格式化时间
+// 支持格式化时间 06日志/ 202303/2023-03-01
+
+// 06日志/
 func (runConfig *RunConfig) DailyDir() string {
-	return TimeFmt(runConfig.ObDaily.ObDailyDir)
+	return runConfig.ObDaily.ObDailyDir
 }
+
+// 06日志/  + 202303/2023-03-01.md
+func (runConfig *RunConfig) DailyFileKey() string {
+	return runConfig.DailyDir() + TimeFmt(runConfig.ObDaily.ObDaily) + ".md"
+}
+
+// 06日志/  + 202302/2023-02-01.md
+func (runConfig *RunConfig) DailyFileKeyMore(addDateDay int) string {
+	return runConfig.DailyDir() + time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format(runConfig.ObDaily.ObDaily) + ".md"
+}
+
+// 202302/2023-02-01
+func (runConfig *RunConfig) DailyDateKeyMore(addDateDay int) string {
+	return time.Now().AddDate(0, 0, addDateDay).In(time.FixedZone("CST", 8*3600)).Format(runConfig.ObDaily.ObDaily)
+
+}
+
+func (runConfig *RunConfig) DailyFileKeyTime(inTime time.Time) string {
+	diff := time.Until(time.Now())
+	return runConfig.DailyFileKeyMore(int(diff.Hours() / 24))
+}
+
+// 06日志/  + 附件/202302/
 func (runConfig *RunConfig) DailyAttachmentDir() string {
-	return TimeFmt(runConfig.ObDaily.ObDailyAttachmentDir)
+	return runConfig.DailyDir() + TimeFmt(runConfig.ObDaily.ObDailyAttachmentDir)
 }
 
 func (runConfig *RunConfig) OtherDataDir() string {

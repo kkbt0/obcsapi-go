@@ -8,7 +8,6 @@ import (
 	"obcsapi-go/tools"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -77,7 +76,7 @@ func ObV1GetDailyHandler(c *gin.Context) {
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
 		MdShowText: MarkdownSpilter(MdShowText(text)), // TODO 显示图像
-		Date:       time.Now().AddDate(0, 0, addDataInt).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02"),
+		Date:       tools.NowRunConfig.DailyDateKeyMore(addDataInt),
 	})
 
 }
@@ -111,7 +110,7 @@ func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
 		MdShowText: MarkdownSpilter(MdShowText(text)), // TODO 显示图像
-		Date:       time.Now().AddDate(0, 0, addDataInt).In(time.FixedZone("CST", 8*3600)).Format("2006-01-02"),
+		Date:       tools.NowRunConfig.DailyDateKeyMore(addDataInt),
 	})
 
 }
@@ -132,7 +131,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 		return
 	}
 	if modText.DayFileKey == "" {
-		modText.DayFileKey = tools.TimeFmt("2006-01-02")
+		modText.DayFileKey = tools.NowRunConfig.DailyDateKeyMore(0)
 	}
 	fileKey := tools.NowRunConfig.DailyDir() + modText.DayFileKey + ".md"
 	dailyText, err := GetTextObject(fileKey)

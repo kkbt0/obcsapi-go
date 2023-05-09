@@ -42,14 +42,14 @@ func WeChatMpHandlers(c *gin.Context) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = TextAppend(tools.NowRunConfig.DailyDir()+extract[0].Format("2006-01-02.md"), "\n- [ ] "+mp.Request.Content+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
+			err = TextAppend(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+mp.Request.Content+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
 			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
 		} else {
 			err = DailyTextAppendMemos(mp.Request.Content) //
 		}
 	case weixinmp.MsgTypeImage: // 图片消息
 		fileby, _ := PicDownloader(mp.Request.PicUrl)
-		file_key := fmt.Sprintf("%s%s/%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("200601"), tools.TimeFmt("20060102150405"))
+		file_key := fmt.Sprintf("%s%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("20060102150405"))
 		ObjectStore(file_key, fileby)
 		// 前端会监测 ![https://..](..) 将 http:// 放到 后面 ![..](https://..)
 		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
@@ -64,10 +64,12 @@ func WeChatMpHandlers(c *gin.Context) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = TextAppend(tools.NowRunConfig.DailyDir()+extract[0].Format("2006-01-02.md"), "\n- [ ] "+mp.Request.Recognition+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
+			err = TextAppend(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+mp.Request.Recognition+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
 			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
-		} else {
+		} else if mp.Request.Recognition != "" {
 			err = DailyTextAppendMemos("语音: " + mp.Request.Recognition) //
+		} else {
+			r_str = "没有识别到文字"
 		}
 	case weixinmp.MsgTypeLocation: // 位置消息
 		err = DailyTextAppendMemos(fmt.Sprintf("位置信息: 位置 %s <br>经纬度( %f , %f )", mp.Request.Label, mp.Request.LocationX, mp.Request.LocationY))
