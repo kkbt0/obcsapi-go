@@ -30,9 +30,7 @@ python 老版本 https://gitee.com/kkbt/obsidian-csapi
 
 ![](docs/images/Snipaste_2023-03-07_11-36-48.png)
 
-点击进入的样子
-
-![](docs/images/Snipaste_2023-03-07_11-37-38.png)
+![](docs/images/Snipaste_2023-05-09_19-17-48.png)
 
 
 测试网站

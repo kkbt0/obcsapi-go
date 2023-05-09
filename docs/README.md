@@ -20,6 +20,8 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 - 一个简易图床，附带命令行上传工具。<sup>1</sup>
 - 云函数 或者 Dokcer 部署
 
+**注意如果文档由于浏览器缓存，或者更新不及时无法查看最新内容。请到项目 https://gitee.com/kkbt/obcsapi-go/tree/master/docs 中查看**
+
 
 两个版本:  
 [Obsidian 云存储后端 API Go 版本](https://gitee.com/kkbt/obcsapi-go)

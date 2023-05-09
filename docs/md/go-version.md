@@ -6,6 +6,11 @@
 
 若有更高性能需求，可自行修改 golang 源码，并编译打包。不过 golang 功能要少一些（没有收藏微信文章功能）。新特性：可以发送邮件发送登录链接，这样配合 token 的自动失效能稍微安全一些，不过我不太擅长前端，很简陋。
 
+![](../images/Snipaste_2023-05-09_19-17-48.png)
+
+前端地址: 部署后访问根路径，或 [https://note.ftls.xyz/web/](https://note.ftls.xyz/web/)。
+
+通常 [https://note.ftls.xyz/web/](https://note.ftls.xyz/web/) 为最新版本，如有 bug 请用此版本，不过可能不兼容早期服务器版本。
 
 ### Token 说明
 
