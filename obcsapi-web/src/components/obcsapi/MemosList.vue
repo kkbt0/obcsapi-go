@@ -26,7 +26,7 @@ async function moreMemos() {
 
 async function waitMoreMemos(needNum: number) {
     console.log(`Loading more ${needNum} memos`)
-    let maxRequest = 30
+    let maxRequest = 5
     let tem = loadMemosCount.value + needNum
     while (loadMemosCount.value < tem && maxRequest > 0) {
         await moreMemos()

@@ -28,9 +28,17 @@ python 老版本 https://gitee.com/kkbt/obsidian-csapi
 
 后台发送的邮件
 
+![](docs/images/Snipaste_2023-05-09_21-21-34.png)
+
+![](docs/images/Snipaste_2023-05-09_21-22-36.png)
+
+![](docs/images/Snipaste_2023-05-09_21-26-04.png)
+
+![](docs/images/Snipaste_2023-05-09_21-26-13.png)
+
+
 ![](docs/images/Snipaste_2023-03-07_11-36-48.png)
 
-![](docs/images/Snipaste_2023-05-09_19-17-48.png)
 
 
 测试网站
