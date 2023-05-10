@@ -140,7 +140,7 @@ func (runConfig *RunConfig) DailyDateKeyMore(addDateDay int) string {
 }
 
 func (runConfig *RunConfig) DailyFileKeyTime(inTime time.Time) string {
-	diff := time.Until(time.Now())
+	diff := time.Until(inTime)
 	return runConfig.DailyFileKeyMore(int(diff.Hours() / 24))
 }
 
