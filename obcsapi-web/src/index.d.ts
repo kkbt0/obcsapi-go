@@ -4,3 +4,9 @@ declare module 'marked' {
 }
 
 
+declare module 'turndown' {
+    const content: any = turndown
+    export = content
+}
+
+
