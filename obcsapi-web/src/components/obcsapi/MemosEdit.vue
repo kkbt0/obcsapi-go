@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NThing, NInput, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
-import { ref, onMounted, onUpdated } from "vue";
+import { ref, onUpdated } from "vue";
 import { memosData } from "@/stores/memos";
 import marked from "marked";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";

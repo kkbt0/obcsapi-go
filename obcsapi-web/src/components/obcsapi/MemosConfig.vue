@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiConfigGet, ObcsapiConfigPost, ObcsapiServerInfo } from "@/api/obcsapi"
 import { NScrollbar } from "naive-ui"
+import { ObcsapiTestMail } from "@/api/obcsapi";
+
 
 const formData = ref({});
 const schema = ref({
@@ -236,9 +238,18 @@ function handlerSubmit() {
         window.$message.error(e)
     })
 }
+
+function sendMail() {
+    ObcsapiTestMail().then(res => {
+        window.$message.info(res)
+    }).catch(e => {
+        window.$message.info(e)
+    })
+}
+
 </script>
 <template>
-    <h1 @click="showInfo = !showInfo"><a>Setting</a></h1>
+    <h1 @click="showInfo = !showInfo"><a>Server Setting</a></h1>
     <div v-if="showInfo && info">
         <a href="https://gitee.com/kkbt/obcsapi-go">Obsidian 云存储后端 API Go 版本项目地址 </a>
         <a href="https://kkbt.gitee.io/obcsapi-go/#/"> 📄文档</a><br>
@@ -248,5 +259,6 @@ function handlerSubmit() {
     </div>
     <n-scrollbar style="max-height: 75vh">
         <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" />
+        <n-button @click="sendMail" quaternary>测试邮件</n-button>
     </n-scrollbar>
 </template>

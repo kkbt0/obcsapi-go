@@ -59,6 +59,17 @@
   font-weight: normal;
 }
 
+/* for light mode */
+html[theme-mode=light-mode] {
+  --color-background: var(--vt-c-white);
+  --color-text: var(--vt-c-text-light-1);
+}
+/* for dark mode  */
+html[theme-mode=dark-mode] {
+  --color-background: var(--vt-c-black);
+  --color-text: var(--vt-c-text-dark-2);
+}
+
 body {
   min-height: 100vh;
   color: var(--color-text);

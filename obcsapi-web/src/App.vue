@@ -4,6 +4,7 @@ import HelloWorld from './components/HelloWorld.vue'
 import { NConfigProvider, zhCN, dateZhCN, darkTheme, NMessageProvider } from 'naive-ui';
 import { defineComponent, ref, onMounted } from 'vue';
 import usemessageComponents from '@/components/api/usemessageComponents.vue';
+import { LocalSetting } from "@/stores/setting"
 
 export default defineComponent({
   components: {
@@ -14,25 +15,39 @@ export default defineComponent({
   },
 
   setup() {
-    const theme = ref();
-    function switchTheme() {
-      theme.value = theme.value == null ? darkTheme : null;
-    }
-    onMounted(() => {
-      if (!window.matchMedia('(prefers-color-scheme: light)').matches) {
-        switchTheme()
+    const setting = LocalSetting();
+    
+    const theme:any = ref({
+      isDarkTheme: darkTheme,
+      overridesStyle: {
+        common: {
+          fontSize: setting.frontSize,
+          fontSizeMedium: setting.frontSize
+        }
       }
+    });
+
+
+    onMounted(() => {
+      // 默认适配 暗色组件
+      if (localStorage.getItem("theme-mode") == "dark-mode") {
+        document.documentElement.setAttribute("theme-mode", "dark-mode");
+      } else if (localStorage.getItem("theme-mode") == "light-mode") {
+        document.documentElement.setAttribute("theme-mode", "light-mode");
+        theme.value.isDarkTheme = null;
+      } else if (window.matchMedia('(prefers-color-scheme: light)').matches){
+        theme.value.isDarkTheme = null;
+      }
+
       console.log("%cObcsapi"," text-shadow: 0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);font-size:5em")
       console.log("Doc  https://kkbt.gitee.io/obcsapi-go/#/md/go-version")
-      console.log("v20230510-0853")
+      console.log("v20230510-1400")
     
     })
     return {
       theme,
-      darkTheme,
       zhCN,
       dateZhCN,
-      switchTheme
     }
   }
 })
@@ -54,7 +69,7 @@ export default defineComponent({
     </div>
   </header>
   <!-- Main-->
-  <n-config-provider :theme="theme" :locale="zhCN" :date-locale="dateZhCN">
+  <n-config-provider :theme="theme.isDarkTheme" :locale="zhCN" :date-locale="dateZhCN" :theme-overrides="theme.overridesStyle">
     <!-- Info Components -->
     <n-message-provider>
       <usemessageComponents />
