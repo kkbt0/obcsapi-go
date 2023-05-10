@@ -21,3 +21,16 @@ A: 类似
 |s3AccessKeyID	|AccessKey 获取	|AccessKey 获取|
 |s3SecretAccessKey|	AccessKey 获取	|AccessKey 获取|
 |s3BucketName|	obsidian	|obsidian-123|
+
+有使用者反馈， OSS 如果错误可以这么配置
+
+```
+Endpoint = obbaocun.oss-cn-zhangjiakou.aliyuncs.com
+Region = oss-cn-zhangjiakou
+SecretId = xxx
+SecretKey = xxx
+bucket = root
+```
+
+# Q: 前端错误
+A: F12 打开开发者工具，可以看到元素，控制台等。选择应用程序，在弹出的页面中，左侧有应用程序，存储等。选择存储，本地存储，下面会有一个网址，右键，然后清除即可。
