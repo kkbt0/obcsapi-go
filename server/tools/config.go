@@ -141,7 +141,7 @@ func (runConfig *RunConfig) DailyDateKeyMore(addDateDay int) string {
 
 func (runConfig *RunConfig) DailyFileKeyTime(inTime time.Time) string {
 	diff := time.Until(inTime)
-	return runConfig.DailyFileKeyMore(int(diff.Hours() / 24))
+	return runConfig.DailyDir() + time.Now().Add(time.Hour*time.Duration(diff.Hours())).In(time.FixedZone("CST", 8*3600)).Format(runConfig.ObDaily.ObDaily) + ".md"
 }
 
 // 06日志/  + 附件/202302/
