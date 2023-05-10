@@ -19,6 +19,10 @@
 
 通常 [https://note.ftls.xyz/web/](https://note.ftls.xyz/web/) 为最新版本，如有 bug 请用此版本，不过可能不兼容早期服务器版本。
 
+> 测试账户 前端登录设置
+> 服务器: https://ob.ftls.xyz
+> kkbt password
+
 ### Token 说明
 
 后端定时更换 Token 。实现了一个邮件发送登录链接，从而实现前端登录。

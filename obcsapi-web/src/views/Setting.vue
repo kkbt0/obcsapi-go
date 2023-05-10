@@ -11,7 +11,7 @@ function clearCache() {
 function reLogin() {
     localStorage.removeItem("token")
     window.$message.info("注销")
-    router.push("/")
+    router.push("/login")
 }
 function sendMail() {
     ObcsapiTestMail().then( res => {

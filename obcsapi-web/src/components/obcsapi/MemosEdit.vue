@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NThing, NInput, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown } from "naive-ui";
+import { NThing, NInput, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { ref, onMounted, onUpdated } from "vue";
 import { memosData } from "@/stores/memos";
@@ -172,39 +172,43 @@ function handleSelect(key: string | number) {
         </template>
         <!-- - 12:34 xxx -->
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
-            <div v-html="markdown(memosShowText.slice(7))" class="memos"></div>
-            <n-space v-if="tasksList.length != 0" vertical>
-                <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
-                    v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
-            </n-space>
-            <n-image-group v-if="picList.length != 0">
-                <n-space>
-                    <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+            <n-scrollbar x-scrollable style="max-width: 80vw;">
+                <div v-html="markdown(memosShowText.slice(7))" class="memos"></div>
+                <n-space v-if="tasksList.length != 0" vertical>
+                    <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
+                        v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
                 </n-space>
-            </n-image-group>
+                <n-image-group v-if="picList.length != 0">
+                    <n-space>
+                        <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+                    </n-space>
+                </n-image-group>
+            </n-scrollbar>
         </template>
         <!-- - xxx -->
         <template #description v-else-if="!edit">
-            <div v-html="markdown(memosShowText)" class="memos"></div>
-            <n-space v-if="tasksList.length != 0" vertical>
-                <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
-                    v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
-            </n-space>
-            <n-image-group v-if="picList.length != 0">
-                <n-space>
-                    <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+            <n-scrollbar x-scrollable style="max-width: 100vw;">
+                <div v-html="markdown(memosShowText)" class="memos"></div>
+                <n-space v-if="tasksList.length != 0" vertical>
+                    <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
+                        v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
                 </n-space>
-            </n-image-group>
+                <n-image-group v-if="picList.length != 0">
+                    <n-space>
+                        <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+                    </n-space>
+                </n-image-group>
+            </n-scrollbar>
         </template>
 
-        <template #description v-else-if="edit">
+        <template #description v-if="edit">
             <n-space vertical>
                 <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
                     :autosize="{ minRows: 3 }" />
                 <n-space justify="space-between">
                     <n-button quaternary type="error" @click="delMemos">Del</n-button>
-                    <n-button quaternary type="info" @click="showUpload=!showUpload">Img</n-button>
-                    <n-button quaternary @click="edit=!edit">Cancle</n-button>
+                    <n-button quaternary type="info" @click="showUpload = !showUpload">Img</n-button>
+                    <n-button quaternary @click="edit = !edit">Cancle</n-button>
                     <n-button quaternary type="primary" @click="saveMemos">Save</n-button>
                 </n-space>
                 <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />
