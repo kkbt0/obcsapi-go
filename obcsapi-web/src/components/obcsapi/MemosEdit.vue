@@ -87,8 +87,13 @@ function markdown(md: string) {
 
 function handleCheckedChange(taskIndex: number) {
     let text = inputText.value;
+    let isEmpty = false;
     const tasksRegex = /- \[[x ]\] .*/gm;
     text = text.replace(tasksRegex, '').trimEnd() + "\n";
+    console.log(text);
+    if (text.trim() == "") { // 被去除的什么都没有了 特别是之只有一个选项撑起来的情况
+        isEmpty = true;
+    }
     for (let i = 0; i < tasksCheckedList.length; i++) {
         if (tasksCheckedList[i] == false) {
             text += " - [ ] " + tasksList[i] + "\n";
@@ -96,7 +101,11 @@ function handleCheckedChange(taskIndex: number) {
             text += " - [x] " + tasksList[i] + "\n";
         }
     }
-    inputText.value = text;
+    if (isEmpty) {
+        inputText.value = text.slice(2);// 把第一个空格去掉，以撑起来一个 memos
+    } else {
+        inputText.value = text;
+    }
     saveMemos();
 }
 
