@@ -123,8 +123,12 @@ const options = ref([
         key: 1
     },
     {
-        label: '删除',
+        label: '转为 TODO',
         key: 2
+    },
+    {
+        label: '删除',
+        key: 3
     }
 ])
 
@@ -156,9 +160,20 @@ function handleSelect(key: string | number) {
             console.log(e);
             window.$message.warning("Err Del: " + e);
         });
-
-
-    } else if (key == 2) {
+    } else if (key == 2) { // - xxx -> - [ ] xx
+        let arr = inputText.value.split("\n");
+        for (var i = 0; i < arr.length; i++) {
+            if( arr[i].trim().startsWith("- [") ) { // do nothing
+            } else if( arr[i].trim().startsWith("- ") ) {
+                arr[i] = "- [ ]" + arr[i].trim().slice(1)
+            } else { // xx
+                arr[i] = " - [ ] " + arr[i].trim()
+            }
+        }
+        inputText.value = arr.join("\n");
+        saveMemos();
+    }
+    else if (key == 3) {
         delMemos()
     }
 }
