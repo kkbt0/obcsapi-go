@@ -204,7 +204,7 @@ function handleSelect(key: string | number) {
                 </n-space>
                 <n-image-group v-if="picList.length != 0">
                     <n-space>
-                        <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" :src=picUrl />
+                        <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" lazy :src=picUrl />
                     </n-space>
                 </n-image-group>
             </n-scrollbar>
