@@ -1,4 +1,4 @@
-package main
+package markdown
 
 import (
 	"fmt"
@@ -6,16 +6,15 @@ import (
 	"strings"
 )
 
-// Element represents a parsed Markdown element
 type Element struct {
-	Type     string
-	Content  string
-	Url      string
-	Children []Element
+	Type     string    `json:"type"`
+	Content  string    `json:"content"`
+	Url      string    `json:"url"`
+	Children []Element `json:"children"`
 }
 
 // parseMarkdown parses the Markdown string into a list of elements
-func parseMarkdown(markdown string) []Element {
+func ParseMarkdown(markdown string) []Element {
 	lines := strings.Split(markdown, "\n")
 	elements := []Element{}
 	stack := []*Element{}
@@ -48,6 +47,10 @@ func parseMarkdown(markdown string) []Element {
 			imageURL := match[2]
 			element := Element{Type: "img", Content: altText, Url: imageURL}
 			elements = append(elements, element)
+		} else if match := regexp.MustCompile(`!\[\]\(([^)]+)\)`).FindStringSubmatch(trimmedLine); match != nil {
+			imageURL := match[1]
+			element := Element{Type: "img", Content: "", Url: imageURL}
+			elements = append(elements, element)
 		} else if match := regexp.MustCompile(`\[([^\]]+)\]\(([^)]+)\)`).FindStringSubmatch(trimmedLine); match != nil {
 			altText := match[1]
 			imageURL := match[2]
@@ -67,20 +70,21 @@ func parseMarkdown(markdown string) []Element {
 			}
 		}
 	}
+
 	// ol ul children
 	var ol []Element
 	var ul []Element
 	var ans []Element
-	for _, element := range elements {
-		if element.Type == "ol-li" {
+	for _, ele := range elements {
+		if ele.Type == "ol-li" {
 			ol = append(ol, Element{
 				Type:    "li",
-				Content: element.Content,
+				Content: ele.Content,
 			})
-		} else if element.Type == "ul-li" {
+		} else if ele.Type == "ul-li" {
 			ul = append(ul, Element{
 				Type:    "li",
-				Content: element.Content,
+				Content: ele.Content,
 			})
 
 		} else if len(ol) != 0 {
@@ -96,57 +100,30 @@ func parseMarkdown(markdown string) []Element {
 			})
 			ul = nil
 		} else {
-			ans = append(ans, element)
+			ans = append(ans, ele)
 		}
+	}
+	if len(ol) != 0 {
+		ans = append(ans, Element{
+			Type:     "ol",
+			Children: ol,
+		})
+		ol = nil
+	}
+	if len(ul) != 0 {
+		ans = append(ans, Element{
+			Type:     "ul",
+			Children: ul,
+		})
+		ul = nil
 	}
 	return ans
 }
 
-func main() {
-	markdown := `
-- 20:05 也就是20号
-# Heading 1
-
-Some text.
-
-## Heading 2
-
-1. Ordered list item 1
-2. Ordered list item 2
-
-- xxx
-- xxx
-
- - xxx1
- - xxx2
-
-Paragraph with **bold** and *italic* text.
-
-![OpenAI Logo](https://openai.com/assets/openai-logo.svg)
-
-[OpenAI Logo](https://openai.com/assets/openai-logo.svg)
-
-- [ ] x1
-- [x] x2
- - [ ] x3
- - [x] x4
-`
-	elements := parseMarkdown(markdown)
-
-	for _, element := range elements {
-		printElement(element, 0)
+func ParseMemos(memos []string) [][]Element {
+	var ans [][]Element
+	for _, m := range memos {
+		ans = append(ans, ParseMarkdown(m))
 	}
-}
-
-func printElement(element Element, indent int) {
-	indentStr := strings.Repeat("  ", indent)
-	fmt.Printf("---\nType: %s\n", element.Type)
-	fmt.Printf("%sContent: %s\n", indentStr, element.Content)
-	fmt.Printf("%sChild: %s\n", indentStr, element.Children)
-	if element.Type == "img" || element.Type == "url" {
-		fmt.Printf("%sURL: %s\n", indentStr, element.Url)
-	}
-	// for _, child := range element.Children {
-	// 	printElement(child, indent+1)
-	// }
+	return ans
 }

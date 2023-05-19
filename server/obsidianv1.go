@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	. "obcsapi-go/dao"
+	md "obcsapi-go/markdown"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
 	"strconv"
@@ -13,9 +14,10 @@ import (
 )
 
 type ObDailyV1 struct {
-	Date       string   `json:"date"`
-	MdText     []string `json:"md_text"`
-	MdShowText []string `json:"md_show_text"`
+	Date       string         `json:"date"`
+	MdText     []string       `json:"md_text"`
+	MdShowText []string       `json:"md_show_text"`
+	MdElements [][]md.Element `json:"md_elements"`
 }
 
 // 分割 md 文本 便于根据行号修改
@@ -73,9 +75,11 @@ func ObV1GetDailyHandler(c *gin.Context) {
 		}
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
 	}
+	md_show_text := MarkdownSpilter(MdShowText(text))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
-		MdShowText: MarkdownSpilter(MdShowText(text)), // TODO 显示图像
+		MdShowText: md_show_text, // TODO 显示图像
+		MdElements: md.ParseMemos(md_show_text),
 		Date:       tools.NowRunConfig.DailyDateKeyMore(addDataInt),
 	})
 
@@ -107,9 +111,11 @@ func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 		}
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
 	}
+	md_show_text := MarkdownSpilter(MdShowText(text))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
-		MdShowText: MarkdownSpilter(MdShowText(text)), // TODO 显示图像
+		MdShowText: md_show_text,
+		MdElements: md.ParseMemos(md_show_text),
 		Date:       tools.NowRunConfig.DailyDateKeyMore(addDataInt),
 	})
 
@@ -167,9 +173,11 @@ func ObV1PostLineHandler(c *gin.Context) {
 	newText := strings.Join(textList, "\n")
 	MdTextStore(fileKey, newText) // 存入数据源
 	skv.PutFile(fileKey, newText) // 存入缓存
+	md_show_text := MarkdownSpilter(MdShowText(newText))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(newText),
-		MdShowText: MarkdownSpilter(MdShowText(newText)),
+		MdShowText: md_show_text,
+		MdElements: md.ParseMemos(md_show_text),
 		Date:       modText.DayFileKey,
 	})
 }
