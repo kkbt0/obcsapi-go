@@ -60,8 +60,9 @@ export default defineComponent({
     <div class="wrapper">
       <HelloWorld msg="Weclome!" @click="" />
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/setting">Setting</RouterLink>
+        <RouterLink to="/">🏠️</RouterLink>
+        <RouterLink to="/setting">⚙️</RouterLink>
+        <RouterLink to="/talk">>_</RouterLink>
         <!-- <a @click="switchTheme">🌞</a> -->
         <!-- <RouterLink to="/login">Login</RouterLink>
         <RouterLink to="/about">About</RouterLink> -->

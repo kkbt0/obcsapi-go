@@ -97,3 +97,15 @@ export const ObcsapiTestMail = async () => {
   });
   return response.text();
 }
+
+export const ObcsapiTalk = async (text:string) => {
+  const response = await fetch(host + '/api/v1/talk',{
+    method: 'POST',
+    headers: {
+      'Authorization': localStorage.getItem('token')||"",
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({"content":text}),
+  });
+  return response.text();
+}

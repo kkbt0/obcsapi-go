@@ -5,9 +5,13 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	. "obcsapi-go/dao"
+	"obcsapi-go/tools"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/DanPlayer/timefinder"
 )
 
 type Dialogue struct {
@@ -82,4 +86,32 @@ func GetResponse(input string) string {
 
 func randInt(min, max int) int {
 	return min + rand.Intn(max-min)
+}
+
+// 提醒任务判断 如果没有识别出来 则保存为 Memos
+func GetReminderFromString(text string) (string, error) {
+	// 提醒任务判断 如果没有则保存为 Memos
+	// 初始化timefinder 对自然语言（中文）提取时间
+	r_str := tools.NowRunConfig.WeChatMp.ReturnStr
+	if r_str == "" {
+		r_str = "📩 已保存"
+	}
+	var err error
+
+	if strings.Contains(text, "提醒我") {
+		var segmenter = timefinder.New("./static/jieba_dict.txt,./static/" + tools.NowRunConfig.Reminder.ReminderDicionary)
+		extract := segmenter.TimeExtract(text)
+		if len(extract) != 0 {
+			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+text)
+			if err != nil {
+				log.Println(err)
+			}
+			err = TextAppend(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+text+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
+			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
+		}
+
+	} else {
+		err = DailyTextAppendMemos(text) //
+	}
+	return r_str, err
 }
