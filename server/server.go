@@ -9,6 +9,7 @@ import (
 	"log"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
 	"obcsapi-go/jwt"
+	"obcsapi-go/talk"
 	"obcsapi-go/tools"
 	"os"
 
@@ -104,6 +105,7 @@ func main() {
 		api1Group.GET("/config", tools.GetRunConfigHandler)         // 运行时 可修改配置
 		api1Group.POST("/config", tools.PostConfigHandler)          //运行时 可修改配置
 		api1Group.GET("/mailtest", MailTesterHandler)               // 邮件测试
+		api1Group.POST("/talk", talk.TalkHandler)                   // 对话 API
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数

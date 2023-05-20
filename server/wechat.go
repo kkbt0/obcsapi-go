@@ -4,14 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 
 	"log"
 	. "obcsapi-go/dao"
 	"obcsapi-go/talk"
 	"obcsapi-go/tools"
 
-	"github.com/DanPlayer/timefinder"
 	"github.com/gin-gonic/gin"
 	"github.com/sidbusy/weixinmp"
 )
@@ -75,26 +73,7 @@ func WeChatTextAndVoice(text string) (string, error) {
 		WeChatMode = 0
 		return "对话模式，输入 退出 返回输入模式", nil
 	} else {
-		// 提醒任务判断
-		// 初始化timefinder 对自然语言（中文）提取时间
-		r_str := tools.NowRunConfig.WeChatMp.ReturnStr
-		if r_str == "" {
-			r_str = "📩 已保存"
-		}
-		var err error
-		var segmenter = timefinder.New("./static/jieba_dict.txt,./static/" + tools.NowRunConfig.Reminder.ReminderDicionary)
-		extract := segmenter.TimeExtract(text)
-		if strings.Contains(text, "提醒我") && len(extract) != 0 {
-			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+text)
-			if err != nil {
-				log.Println(err)
-			}
-			err = TextAppend(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+text+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
-			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
-		} else {
-			err = DailyTextAppendMemos(text) //
-		}
-		return r_str, err
+		return talk.GetReminderFromString(text)
 	}
 }
 
