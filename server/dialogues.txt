@@ -18,6 +18,8 @@ I: 命令
 O: Command echo "Hello,World!"
 I: 天气
 O: Command curl wttr.in?format=3
+I: 自定义脚本
+O: Command bash sh/example.sh
 I: 其他注意
 O: 执行命令可能会执行很长时间，造成网络响应超时。
 

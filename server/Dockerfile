@@ -9,7 +9,8 @@ RUN go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 RUN mkdir app && mkdir app/static/ && \
     cp server app/ && cp docker-entrypoint.sh app/ && \
     cp -R static/ app/ && \
-    cp -R website/ app/ 
+    cp -R website/ app/ && \
+    cp -R sh/ app/ 
     # cp zoneinfo.zip app/
     # docker-entrypoint.sh 运行后还会复制 static/ 到相应目录
 FROM alpine:latest

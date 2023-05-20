@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 
 	"log"
@@ -98,12 +100,32 @@ func WeChatTextAndVoice(text string) (string, error) {
 
 // 指令/对话模式 预设处理 如返回今日待办
 func WeChatTalk(input string) (string, error) {
+	//打开对话日志文件，如果不存在则创建
+	date := tools.TimeFmt("20060102")
+	file, err := os.OpenFile("dialogues."+date+".log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Println("打开文件失败！", err)
+		return "", err
+	}
+	defer file.Close()
+	//写入数据
+	writerInput := bufio.NewWriter(file)
+	writerInput.WriteString(fmt.Sprintf("I: %s\n", input))
+	writerInput.Flush()
+
 	// 根据输入添加自定义逻辑，生成适当的回复
 	// todo 返回今日待办
+	var output string
 	if input == "输入模式" || input == "退出" || input == "exit" || input == "Exit" || input == "q" {
 		WeChatMode = 1
-		return "输入模式", nil
+		output = "输入模式"
 	} else {
-		return talk.GetResponse(input), nil
+		output = talk.GetResponse(input)
 	}
+
+	writerOutput := bufio.NewWriter(file)
+	writerOutput.WriteString(fmt.Sprintf("O: %s\n", output))
+	writerOutput.Flush()
+
+	return output, nil
 }
