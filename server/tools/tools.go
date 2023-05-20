@@ -31,7 +31,10 @@ func CheckFiles() {
 	_, err := os.Stat("config.yaml")
 	if err != nil {
 		if os.IsNotExist(err) {
-			os.WriteFile("config.yaml", []byte(configExample), 0666)
+			err := os.WriteFile("config.yaml", []byte(configExample), 0666)
+			if err != nil {
+				log.Println("Write File Err", err)
+			}
 		} else {
 			log.Panicln("Error: Stat config.yaml")
 		}
@@ -219,6 +222,7 @@ func ObFileAccessToken() string {
 }
 
 func GenerateMd5() string {
+	CheckFiles() // 程序最开始要执行的部分
 	md5 := md5.New()
 	fileStr, err := os.ReadFile("config.yaml")
 	if err != nil {

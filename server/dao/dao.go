@@ -33,7 +33,7 @@ const (
 )
 
 func init() {
-	tools.CheckFiles() // 监测文件是否存在，不存在则创建文件
+	// tools.CheckFiles() // 监测文件是否存在，不存在则创建文件
 	tools.ReloadRunConfig()
 	// 初始化 dataSource
 	switch tools.ConfigGetInt("data_source") {

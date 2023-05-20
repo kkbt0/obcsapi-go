@@ -7,4 +7,5 @@ mkdir /app/data/webdav/images
 cp -R /app/static/ /app/data/
 rm -rf /app/data/website/
 cp -R /app/website/ /app/data/
+cp -r /app/sh/ /app/data/
 /app/server

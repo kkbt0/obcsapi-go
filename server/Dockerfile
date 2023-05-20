@@ -9,19 +9,22 @@ RUN go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 RUN mkdir app && mkdir app/static/ && \
     cp server app/ && cp docker-entrypoint.sh app/ && \
     cp -R static/ app/ && \
-    cp -R website/ app/ 
+    cp -R website/ app/ && \
+    cp -R sh/ app/ 
     # cp zoneinfo.zip app/
     # docker-entrypoint.sh 运行后还会复制 static/ 到相应目录
 FROM alpine:latest
 LABEL maintainer="恐咖兵糖<0@ftls.xyz>"
 
-ENV VERSION 4.1.3
+ENV VERSION 4.1.4
 ENV GIN_MODE release
 ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 COPY --from=builder /home/workspace/app/ .
-RUN chmod +x docker-entrypoint.sh && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add --no-cache tzdata
+RUN chmod +x docker-entrypoint.sh && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \ 
+    apk add --no-cache tzdata bash curl 
+# bash curl about +5MB
 # RUN pwd && ls
 VOLUME /app/data
 EXPOSE 8900
