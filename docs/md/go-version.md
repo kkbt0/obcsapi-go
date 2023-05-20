@@ -51,7 +51,7 @@
 
 ```yaml
 name: obcsapi-go # 项目名称
-version: v4.1.3 # 项目版本
+version: v4.1.4 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
@@ -129,12 +129,12 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 ```sh
 # 构建镜像
-docker build -t kkbt/obcsapi:v4.1.3 . 
+docker build -t kkbt/obcsapi:v4.1.4 . 
 # 运行 Docker
-docker run -d -p 8900:8900 --name myObcsapi4.1.3 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.3
+docker run -d -p 8900:8900 --name myObcsapi4.1.4 -v /home/kkbt/app/obcsapi-go/:/app/data/ kkbt/obcsapi:v4.1.4
 # 或者通过 cp 方式修改好的 config.yaml
-docker cp config.yaml myObcsapi4.1.3:/app/data/config.yaml
-docker restart myObcsapi4.1.3
+docker cp config.yaml myObcsapi4.1.4:/app/data/config.yaml
+docker restart myObcsapi4.1.4
 ```
 如果 -v 后文件出现没有权限访问的问题，可在宿主机执行 `sudo chmod 777 -R /home/kkbt/app/obcsapi-go/` 。
 
@@ -293,6 +293,44 @@ Enjoy it !
 - 内容能在 Obsidian 插件 Memos 中正常显示
 - 提供三天查询 一天修改的数据
 - 支持消息类型: 文字，图片，链接(收藏中的)，地图位置，语音消息(直接调用微信转文字存储)
+
+##### 微信公众号对话模式/指令模式
+
+`对话模式 指令模式 命令模式 对话模式。 指令模式。 Talk`输入其中一个进入指令模式。
+
+`输入模式 退出 exit Exit q` 输入其中一个退出指令模式，进入输入模式。
+
+指令模式/对话模式需要事先准备好 `dialogues.txt` 。自定义对话回复，下面是个例子。展示了随机回复，执行脚本的能力。并且指令模式/对话模式会生成日志，可使用脚本获取最后的输入。如微信输入 `自定义脚本xxx` , 程序会调用脚本，查询对话日志，找出最后一行输入，返回`I: 自定义脚本xxx`。
+
+```plain
+I: 你好
+O: 你好呀！
+O: 你好呀！有什么我可以帮助你的吗？
+O: 你好呀！今天过的怎么样？
+
+I: 今天天气
+O: 无法获取天气信息。
+I: 今天天气怎么样？
+O: 抱歉，我暂时无法获取天气信息。这一条会被上面一条无效化。
+I: 时间是多少？
+O: 抱歉，我无法获取实时时钟信息。
+
+I: 执行命令
+O: 务必注意命令执行的安全性和风险，仅允许可信任和安全的命令执行。
+I: 无输出命令
+O: Command set a 1
+I: 命令
+O: Command echo "Hello,World!"
+I: 天气
+O: Command curl wttr.in?format=3
+I: 自定义脚本
+O: Command bash sh/example.sh
+I: 其他注意
+O: 执行命令可能会执行很长时间，造成网络响应超时。
+
+I: 说明
+O: I代表输入，O代表输出。监测包含字符串，给予对应回复。从上往下查找，如果设置为空，则必定能匹配上。程序暂时不提供对话上下文能力。
+```
  
 **不建议做的事情：**
 
@@ -569,3 +607,5 @@ Go 语言开发
 
  前端支持：Memos，勾选框（可能会搞乱原格式），画廊，图片上传，配置更新
  后端支持日记文件夹和文件格式配置
+
+4.1.4 微信对话模式: 自定义随机回复，可执行命令。
