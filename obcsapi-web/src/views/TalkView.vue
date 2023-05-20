@@ -2,8 +2,9 @@
 import { ref, type Ref } from 'vue';
 import { NButton, NInput, NScrollbar } from 'naive-ui';
 import { ObcsapiTalk } from "@/api/obcsapi";
+import { TalkStore } from "@/stores/talk";
 
-const messages: Ref<string[]> = ref([]);
+const messages = TalkStore().messages;
 const newMessage = ref('');
 const scrollbarRef: Ref<any> = ref(null);
 const contentRef: Ref<any> = ref(null);
@@ -13,9 +14,9 @@ function sendMessage() {
     window.$message.warning("Empty");
     return;
   }
-  messages.value.push("I: " + newMessage.value);
+  messages.push("I: " + newMessage.value);
   ObcsapiTalk(newMessage.value).then(text => {
-    messages.value.push("O: " + text);
+    messages.push("O: " + text);
     scrollToBottom()
   }).catch(e => {
     console.log(e);
