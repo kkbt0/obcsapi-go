@@ -52,7 +52,10 @@ func main() {
 	r.GET("/time", Greet)                  // 打招呼 测试使用 GET
 	r.GET("/info", InfoHandler)            // Obcsapi info
 	r.POST("/token", VerifyToken1Handler)  // 验证 Token1 有效性
-	r.Any("/api/wechat", WeChatMpHandlers) // wecheet 机器人 用于公众测试号
+	r.Any("/api/wechat", WeChatMpHandlers) // wechat 机器人 用于公众测试号
+
+	r.POST("/api/wechatmpmsg", Token2AuthMiddleware(), WeChatMpInfoHandler) // 公众测试号 模板消息通知
+	r.POST("/api/sendmail", Token2AuthMiddleware(), SendMailHandler)        // 邮件消息通知
 
 	r.GET("/api/sendtoken2mail", LimitMiddleware(), SendTokenHandler) // 请求将 token发送到 email GET 请求
 

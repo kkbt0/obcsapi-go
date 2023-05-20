@@ -207,7 +207,7 @@ func JwtHello(c *gin.Context) {
 }
 
 func MailTesterHandler(c *gin.Context) {
-	err := sendMail("测试邮件", "测试内容")
+	err := SendMail("测试邮件", "测试内容")
 	if err != nil {
 		c.Error(err)
 		c.String(500, err.Error())
@@ -238,4 +238,51 @@ func ObFileHanlder(c *gin.Context) {
 		return
 	}
 	c.Writer.Write(data)
+}
+
+type WeChatInfoStruct struct {
+	Content string `json:"content"`
+}
+
+func WeChatMpInfoHandler(c *gin.Context) {
+	var weChatInfoStruct WeChatInfoStruct
+	if c.ShouldBindJSON(&weChatInfoStruct) != nil {
+		c.String(400, "参数错误")
+		return
+	}
+	if weChatInfoStruct.Content == "" {
+		c.String(400, "参数错误")
+		return
+	}
+	err := WeChatTemplateMesseng(weChatInfoStruct.Content)
+	if err != nil {
+		c.Status(500)
+		c.Error(err)
+		return
+	}
+	c.Status(200)
+}
+
+type SendMailStruct struct {
+	Subject string `json:"subject"`
+	Content string `json:"content"`
+}
+
+func SendMailHandler(c *gin.Context) {
+	var sendMailStruct SendMailStruct
+	if c.ShouldBindJSON(&sendMailStruct) != nil {
+		c.String(400, "参数错误")
+		return
+	}
+	if sendMailStruct.Content == "" || sendMailStruct.Subject == "" {
+		c.String(400, "参数错误")
+		return
+	}
+	err := SendMail(sendMailStruct.Subject, sendMailStruct.Content)
+	if err != nil {
+		c.Status(500)
+		c.Error(err)
+		return
+	}
+	c.Status(200)
 }

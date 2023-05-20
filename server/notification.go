@@ -113,7 +113,7 @@ func DailyEmailReminder() error {
 	for i := 0; i < len(ansList); i++ {
 		ansList[i] = strings.ReplaceAll(ansList[i], "[ ]", "")
 	}
-	return sendMail(fmt.Sprintf("Obcsapi 每日邮件提醒 (%d)", len(ansList)-6), strings.Join(ansList, "<br>"))
+	return SendMail(fmt.Sprintf("Obcsapi 每日邮件提醒 (%d)", len(ansList)-6), strings.Join(ansList, "<br>"))
 }
 
 // 每分钟查询 发送到微信提醒 or Mail
@@ -154,9 +154,9 @@ func EveryMinReminder() error {
 		if len(emailAns) != 0 {
 			log.Println("Email Reminder", len(emailAns))
 			if len(emailAns) == 1 {
-				err = sendMail(fmt.Sprintf("Obcsapi 提醒: %s", emailAns[0]), "一个提醒<br>"+emailAns[0])
+				err = SendMail(fmt.Sprintf("Obcsapi 提醒: %s", emailAns[0]), "一个提醒<br>"+emailAns[0])
 			} else {
-				err = sendMail(fmt.Sprintf("Obcsapi 提醒 (%d)", len(emailAns)), strings.Join(emailAns, "<br>"))
+				err = SendMail(fmt.Sprintf("Obcsapi 提醒 (%d)", len(emailAns)), strings.Join(emailAns, "<br>"))
 			}
 			if err != nil {
 				log.Println(err)

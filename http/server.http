@@ -78,3 +78,15 @@ GET {{host}}/ HTTP/ 1.1
 GET {{host}}/time HTTP/ 1.1
 ### emailSendToken
 GET {{host}}/api/sendtoken2mail HTTP/ 1.1
+### WechatMp msg
+POST {{host}}/api/wechatmpmsg
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"以下是测试内容部分"}
+### Mail msg
+POST {{host}}/api/sendmail
+Token: {{token2}}
+Content-Type: application/json
+
+{"subject":"主题","content":"以下是测试内容部分"}

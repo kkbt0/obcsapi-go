@@ -263,6 +263,28 @@ Content-Type: application/json
 file_key 默认 `支持类文件/通用接口/20060102150405.md` 格式
 
 
+#### 消息通知接口
+
+程序提供两种可以通过 API 调用的通知方式。
+
+**！！！注意：微信模板消息施行掐头去尾，很有可能不好使！！！** 参考 [关于规范公众号模板消息的再次公告 2023 03 30](https://developers.weixin.qq.com/community/develop/doc/000a2ae286cdc0f41a8face4c51801?blockType=1&page=14#comment-list) 此外 5 月 4 日后中间的主内容中，单个字段内容不超过20个字，且不支持换行。
+
+```http
+### WechatMp 模板消息
+POST {{host}}/api/wechatmpmsg
+Token: {{token2}}
+Content-Type: application/json
+
+{"content":"以下是测试内容部分"}
+### Mail msg
+POST {{host}}/api/sendmail
+Token: {{token2}}
+Content-Type: application/json
+
+{"subject":"主题","content":"以下是测试内容部分"}
+```
+
+
 #### Public 公开文档功能
 
 以配置项中 `ob_daily_other_dir: 支持类文件/` 为例，在 `支持类文件/Public/`下的文档可以公开访问。如 `支持类文件/Public/test.md` 的访问路径为 `https://127.0.0.1:8900/public/test.md` 。仅支持 Markdown 文件，图片文件公开请使用图床功能。
@@ -610,4 +632,4 @@ Go 语言开发
  前端支持：Memos，勾选框（可能会搞乱原格式），画廊，图片上传，配置更新
  后端支持日记文件夹和文件格式配置
 
-4.1.4 微信对话模式: 自定义随机回复，可执行命令。支持文字或语音。
+4.1.4 微信对话模式: 自定义随机回复，可执行命令，支持文字或语音。新增两个消息通知接口。
