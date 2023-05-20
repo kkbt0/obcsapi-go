@@ -71,7 +71,7 @@ func WeChatMpHandlers(c *gin.Context) {
 func WeChatTextAndVoice(text string) (string, error) {
 	if WeChatMode == 0 { // 对话指令模式
 		return WeChatTalk(text)
-	} else if text == "对话模式" || text == "指令模式" || text == "对话模式。" || text == "指令模式。" || text == "Talk" {
+	} else if text == "对话模式" || text == "指令模式" || text == "命令模式" || text == "对话模式。" || text == "指令模式。" || text == "Talk" {
 		WeChatMode = 0
 		return "对话模式，输入 退出 返回输入模式", nil
 	} else {
