@@ -1,5 +1,5 @@
 name: obcsapi-go # 项目名称
-version: v4.1.4 # 项目版本
+version: v4.2.0 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
