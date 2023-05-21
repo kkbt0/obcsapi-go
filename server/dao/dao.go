@@ -16,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	_ "github.com/go-kivik/couchdb/v3"
 	"github.com/go-kivik/kivik/v3"
+	"github.com/studio-b12/gowebdav"
 )
 
 type DataSource int
@@ -23,13 +24,16 @@ type DataSource int
 var dataSource DataSource
 var sess *session.Session
 var couchDb *kivik.DB
-var webDavPath string
+var webDavDirPath string
+var webDavClient *gowebdav.Client
+var webDavPrePath string
 
 const (
 	Unknown DataSource = iota
 	S3
 	CouchDb
 	LocalStorage
+	WebDav
 )
 
 func init() {
@@ -57,7 +61,13 @@ func init() {
 	case 3:
 		log.Println("Data Source: Local (Use Webdav)")
 		dataSource = LocalStorage
-		webDavPath = "./webdav/" + tools.NowRunConfig.Webdav.ObLocalDir
+		// webDavPath is a LocalDir
+		webDavDirPath = "./webdav/" + tools.NowRunConfig.Webdav.ObLocalDir
+	case 4:
+		log.Println("Data Source: WebDav")
+		dataSource = WebDav
+		webDavClient = gowebdav.NewClient(tools.ConfigGetString("web_dav_url"), tools.ConfigGetString("web_dav_username"), tools.ConfigGetString("web_dav_password"))
+		webDavPrePath = tools.ConfigGetString("web_dav_dir")
 	default:
 		log.Panicln("Data Source: Unknown")
 		dataSource = Unknown
@@ -83,7 +93,9 @@ func GetTextObject(text_file_key string) (string, error) {
 	case CouchDb:
 		return CouchDbGetTextObject(couchDb, text_file_key)
 	case LocalStorage:
-		return LocalStorageGetTextObject(webDavPath, text_file_key)
+		return LocalStorageGetTextObject(webDavDirPath, text_file_key)
+	case WebDav:
+		return WebDavGetTextObject(webDavClient, webDavPrePath, text_file_key)
 	}
 	return "", fmt.Errorf("err GetTextObject Data Source: Unknown")
 }
@@ -96,7 +108,9 @@ func GetObject(fileKey string) ([]byte, error) {
 	case CouchDb:
 		return CouchDbGetObject(couchDb, fileKey)
 	case LocalStorage:
-		return LocalStorageGetObject(webDavPath, fileKey)
+		return LocalStorageGetObject(webDavDirPath, fileKey)
+	case WebDav:
+		return WebDavGetObject(webDavClient, webDavPrePath, fileKey)
 	}
 	return nil, fmt.Errorf("err GetTextObject Data Source: Unknown")
 }
@@ -114,7 +128,9 @@ func CheckObject(file_key string) (bool, error) {
 		exist, _ := CouchDbCheckObject(couchDb, file_key)
 		return exist, nil
 	case LocalStorage:
-		return LocalStorageCheckObject(webDavPath, file_key)
+		return LocalStorageCheckObject(webDavDirPath, file_key)
+	case WebDav:
+		return WebDavCheckObject(webDavClient, webDavPrePath, file_key)
 	}
 	return false, fmt.Errorf("err CheckObject Data Source: Unknown")
 }
@@ -127,7 +143,9 @@ func ObjectStore(file_key string, file_bytes []byte) error {
 	case CouchDb:
 		return CouchDbFileStorage(couchDb, file_key, file_bytes)
 	case LocalStorage:
-		return LocalStorageObjectStore(webDavPath, file_key, file_bytes)
+		return LocalStorageObjectStore(webDavDirPath, file_key, file_bytes)
+	case WebDav:
+		return WebDavObjectStorage(webDavClient, webDavPrePath, file_key, file_bytes)
 	}
 	return fmt.Errorf("err Data Source: Unknown")
 }
@@ -140,7 +158,9 @@ func MdTextStore(file_key string, text string) error {
 	case CouchDb:
 		return CouchDbMdFiletorage(couchDb, file_key, text)
 	case LocalStorage:
-		return LocalStorageObjectStore(webDavPath, file_key, []byte(text))
+		return LocalStorageObjectStore(webDavDirPath, file_key, []byte(text))
+	case WebDav:
+		return WebDavObjectStorage(webDavClient, webDavPrePath, file_key, []byte(text))
 	}
 	return fmt.Errorf("err Data Source: Unknown")
 }
@@ -153,7 +173,9 @@ func TextAppend(file_key string, text string) error {
 	case CouchDb:
 		return CouchDbTextAppend(couchDb, file_key, text)
 	case LocalStorage:
-		return LocalStorageTextAppend(webDavPath, file_key, text)
+		return LocalStorageTextAppend(webDavDirPath, file_key, text)
+	case WebDav:
+		return WebDavTextAppend(webDavClient, webDavPrePath, file_key, text)
 	}
 	return fmt.Errorf("err TextAppend Data Source: Unknown")
 }
@@ -166,7 +188,9 @@ func DailyTextAppend(text string) error {
 	case CouchDb:
 		return CouchDbDailyTextAppend(couchDb, text)
 	case LocalStorage:
-		return LocalStorageDailyTextAppend(webDavPath, text)
+		return LocalStorageDailyTextAppend(webDavDirPath, text)
+	case WebDav:
+		return WebDavDailyTextAppend(webDavClient, webDavPrePath, text)
 	}
 	return fmt.Errorf("err DailyTextAppend Data Source: Unknown")
 }
@@ -190,18 +214,10 @@ func DailyTextAppendMemos(text string) error {
 	} else {
 		text = fmt.Sprintf("\n- %s %s", tools.TimeFmt("15:04"), text)
 	}
-	switch dataSource {
-	case S3:
-		return S3DailyTextAppend(sess, text)
-	case CouchDb:
-		return CouchDbDailyTextAppend(couchDb, text)
-	case LocalStorage:
-		return LocalStorageDailyTextAppend(webDavPath, text)
-	}
-	return fmt.Errorf("err DailyTextAppendMemos Data Source: Unknown")
+	return DailyTextAppend(text)
 }
 
-// 获取今日日记
+// 获取今日日记 废弃
 func GetTodayDaily() string {
 	switch dataSource {
 	case S3:
@@ -209,12 +225,14 @@ func GetTodayDaily() string {
 	case CouchDb:
 		return CouchDbGetTodayDaily(couchDb)
 	case LocalStorage:
-		return LocalStorageGetTodayDaily(webDavPath)
+		return LocalStorageGetTodayDaily(webDavDirPath)
+	case WebDav:
+		return WebDavGetTodayDaily(webDavClient, webDavPrePath)
 	}
 	return "没有预料的情况，可能是数据源出现了问题"
 }
 
-// 获取今日日记列表，只有一个元素
+// 获取今日日记列表，只有一个元素 废弃
 func GetTodayDailyList() []Daily {
 	switch dataSource {
 	case S3:
@@ -222,13 +240,15 @@ func GetTodayDailyList() []Daily {
 	case CouchDb:
 		return CouchDbGetTodayDailyList(couchDb)
 	case LocalStorage:
-		return LocalStorageGetTodayDailyList(webDavPath)
+		return LocalStorageGetTodayDailyList(webDavDirPath)
+	case WebDav:
+		return WebDavGetTodayDailyList(webDavClient)
 	}
 	var ans []Daily
 	return ans
 }
 
-// 获取今日日记列表，只有一个元素，对 url 进行了相应处理，可在前端显示
+// 获取今日日记列表，只有一个元素，对 url 进行了相应处理，可在前端显示 废弃
 func Get3DaysDailyList() [3]Daily {
 	switch dataSource {
 	case S3:
@@ -236,7 +256,9 @@ func Get3DaysDailyList() [3]Daily {
 	case CouchDb:
 		return CouchDbGet3DaysDailyList(couchDb)
 	case LocalStorage:
-		return LocalStorageGet3DaysDailyList(webDavPath)
+		return LocalStorageGet3DaysDailyList(webDavDirPath)
+	case WebDav:
+		return WebDavGet3DaysDailyList(webDavClient, webDavPrePath)
 	}
 	var ans [3]Daily
 	return ans
@@ -249,7 +271,9 @@ func Get3DaysList() [3]string {
 	case CouchDb:
 		return CouchDbGet3DaysList(couchDb)
 	case LocalStorage:
-		return LocalStorageGet3DaysList(webDavPath)
+		return LocalStorageGet3DaysList(webDavDirPath)
+	case WebDav:
+		return WebDavGet3DaysList(webDavClient, webDavPrePath)
 	}
 	var ans [3]string
 	return ans
@@ -263,7 +287,9 @@ func GetMoreDaliyMdText(addDateDay int) (string, error) {
 	case CouchDb:
 		return CouchDbGetMoreDaliyMdText(couchDb, addDateDay)
 	case LocalStorage:
-		return LocalStorageGetMoreDaliyMdText(webDavPath, addDateDay)
+		return LocalStorageGetMoreDaliyMdText(webDavDirPath, addDateDay)
+	case WebDav:
+		return WebDavGetMoreDaliyMdText(webDavClient, webDavPrePath, addDateDay)
 	}
 	return "", errors.New("没有预料的情况，可能是数据源出现了问题")
 }
@@ -277,6 +303,8 @@ func MdShowText(text string) string {
 		return ObFileUrl(text)
 	case LocalStorage:
 		return ObFileUrl(text)
+	case WebDav:
+		return ObFileUrl(text) // 其实 Basic Auth 也可以获取，不过 markdown 预览不支持
 	}
 	return text
 }

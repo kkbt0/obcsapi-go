@@ -108,6 +108,9 @@ func GetReminderFromString(text string) (string, error) {
 			}
 			err = TextAppend(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+text+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
 			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
+		} else {
+			err = DailyTextAppendMemos(text)
+			r_str = "监测到提醒任务，未能提取时间。已保存"
 		}
 
 	} else {

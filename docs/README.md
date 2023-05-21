@@ -1,6 +1,6 @@
 # Obsidian Cloud Storage API 文档
 
-Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the Obsidian library with the help of the Obsidian plugin Remotely-Save plugin, S3 mode, or Self-hosted LiveSync (ex:Obsidian-livesync) plugin CouchDb mode. peculiarity
+Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save messages to the Obsidian library with the help of the Obsidian plugin Remotely-Save plugin, or Self-hosted LiveSync (ex:Obsidian-livesync) plugin CouchDb mode. peculiarity
 
 - WeChat MP to Obsidian
 - Support for SimpRead Webook to crop web articles
@@ -10,7 +10,7 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 - A simple graph bed with a command line upload tool. <sup>1</sup>
 - SCF or Dokcer deployment
 
-基于 Obsidian S3 存储或 CouchDb 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，S3 方式，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。特点
+基于 Obsidian S3 存储， CouchDb ，本地存储和WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。特点
 
 - 微信测试号 微信到 Obsidian
 - 支持简悦 SimpRead Webook 裁剪网页文章
@@ -41,6 +41,7 @@ Back-end APIs based on Obsidian S3 storage or CouchDb can save messages to the O
 | S3 对象存储                              | √                | √              |
 | CouchDb                                  | ×                | √              |
 | Local (Webdav Server)<sup>5</sup>        | ×                | √              |
+| Webdav                                   | ×                | √              |
 | Web 网页支持                             | √                | √ <sup>6</sup> |
 | 图床  和 CLI上传工具                     | ×                | √              |
 | 邮件发送登录链接                         | ×                | √              |

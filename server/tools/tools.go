@@ -172,7 +172,7 @@ func RandomString(n int) string {
 
 func BdGeneralBasicOcr(filePath string) ([]WordResult, error) {
 	// OCR START https://ai.baidu.com/ai-doc/OCR/zk3h7xz52
-	ocrUrl := fmt.Sprintf("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=%s", ConfigGetString("bd_ocr_access_token"))
+	ocrUrl := fmt.Sprintf("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=%s", NowRunConfig.ImageHosting.BdOcrAccessToken)
 	//  Read file and post # image url pdf_file
 	f, err := os.Open(filePath)
 	if err != nil {
