@@ -17,7 +17,7 @@ front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
 backend_url_full: http://localhost:8900
 
-# S3 -> 1 ; CouchDb -> 2 ; Local -> 3
+# S3 -> 1 ; CouchDb -> 2 ; Local -> 3 ; WebDav -> 4
 data_source: 3
 
 # CouchDb 配置
@@ -30,6 +30,12 @@ secret_key: xxxxxxxxxxxxxx
 end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
+
+# WeDav 配置
+web_dav_url: https://dav.jianguoyun.com/dav/
+web_dav_dir: note/
+web_dav_username: xxxxxxx@qq.com
+web_dav_password: xxxxxxxxxxxxxxxx
 
 
 # wechat 测试号/公众号

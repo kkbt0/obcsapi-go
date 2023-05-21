@@ -1,5 +1,9 @@
 ## Go 语言版本
 
+基于 Obsidian S3 存储， CouchDb ，本地存储和WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。
+
+如果你不使用 Obsidian ，也可以借助坚果云，或者 WebDav 进行文件同步，配合其他文本编辑器使用。
+
 见 [https://gitee.com/kkbt/obcsapi-go](https://gitee.com/kkbt/obcsapi-go)
 
 部分说明请见 python 版本说明更详细一些
@@ -62,14 +66,14 @@ token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 # 前端登录账户密码 有效时间 720h
 user: kkbt 
 password: password
+general_allowed: false
 
 # 前端后地址 邮件中登录链接会用到
 front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
+backend_url_full: http://localhost:8900
 
-
-
-# S3 -> 1 ; CouchDb -> 2 ; Local -> 3
+# S3 -> 1 ; CouchDb -> 2 ; Local -> 3 ; WebDav -> 4
 data_source: 3
 
 # CouchDb 配置
@@ -82,6 +86,12 @@ secret_key: xxxxxxxxxxxxxx
 end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
+
+# WeDav 配置
+web_dav_url: https://dav.jianguoyun.com/dav/
+web_dav_dir: note/
+web_dav_username: xxxxxxx@mail.com
+web_dav_password: xxxxxxxxxxxxxxxx
 
 
 # wechat 测试号/公众号
@@ -636,3 +646,5 @@ Go 语言开发
  后端支持日记文件夹和文件格式配置
 
 4.1.4 微信/前端对话模式: 自定义随机回复，可执行命令，支持文字或语音。新增两个消息通知接口。
+
+4.2.0 支持 WebDav 作为数据源
