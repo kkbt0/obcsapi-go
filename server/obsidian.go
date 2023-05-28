@@ -4,66 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	. "obcsapi-go/dao"
 	"obcsapi-go/tools"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/gin-gonic/gin"
 )
-
-// Token1
-func ObTodayHandler(c *gin.Context) {
-	switch c.Request.Method {
-	case "OPTIONS":
-		c.Status(200)
-	case "GET":
-		// w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		data, _ := json.Marshal(GetTodayDailyList())
-		c.String(200, string(data))
-	case "POST":
-		decoder := json.NewDecoder(c.Request.Body)
-		var memosData MemosData
-		err := decoder.Decode(&memosData)
-		if err != nil {
-			log.Println(err)
-		}
-		err = DailyTextAppendMemos(memosData.Content)
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
-		c.String(200, "Success")
-	default:
-		c.Status(404)
-	}
-}
-
-// Token1
-func ObPostTodayAllHandler(c *gin.Context) {
-	decoder := json.NewDecoder(c.Request.Body)
-	var memosData MemosData
-	err := decoder.Decode(&memosData)
-	if err != nil {
-		c.Error(err)
-	} else {
-		MdTextStore(GetDailyFileKey(), memosData.Content)
-	}
-	c.String(200, "Success")
-}
-
-// Tokne1
-func ObGet3DaysHandler(c *gin.Context) {
-	three_list := Get3DaysDailyList()
-	data, err := json.Marshal(three_list)
-	if err != nil {
-		c.Status(500)
-		c.Error(err)
-		return
-	}
-	c.String(200, string(data))
-}
 
 // Token2 静读天下使用的 API
 func MoodReaderHandler(c *gin.Context) {

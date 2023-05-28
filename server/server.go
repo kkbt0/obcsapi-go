@@ -58,14 +58,6 @@ func main() {
 	r.POST("/api/wechatmpmsg", Token2AuthMiddleware(), WeChatMpInfoHandler) // 公众测试号 模板消息通知
 	r.POST("/api/sendmail", Token2AuthMiddleware(), SendMailHandler)        // 邮件消息通知
 
-	r.GET("/api/sendtoken2mail", LimitMiddleware(), SendTokenHandler) // 请求将 token发送到 email GET 请求
-
-	obGroup1 := r.Group("/ob", Token1AuthMiddleware()) // 前端使用
-	{
-		obGroup1.Any("today", ObTodayHandler)             // Obsidian Token1 GET/POST 今日日记
-		obGroup1.POST("today/all", ObPostTodayAllHandler) // Obsidian Token1 POST 整片修改今日日记
-		obGroup1.GET("recent", ObGet3DaysHandler)         // Obsidian Token1 GET 近三天日记
-	}
 	obGroup2 := r.Group("/ob", Token2AuthMiddleware())
 	{
 		obGroup2.POST("fv", fvHandler)                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片

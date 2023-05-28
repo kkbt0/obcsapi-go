@@ -30,16 +30,6 @@ func BaseHandler(c *gin.Context) {
 	c.String(404, "404")
 }
 
-// NewCaptcha 生成或更新 token 邮件发送登录链接 直接附带 token
-func SendTokenHandler(c *gin.Context) {
-	log.Println("Succeed Send Token")
-	// 修改 Token1
-	tools.ModTokenFile(tools.Token{TokenString: tools.GengerateToken(32), GenerateTime: tools.TimeFmt("2006-01-02 15:04:05")}, "token1")
-	// 发送所有 Token 消息
-	emailSendToken()
-	c.String(200, "Succeed Send Token")
-}
-
 // 验证 Token 1 有效性
 
 func VerifyToken1Handler(c *gin.Context) {

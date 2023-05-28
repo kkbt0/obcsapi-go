@@ -63,33 +63,6 @@ func WebDavGetTodayDaily(webDavClient *gowebdav.Client, prePath string) string {
 	return ans
 }
 
-func WebDavGetTodayDailyList(webDavClient *gowebdav.Client) []Daily {
-	day := GetTodayDaily()
-	return []Daily{{
-		Date:       tools.TimeFmt("2006-01-02"),
-		ServerTime: tools.TimeFmt("200601021504"),
-		Data:       day,
-		MdShowData: day, // TODO 图像 用 Base64 代替
-	}}
-}
-
-func WebDavGet3DaysDailyList(webDavClient *gowebdav.Client, prePath string) [3]Daily {
-	var ans [3]Daily
-	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := WebDavGetTextObject(webDavClient, prePath, tools.NowRunConfig.DailyFileKeyMore(i-2))
-		if err != nil {
-			log.Println(err)
-		}
-		ans[i] = Daily{
-			Data:       day,
-			MdShowData: day, // TODO 图像 用 Base64 代替
-			Date:       tools.NowRunConfig.DailyDateKeyMore(i - 2),
-			ServerTime: tools.TimeFmt("200601021504"),
-		}
-	}
-	return ans
-}
-
 func WebDavGet3DaysList(webDavClient *gowebdav.Client, prePath string) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0

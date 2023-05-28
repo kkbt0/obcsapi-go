@@ -76,8 +76,6 @@ GET {{host}}/info
 GET {{host}}/ HTTP/ 1.1
 ###
 GET {{host}}/time HTTP/ 1.1
-### emailSendToken
-GET {{host}}/api/sendtoken2mail HTTP/ 1.1
 ### WechatMp msg
 POST {{host}}/api/wechatmpmsg
 Token: {{token2}}

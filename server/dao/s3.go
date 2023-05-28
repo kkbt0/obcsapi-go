@@ -116,35 +116,6 @@ func S3GetTodayDaily(sess *session.Session) string {
 	return tem
 }
 
-// 获取今日日记列表，只有一个元素 对 url 进行了相应处理，可在前端显示
-func S3GetTodayDailyList(sess *session.Session) []Daily {
-	json_data := S3GetTodayDaily(sess)
-	return []Daily{{
-		Date:       tools.TimeFmt("2006-01-02"),
-		ServerTime: tools.TimeFmt("200601021504"),
-		Data:       json_data,
-		MdShowData: string(S3ReplaceMdUrl2PreSignedUrl([]byte(json_data))),
-	}}
-}
-
-func S3Get3DaysDailyList(sess *session.Session) [3]Daily {
-	// fmt.Println(time.Now().In(cstZone).Format("2006-01-02 15:04:05"))
-	var ans [3]Daily
-	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := S3GetTextObject(sess, tools.NowRunConfig.DailyFileKeyMore(i-2))
-		if err != nil {
-			fmt.Println(err)
-		}
-		ans[i] = Daily{
-			Data:       day,
-			MdShowData: string(S3ReplaceMdUrl2PreSignedUrl([]byte(day))),
-			Date:       tools.NowRunConfig.DailyDateKeyMore(i - 2),
-			ServerTime: tools.TimeFmt("200601021504"),
-		}
-	}
-	return ans
-}
-
 func S3Get3DaysList(sess *session.Session) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0

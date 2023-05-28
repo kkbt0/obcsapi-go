@@ -13,11 +13,6 @@ python 老版本 https://gitee.com/kkbt/obsidian-csapi
 支持 fv悬浮球文字图片分享保存  
 静读天下 MoonReader 高亮标注 仿 ReadWise API  
 通用 http api  
-邮件发送登录链接
-
-
-实现了一个邮件发送登录链接，从而实现前端登录。
-
 
 ## 部署
 
@@ -25,8 +20,6 @@ python 老版本 https://gitee.com/kkbt/obsidian-csapi
 
 
 ## 展示
-
-后台发送的邮件
 
 ![](docs/images/Snipaste_2023-05-09_21-21-34.png)
 

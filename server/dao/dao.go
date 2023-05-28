@@ -232,38 +232,6 @@ func GetTodayDaily() string {
 	return "没有预料的情况，可能是数据源出现了问题"
 }
 
-// 获取今日日记列表，只有一个元素 废弃
-func GetTodayDailyList() []Daily {
-	switch dataSource {
-	case S3:
-		return S3GetTodayDailyList(sess)
-	case CouchDb:
-		return CouchDbGetTodayDailyList(couchDb)
-	case LocalStorage:
-		return LocalStorageGetTodayDailyList(webDavDirPath)
-	case WebDav:
-		return WebDavGetTodayDailyList(webDavClient)
-	}
-	var ans []Daily
-	return ans
-}
-
-// 获取今日日记列表，只有一个元素，对 url 进行了相应处理，可在前端显示 废弃
-func Get3DaysDailyList() [3]Daily {
-	switch dataSource {
-	case S3:
-		return S3Get3DaysDailyList(sess)
-	case CouchDb:
-		return CouchDbGet3DaysDailyList(couchDb)
-	case LocalStorage:
-		return LocalStorageGet3DaysDailyList(webDavDirPath)
-	case WebDav:
-		return WebDavGet3DaysDailyList(webDavClient, webDavPrePath)
-	}
-	var ans [3]Daily
-	return ans
-}
-
 func Get3DaysList() [3]string {
 	switch dataSource {
 	case S3:

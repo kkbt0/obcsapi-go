@@ -44,7 +44,6 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 | Webdav                                   | ×                | √              |
 | Web 网页支持                             | √                | √ <sup>6</sup> |
 | 图床  和 CLI上传工具                     | ×                | √              |
-| 邮件发送登录链接                         | ×                | √              |
 | 公开文档功能                             | ×                | √              |
 | 邮件/微信任务提醒                        | ×                | √              |
 | Uniapp 前端                              | ×                | √              |

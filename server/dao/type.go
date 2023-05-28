@@ -12,12 +12,6 @@ type MoodReaderHighlights struct {
 	Author string `json:"author"`
 	Note   string `json:"note"`
 }
-type Daily struct {
-	Data       string `json:"data"`
-	MdShowData string `json:"md_show_data"`
-	Date       string `json:"date"`
-	ServerTime string `json:"serverTime"`
-}
 
 type UrlStruct struct {
 	Url string `json:"url"`
@@ -27,7 +21,7 @@ type PostJson struct {
 	Content string `json:"content"`
 }
 
-// Couch Json struct
+// CouchDB Json struct
 
 type FileDoc struct {
 	ID       string   `json:"_id"`
@@ -40,6 +34,7 @@ type FileDoc struct {
 	Deleted  bool     `json:"deleted"`
 }
 
+// CouchDB Json struct
 type LeftDoc struct {
 	ID   string `json:"_id"`
 	Rev  string `json:"_rev,omitempty"`

@@ -29,19 +29,17 @@
 
 ### Token 说明
 
-后端定时更换 Token 。实现了一个邮件发送登录链接，从而实现前端登录。
+后端定时更换 Token 。
 
 两种 token 
-1. token1 包括增删改查 （有效期内可用，配置中写明邮件，发送到邮箱从而获取有效 token）。可设置有效期
+1. token1 （弃用）
 2. token2 用于其他服务调用，无限期可用
-3. 运行时，会在终端显示
+3. 运行时，会在终端显示，或者查看本地文件获取
 
 ### 部署说明
 
-复制 config.examples.yaml 为 config.yaml 。部署时建议把项目文件夹内文件都复制过去。（至少包含 template , token 两个文件夹中，及其相关内容。 tem.txt 和 config.yaml 两个文件。
+下载 releases 提供的包，复制 config.examples.yaml 为 config.yaml ，修改账户密码和其他配置，然后在 Linux 环境运行 server 文件。如果是云函数环境，可以参考和运行 fc-run.sh ，进行部署。
 
-
-现在这玩意算是能用，但是这个 token 系统还称不上好用。
 
 部署方法
 
@@ -133,7 +131,7 @@ go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
 
 阿里云云函数选择挂载 OSS 时，如挂载到 函数计算`/app/` 目录。需要先将压缩包内除了 server config.yaml fc-run.sh 剩余文件放到 OSS 相应目录中。
 
-截止 2023 04 09 阿里云 云函数 不支持 webdav 一些方法，所以无法使用 Wevdav。
+截止 2023 04 09 阿里云云函数不支持 webdav 一些方法，所以无法使用 Wevdav 服务。
 
 #### Docker
 
@@ -155,10 +153,6 @@ docker restart myObcsapi4.2.0
 | 方式     |      验证      | 路径                | 说明                        |
 | -------- | :------------: | ------------------- | --------------------------- |
 | Any      | WeChat Mp 验证 | /api/wechat         | 微信测试号使用              |
-| GET      |       /        | /api/sendtoken2mail | 邮件发送 token              |
-| GET/POST |     token1     | /ob/today           | Web 使用                    |
-| POST     |     token1     | /ob/today/all       | Web 使用                    |
-| GET      |     token1     | /ob/recent          | Web 使用                    |
 | POST     |     token2     | /ob/fv              | fv 悬浮球自定义任务图文分享 |
 | POST     |     token2     | /ob/sr/webhook      | 简悦 Webhook                |
 | POST     |     token2     | /ob/general         | General 通用接口            |
@@ -376,9 +370,6 @@ O: 必定可以匹配的到的。可以用于兜底，亦可以接入一个其�
 - 不要使用微信自带的表情符号，请使用输入法表情。
 - 如果微信输入框换行或分段，只会在这一条消息最开始有 `- 13:11 `。也就是说，第二行、第二段不会在 Memos 插件中显示。
 
-#### 邮件发送 
-
-访问 /api/sendtoken2mail 路径，这个路径大约 3 天可以访问一次。会更新 token1 并发送邮件到指定邮箱。
 
 #### 任务提醒
 
@@ -593,7 +584,7 @@ Go 语言开发
 - dao/type.go 一些 struct 定义
 - static/* 前端文件
 - template/* 前端文件
-- token/token1 存储 token1 前端 token ，有效期取决于配置文件
+- token/token1 存储 token1 前端 token ，有效期取决于配置文件。(弃用)
 - token/token2 存储只发送 token2 用于一些只发送的其他第三方程序 api、
 - tools/token.go Token 相关代码 。Token 的生成，修改，验证代码
 - tools/tools.go 一些辅助代码

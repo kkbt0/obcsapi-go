@@ -278,33 +278,6 @@ func CouchDbGetTodayDaily(db *kivik.DB) string {
 	return ans
 }
 
-func CouchDbGetTodayDailyList(db *kivik.DB) []Daily {
-	day := GetTodayDaily()
-	return []Daily{{
-		Date:       tools.TimeFmt("2006-01-02"),
-		ServerTime: tools.TimeFmt("200601021504"),
-		Data:       day,
-		MdShowData: day, // TODO 图像 用 Base64 代替
-	}}
-}
-
-func CouchDbGet3DaysDailyList(db *kivik.DB) [3]Daily {
-	var ans [3]Daily
-	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := CouchDbGetTextObject(db, tools.NowRunConfig.DailyFileKeyMore(i-2))
-		if err != nil {
-			log.Println(err)
-		}
-		ans[i] = Daily{
-			Data:       day,
-			MdShowData: day, // TODO 图像 用 Base64 代替
-			Date:       tools.NowRunConfig.DailyDateKeyMore(i - 2),
-			ServerTime: tools.TimeFmt("200601021504"),
-		}
-	}
-	return ans
-}
-
 func CouchDbGet3DaysList(db *kivik.DB) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
