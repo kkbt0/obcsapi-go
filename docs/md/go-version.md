@@ -1,10 +1,14 @@
 ## Go 语言版本
 
-基于 Obsidian S3 存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。
+基于 Obsidian S3 存储， CouchDb ，本地存储和WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。
 
 如果你不使用 Obsidian ，也可以借助坚果云，或者 WebDav 进行文件同步，配合其他文本编辑器使用。
 
 见 [https://gitee.com/kkbt/obcsapi-go](https://gitee.com/kkbt/obcsapi-go)
+
+部分说明请见 python 版本说明更详细一些
+
+若有更高性能需求，可自行修改 golang 源码，并编译打包。不过 golang 功能要少一些（没有收藏微信文章功能）。新特性：可以发送邮件发送登录链接，这样配合 token 的自动失效能稍微安全一些，不过我不太擅长前端，很简陋。
 
 
 ![](../images/Snipaste_2023-05-09_21-21-34.png)
