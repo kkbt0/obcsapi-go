@@ -39,10 +39,3 @@ python 老版本 https://gitee.com/kkbt/obsidian-csapi
 
 ![](docs/images/Snipaste_2023-05-09_21-26-13.png)
 
-
-测试网站
-```js
-fetch('https://jsonplaceholder.typicode.com/todos/1')
-      .then(response => response.json())
-      .then(json => console.log(json))
-```
