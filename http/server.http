@@ -13,28 +13,6 @@ Content-Type: application/json
 }
 
 ################################
-### Ob Today Get
-GET {{host}}/ob/today HTTP/ 1.1
-Token:  {{token1}}
-### Ob Today Post
-POST  {{host}}/ob/today HTTP/ 1.1
-Token:  {{token1}}
-Content-Type: application/json
-
-{"content":" New From Test"}
-### Ob TodayAll Post
-POST {{host}}/ob/today/all HTTP/ 1.1
-Token:  {{token1}}
-Content-Type: application/json
-
-{"content":" All Str\n"}
-### Ob 3 Days Get
-OPTIONS  {{host}}/ob/recent HTTP/ 1.1
-###
-GET {{host}}/ob/recent HTTP/ 1.1
-Token:  {{token1}}
-
-### 
 POST {{host}}/ob/general
 Token: {{token2}}
 Content-Type: application/json

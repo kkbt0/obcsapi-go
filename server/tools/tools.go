@@ -61,7 +61,7 @@ func CheckFiles() {
 	_, err = os.Stat("token/token1")
 	if err != nil {
 		if os.IsNotExist(err) {
-			ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: TimeFmt("2006-01-02 15:04:05")}, "token1")
+			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "30s", VerifyMode: "Token"}, "token1")
 		} else {
 			log.Println(err)
 			log.Panicln("Error: Stat token/token1")
@@ -71,7 +71,7 @@ func CheckFiles() {
 	if err != nil {
 		if os.IsNotExist(err) {
 			time.Sleep(time.Duration(3) * time.Millisecond)
-			ModTokenFile(Token{TokenString: GengerateToken(16), GenerateTime: TimeFmt("2006-01-02 15:04:05")}, "token2")
+			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "876000h", VerifyMode: "Token"}, "token2")
 		} else {
 			log.Println(err)
 			log.Panicln("Error: Stat token/token2")

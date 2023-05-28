@@ -8,10 +8,16 @@ import (
 	"time"
 )
 
-// 用于存储
+// 用于存储 Token
+//
+// VerifyMode: Authentication Token Query(token) (可以从对话模式编写bash脚本获取本地token文件内容)
+//
+// LiveHours == "" or error ==> 0s
 type Token struct {
 	TokenString  string `json:"token"`
 	GenerateTime string `json:"generate_time"`
+	LiveTime     string `json:"live_time"`
+	VerifyMode   string `json:"verify_mode"`
 }
 
 // 用于 http json 格式解析
@@ -22,7 +28,7 @@ type TokenFromJSON struct {
 const allowChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 // 生成随机 token
-func GengerateToken(n int) string {
+func GengerateTokenString(n int) string {
 	rand.Seed(time.Now().UnixMilli()) // 保证每秒生成不同的随机 token  , unix 时间戳，ms
 	ans := make([]byte, n)
 	for i := range ans {
@@ -61,17 +67,16 @@ func VerifyToken1(inToken string) bool {
 		log.Println("Token Get Error:", err)
 		return false
 	}
-	nowTime, err := time.Parse("2006-01-02 15:04:05", TimeFmt("2006-01-02 15:04:05"))
-	if err != nil {
-		log.Println(err)
-		return false
-	}
+	nowTime, _ := time.Parse("2006-01-02 15:04:05", TimeFmt("2006-01-02 15:04:05"))
 	rightTokenTime, err := time.Parse("2006-01-02 15:04:05", rightToken.GenerateTime)
 	if err != nil {
 		log.Println(err)
 		return false
 	}
-	liveTime, _ := time.ParseDuration(ConfigGetString("token1_live_time"))
+	liveTime, _ := time.ParseDuration(rightToken.LiveTime)
+	if err != nil {
+		log.Println(err)
+	}
 	// log.Println(nowTime, rightTokenTime.Add(liveTime))
 	// 验证 Token 相符合 且 现在时间 < 生成时间 + 存活时间
 	if inToken == rightToken.TokenString && nowTime.Before(rightTokenTime.Add(liveTime)) {
