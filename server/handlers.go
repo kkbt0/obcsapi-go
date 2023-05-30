@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -28,23 +27,6 @@ func Greet(c *gin.Context) {
 
 func BaseHandler(c *gin.Context) {
 	c.String(404, "404")
-}
-
-// 验证 Token 1 有效性
-
-func VerifyToken1Handler(c *gin.Context) {
-	// 解析 token json {"token":"sometoken1"}
-	decoder := json.NewDecoder(c.Request.Body)
-	var tokenFromJSON tools.TokenFromJSON
-	err := decoder.Decode(&tokenFromJSON)
-	if err != nil {
-		fmt.Println("JSON Decoder Error:", err)
-	}
-	if tools.VerifyToken1(tokenFromJSON.TokenString) {
-		c.String(200, "a right Token")
-	} else {
-		c.String(200, "a error Token")
-	}
 }
 
 // 一个简易图床
@@ -275,4 +257,39 @@ func SendMailHandler(c *gin.Context) {
 		return
 	}
 	c.Status(200)
+}
+
+func GetMentionHandler(c *gin.Context) {
+	mention := tools.NowRunConfig.Mention
+	tools.Debug(mention)
+	c.JSON(200, mention)
+}
+
+func UpdateBdAccessTokenHandler(c *gin.Context) {
+	accessToken, err := tools.BdGetAccessToken(tools.NowRunConfig.BdOcr.ApiKey, tools.NowRunConfig.BdOcr.ApiSecret)
+	if err != nil {
+		log.Println(err)
+		c.JSON(500, tools.RJson{
+			Code:    500,
+			Msg:     "服务器请求错误",
+			Success: false,
+		})
+	}
+	msg := "请求成功，但出现错误"
+	if accessToken.AccessToken != "" {
+		tools.NowRunConfig.ImageHosting.BdOcrAccessToken = accessToken.AccessToken
+		err := tools.UpdateConfig(tools.NowRunConfig)
+		if err != nil {
+			c.JSON(500, tools.RJson{
+				Code:    200,
+				Success: false,
+			})
+		}
+		msg = "请求并更新成功"
+	}
+	c.JSON(200, tools.RJson{
+		Code:    200,
+		Msg:     msg,
+		Success: true,
+	})
 }

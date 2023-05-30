@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { NThing, NInput, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar } from "naive-ui";
+import { NThing, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar,NMention } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { ref, onUpdated } from "vue";
 import { memosData } from "@/stores/memos";
 import marked from "marked";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
+import { LocalSetting } from "@/stores/setting"
 
 // filekey: string, line: number, oldText: string, newText: string
 const props = defineProps<{
@@ -183,7 +184,7 @@ function handleSelect(key: string | number) {
 <template>
     <n-thing @dblclick="moreAction">
         <template #header v-if="memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
-            <small>{{ dayKey }} {{ memosShowText.slice(2, 7) }}</small>
+            <small>{{ dayKey }} <div style="font-weight: bold;display:inline;">{{ memosShowText.slice(2, 7) }}</div></small>
         </template>
         <template #header>
             <small>{{ dayKey }}</small>
@@ -227,8 +228,8 @@ function handleSelect(key: string | number) {
 
         <template #description v-if="edit">
             <n-space vertical>
-                <n-input v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
-                    :autosize="{ minRows: 3 }" />
+                <n-mention v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
+                    :autosize="{ minRows: 3 }" :options="LocalSetting().mention" :prefix="['#']"/>
                 <n-space justify="space-between">
                     <n-button quaternary type="error" @click="delMemos">Del</n-button>
                     <n-button quaternary type="info" @click="showUpload = !showUpload">Img</n-button>

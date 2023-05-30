@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import MemosConfig from "@/components/obcsapi/MemosConfig.vue";
 import { useRouter } from "vue-router";
-import { ref,onMounted } from "vue";
-import { NTabPane, NTabs, NInputNumber, NSelect } from "naive-ui";
+import { ref, onMounted, type Ref } from "vue";
+import { NTabPane, NTabs, NInputNumber, NSelect, NDynamicInput } from "naive-ui";
 import { LocalSetting } from "@/stores/setting"
-
+import { ObcsapiConfigPost } from "@/api/obcsapi"
 
 const router = useRouter()
 const setting = LocalSetting()
 const frontSize = ref(14);
+const mentionList:Ref<Array<string>> = ref([]);
 
 frontSize.value = parseInt(setting.frontSize);
 
@@ -22,20 +23,36 @@ function reLogin() {
     router.push("/login")
 }
 
+function saveMention() {
+    ObcsapiConfigPost({ "mention": { "tags": mentionList.value } }).then(text => {
+        if (text == "Success") {
+            window.$message.success("保存成功")
+            LocalSetting().getMention()
+        }
+    })
+}
+
 const themeMode = ref("跟随系统");
 
 function saveSetting() {
     localStorage.setItem("theme", JSON.stringify({ frontSize: `${frontSize.value}px` }))
     setting.frontSize = `${frontSize.value}px`;
-    localStorage.setItem("theme-mode",themeMode.value.toString());
+    localStorage.setItem("theme-mode", themeMode.value.toString());
     location.reload();
 }
 
 let themeModeOptions = [{ label: "跟随系统", value: "" }, { label: "暗色模式", value: "dark-mode" }, { label: "浅色模式", value: "light-mode" }]
 
 onMounted(() => {
-    themeMode.value = localStorage.getItem("theme-mode")||"跟随系统";
+    themeMode.value = localStorage.getItem("theme-mode") || "跟随系统";
+    getMention(); // 初始化这个组件的列表
 })
+
+function getMention(){
+    LocalSetting().mention.forEach( obj => {
+        mentionList.value.push(obj.value);
+    })
+}
 
 </script>
 <template>
@@ -60,6 +77,17 @@ onMounted(() => {
         </n-tab-pane>
         <n-tab-pane name="serverSetting" tab="Server Setting">
             <MemosConfig />
+        </n-tab-pane>
+        <n-tab-pane name="serverMention" tab="Mention">
+            <n-space vertical>
+                <a>提示词输入框 # 触发</a>
+
+                <n-dynamic-input v-model:value="mentionList" placeholder="请输入提示词" :min="0" />
+                <n-space justify="end">
+                    <n-button @click="saveMention" type="info" quaternary>保存提示词</n-button>
+                </n-space>
+            </n-space>
+
         </n-tab-pane>
     </n-tabs>
 </template>

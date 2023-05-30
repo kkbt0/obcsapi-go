@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
-import { NButton, NInput, NScrollbar } from 'naive-ui';
+import { NButton, NScrollbar, NMention } from 'naive-ui';
 import { ObcsapiTalk } from "@/api/obcsapi";
 import { TalkStore } from "@/stores/talk";
+import { LocalSetting } from "@/stores/setting"
 
 const messages = TalkStore().messages;
 const newMessage = ref('');
@@ -26,10 +27,10 @@ function sendMessage() {
 }
 
 const scrollToBottom = () => {
-  console.log(scrollbarRef.value);
+  // console.log(scrollbarRef.value);
   const contentHeight = contentRef.value.clientHeight;
   const scrollY = contentHeight - window.innerHeight * 0.75;;
-  console.log(contentHeight, scrollY);
+  // console.log(contentHeight, scrollY);
   scrollbarRef.value.scrollTo(0, scrollY);
 };
 
@@ -39,11 +40,12 @@ const scrollToBottom = () => {
   <div>
     <div>Talk</div>
     <div class="chat-input">
-      <n-input v-model:value="newMessage" placeholder=":~$"></n-input>
+      <n-mention type="textarea" :autosize="{ minRows: 2 }" :options="LocalSetting().mention" v-model:value="newMessage"
+        placeholder=":~$" :prefix="['#']" />
       <n-button @click="sendMessage">输入</n-button>
     </div>
     <n-scrollbar style="max-height: 75vh" ref="scrollbarRef">
-      <div class="chat-messages"  ref="contentRef" >
+      <div class="chat-messages" ref="contentRef">
         <div v-for="(message, index) in messages.slice().reverse()" :key="index">
           <div v-if="message.substring(0, 2) == 'I:'" class="message1" v-html="message"></div>
           <div v-else class="message2" v-html="message"></div>

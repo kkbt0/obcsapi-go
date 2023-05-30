@@ -16,11 +16,16 @@ function Login() {
   localStorage.setItem("host", formValue.value.host);
   ResetServerHost();
   ObcsapiLogin(formValue.value.username, formValue.value.password).then(data => {
-    localStorage.setItem("token", data.token)
-    window.$message.success("登录成功")
-    router.push("/")
+    if (data.code == 200 || data.code == 201) {
+      localStorage.setItem("token", data.token)
+      window.$message.success("登录成功")
+      router.push("/")
+    } else {
+      window.$message.error("登录失败" + JSON.stringify(data))
+    }
+
   }).catch(err => {
-    window.$message.error("登录失败" + err)
+    window.$message.error("登录请求失败" + err)
     console.log(err)
   })
 }

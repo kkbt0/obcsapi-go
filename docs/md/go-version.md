@@ -54,8 +54,6 @@ version: v4.2.0 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
-token_path: ./token/ # token 文件位置。可用于云函数挂载硬盘位置
-token1_live_time: 72h # 可设置有效期 至少 3 天 也可以设置 9999h
 
 
 # 前端登录账户密码 有效时间 720h
@@ -64,7 +62,6 @@ password: password
 general_allowed: false
 
 # 前端后地址 邮件中登录链接会用到
-front_url: https://kkbt.gitee.io/obweb/#/Memos
 backend_url: api.ftls.xyz
 backend_url_full: http://localhost:8900
 

@@ -39,6 +39,11 @@ type ImageHostingConfig struct {
 	BdOcrAccessToken string `json:"bd_ocr_access_token"`
 }
 
+type BdOcrConfig struct {
+	ApiKey    string `json:"api_key"`
+	ApiSecret string `json:"api_secret"`
+}
+
 type WeChatMpConfig struct {
 	ReturnStr string `json:"return_str"`
 }
@@ -55,13 +60,19 @@ type ReminderConfig struct {
 	ReminderDicionary    string `json:"reminder_dicionary"`
 }
 
+type MentionConfig struct {
+	Tags []string `json:"tags"`
+}
+
 type RunConfig struct {
 	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
 	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
 	Webdav       WebDavConfig        `json:"webdav"`
 	Mail         MailSmtpConfig      `json:"mail"`
 	ImageHosting ImageHostingConfig  `json:"image_hosting"`
+	BdOcr        BdOcrConfig         `json:"bd_ocr"`
 	Reminder     ReminderConfig      `json:"reminder"`
+	Mention      MentionConfig       `json:"mention"`
 }
 
 func GetRunConfigHandler(c *gin.Context) {
@@ -69,27 +80,33 @@ func GetRunConfigHandler(c *gin.Context) {
 	c.JSON(200, NowRunConfig)
 }
 
+func UpdateConfig(new RunConfig) error {
+	var config RunConfig = NowRunConfig
+	config = new // 覆盖一部分
+	data, err := json.Marshal(&config)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile("config.run.json", data, 0666)
+	if err != nil {
+		return err
+	}
+	err = ReloadRunConfig()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func PostConfigHandler(c *gin.Context) {
-	var config RunConfig
+	var config RunConfig = NowRunConfig
 	err := c.ShouldBindJSON(&config)
 	if err != nil {
 		c.Error(err)
 		c.String(400, "参数错误")
 		return
 	}
-	data, err := json.Marshal(&config)
-	if err != nil {
-		c.Error(err)
-		c.Status(500)
-		return
-	}
-	err = os.WriteFile("config.run.json", data, 0666)
-	if err != nil {
-		c.Error(err)
-		c.Status(500)
-		return
-	}
-	err = ReloadRunConfig()
+	err = UpdateConfig(config)
 	if err != nil {
 		c.Error(err)
 		c.Status(500)

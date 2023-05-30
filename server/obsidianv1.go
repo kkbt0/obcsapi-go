@@ -60,7 +60,7 @@ func ObV1GetDailyHandler(c *gin.Context) {
 	}
 	var text string
 	if addDataInt <= -366 { // 不允许请求 一年之前的日记
-		c.String(400, "超出允许范围")
+		c.JSON(400, tools.RJson{Code: 400, Msg: "超出允许范围", Success: false})
 		return
 	} else if addDataInt <= -7 { // 一周之前的 使用缓存
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
@@ -99,7 +99,7 @@ func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 	}
 	var text string
 	if addDataInt <= -366 { // 不允许请求 一年之前的日记
-		c.String(400, "超出允许范围")
+		c.JSON(400, tools.RJson{Code: 400, Msg: "超出允许范围", Success: false})
 		return
 	} else { // 请求并缓存
 		err = skv.PutByFileKey(GetMoreDailyFileKey(addDataInt))
@@ -132,7 +132,7 @@ type ObV1ModMdText struct {
 func ObV1PostLineHandler(c *gin.Context) {
 	var modText ObV1ModMdText
 	if c.ShouldBindJSON(&modText) != nil {
-		c.String(400, "参数错误")
+		c.JSON(400, tools.RJson{Code: 400, Msg: "参数错误", Success: false})
 		return
 	}
 	if modText.DayFileKey == "" {
@@ -165,7 +165,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 		if textList[modText.LineNum] == modText.OldContent {
 			textList[modText.LineNum] = modText.Content // 行数已经有内容并校验成功 认定为覆写
 		} else {
-			c.String(400, "原来数据，参数错误")
+			c.JSON(400, tools.RJson{Code: 400, Msg: "原来数据参数错误", Success: false})
 			return
 		}
 	}

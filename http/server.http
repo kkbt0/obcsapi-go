@@ -1,6 +1,7 @@
 @host = http://localhost:8900
 @token1 = 8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q
-@token2 = fQbzONJAAw
+@token2 = xFz5sgWe0qQeOV97R4rauxQ8CAlrMuB9
+@token3 = xxxx
 ### Public Pages
 GET {{host}}/public/1.md
 ###
@@ -12,29 +13,11 @@ Content-Type: application/json
     "token": "8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q"
 }
 
-################################
-### Ob Today Get
-GET {{host}}/ob/today HTTP/ 1.1
-Token:  {{token1}}
-### Ob Today Post
-POST  {{host}}/ob/today HTTP/ 1.1
-Token:  {{token1}}
-Content-Type: application/json
-
-{"content":" New From Test"}
-### Ob TodayAll Post
-POST {{host}}/ob/today/all HTTP/ 1.1
-Token:  {{token1}}
-Content-Type: application/json
-
-{"content":" All Str\n"}
-### Ob 3 Days Get
-OPTIONS  {{host}}/ob/recent HTTP/ 1.1
 ###
-GET {{host}}/ob/recent HTTP/ 1.1
-Token:  {{token1}}
+GET {{host}}/api/testtoken
+Token: xFz5sgWe0qQeOV97R4rauxQ8CAlrMuB9
 
-### 
+################################
 POST {{host}}/ob/general
 Token: {{token2}}
 Content-Type: application/json
@@ -43,7 +26,7 @@ Content-Type: application/json
 
 ### 
 POST {{host}}/ob/general
-Token: {{token2}}
+Token: {{token3}}
 Content-Type: application/json
 
 {"content":"zk 30个字符以上，并以zk 开头可以触发zk附件"}
@@ -55,7 +38,7 @@ Content-Type: application/json
 
 {"content":"test From generalall","mod":"cover","file_key":"xxx.md"}
 ### flomo like
-POST {{host}}/ob/general/{{token2}}
+POST {{host}}/ob/general/xxxx
 Content-Type: application/json
 
 {"content":"test From general"}

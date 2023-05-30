@@ -16,6 +16,7 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/sidbusy/weixinmp v0.0.0-20160719084217-60f690ec753a
 	github.com/spf13/viper v1.15.0
+	github.com/studio-b12/gowebdav v0.0.0-20230203202212-3282f94193f2
 	golang.org/x/net v0.8.0
 	golang.org/x/time v0.3.0
 )
@@ -48,7 +49,6 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/studio-b12/gowebdav v0.0.0-20230203202212-3282f94193f2 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect

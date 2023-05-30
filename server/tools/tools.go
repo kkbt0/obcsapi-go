@@ -4,16 +4,13 @@ import (
 	"bufio"
 	"crypto/md5"
 	_ "embed"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -58,23 +55,23 @@ func CheckFiles() {
 			log.Panicln("Error: Stat token/")
 		}
 	}
-	_, err = os.Stat("token/token1")
+	_, err = os.Stat("token/token1.json")
 	if err != nil {
 		if os.IsNotExist(err) {
-			ModTokenFile(Token{TokenString: GengerateToken(32), GenerateTime: TimeFmt("2006-01-02 15:04:05")}, "token1")
+			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "30s", VerifyMode: "Headers-Token"}, "./token/token1.json")
 		} else {
 			log.Println(err)
-			log.Panicln("Error: Stat token/token1")
+			log.Panicln("Error: Stat token/token1.json")
 		}
 	}
-	_, err = os.Stat("token/token2")
+	_, err = os.Stat("token/token2.json")
 	if err != nil {
 		if os.IsNotExist(err) {
 			time.Sleep(time.Duration(3) * time.Millisecond)
-			ModTokenFile(Token{TokenString: GengerateToken(16), GenerateTime: TimeFmt("2006-01-02 15:04:05")}, "token2")
+			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "876000h", VerifyMode: "Headers-Token"}, "./token/token2.json")
 		} else {
 			log.Println(err)
-			log.Panicln("Error: Stat token/token2")
+			log.Panicln("Error: Stat token/token2.json")
 		}
 	}
 	_, err = os.Stat("tem.txt")
@@ -87,41 +84,13 @@ func CheckFiles() {
 	}
 }
 
-func ShowConfig() {
-	// Read configuration
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
-
-	// output configuration
-	log.Println(viper.GetString("name"), viper.GetString("version"), viper.GetString("description"))
-	log.Println("Server Time:", TimeFmt("2006-01-02 15:04"))
-	log.Println("Tokne File Path:", viper.GetString("token_path"))
-	log.Println("Run on", viper.GetString("host"))
-}
-
 // 从配置中获取 参数
 func ConfigGetString(parm string) string {
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
 	return viper.GetString(parm)
 }
 
 // 从配置中获取 参数
 func ConfigGetInt(parm string) int {
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
 	return viper.GetInt(parm)
 }
 
@@ -170,50 +139,6 @@ func RandomString(n int) string {
 	return hex.EncodeToString(b)[0:n]
 }
 
-func BdGeneralBasicOcr(filePath string) ([]WordResult, error) {
-	// OCR START https://ai.baidu.com/ai-doc/OCR/zk3h7xz52
-	ocrUrl := fmt.Sprintf("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=%s", NowRunConfig.ImageHosting.BdOcrAccessToken)
-	//  Read file and post # image url pdf_file
-	f, err := os.Open(filePath)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	defer f.Close()
-	reader := bufio.NewReader(f)
-	content, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	base64Content := base64.StdEncoding.EncodeToString(content)
-	urlEncodedContent := url.QueryEscape(base64Content)
-	body := fmt.Sprintf("image=%s", urlEncodedContent)
-
-	res, err := http.Post(ocrUrl, "application/x-www-form-urlencoded", strings.NewReader(body))
-	if err != nil {
-		return []WordResult{}, err
-	}
-	defer res.Body.Close()
-	content, err = ioutil.ReadAll(res.Body)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	var result OcrResult
-	err = json.Unmarshal(content, &result)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	return result.WordsResults, nil
-}
-
-type OcrResult struct {
-	WordsResults    []WordResult `json:"words_result"`
-	WordsResultsNum int          `json:"words_result_num"`
-	LogId           int          `json:"log_id"`
-}
-type WordResult struct {
-	Words string `json:"words"`
-}
-
 //jwt secret + 日期 进行 MD5  保证来自服务器签发
 func ObFileAccessToken() string {
 	md5Str := md5.New()
@@ -221,8 +146,18 @@ func ObFileAccessToken() string {
 	return hex.EncodeToString(md5Str.Sum(nil))
 }
 
+func InitViper() {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
+	}
+}
+
 func GenerateMd5() string {
 	CheckFiles() // 程序最开始要执行的部分
+	InitViper()
 	md5 := md5.New()
 	fileStr, err := os.ReadFile("config.yaml")
 	if err != nil {

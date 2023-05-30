@@ -1,17 +1,29 @@
-import { ref, computed } from 'vue'
+import { ref, type Ref, onMounted } from 'vue'
 import { defineStore } from 'pinia'
+import { ObcsapiMentionGet } from "@/api/obcsapi"
 
 export const LocalSetting = defineStore('setting', () => {
-    const count = ref(0)
     const frontSize = ref("14px");
+    const mention: Ref<Array<{label:string,value:string}>> = ref([]);
+
+    onMounted(() => {
+        getMention()
+    })
+
+    function getMention() {
+        ObcsapiMentionGet().then(obj => {
+            console.log("Load Mention")
+            if (obj.tags != null) {
+                mention.value = []
+                obj.tags.forEach((val: string) => {
+                    mention.value.push({ label: val, value: val });
+                })
+            }
+        });
+    }
 
     frontSize.value = JSON.parse(localStorage.getItem("theme") || "{}").frontSize
 
-    const doubleCount = computed(() => {
-        console.log("double count")
-        count.value * 2
-    })
 
-
-    return { count, doubleCount ,frontSize }
+    return { mention, frontSize,getMention }
 })

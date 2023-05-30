@@ -8,10 +8,38 @@ import (
 	"time"
 )
 
-// 用于存储
+// 用于存储 Token
+//
+// VerifyMode: Authentication Token Query(token) (可以从对话模式编写bash脚本获取本地token文件内容)
+//
+// LiveHours == "" or error ==> 0s
 type Token struct {
 	TokenString  string `json:"token"`
 	GenerateTime string `json:"generate_time"`
+	LiveTime     string `json:"live_time"`
+	VerifyMode   string `json:"verify_mode"`
+}
+
+func (token *Token) IsLiving() bool {
+	// 现在时间 < 生成时间 + 存活时间
+	nowTime, _ := time.Parse("2006-01-02 15:04:05", TimeFmt("2006-01-02 15:04:05"))
+	rightTokenTime, err := time.Parse("2006-01-02 15:04:05", token.GenerateTime)
+	if err != nil {
+		log.Println(err)
+	}
+	liveTime, _ := time.ParseDuration(token.LiveTime)
+	if !nowTime.Before(rightTokenTime.Add(liveTime)) {
+		Debug("Live Time:", liveTime)
+		Debug("Now: ", nowTime, "AllowLiveTime", rightTokenTime.Add(liveTime))
+		return false
+	}
+	return true
+}
+
+func (token *Token) Update() {
+	// Debug("This Is A Expired Token. It will be updated!")
+	token.TokenString = GengerateTokenString(32)
+	token.GenerateTime = TimeFmt("2006-01-02 15:04:05")
 }
 
 // 用于 http json 格式解析
@@ -22,7 +50,7 @@ type TokenFromJSON struct {
 const allowChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 // 生成随机 token
-func GengerateToken(n int) string {
+func GengerateTokenString(n int) string {
 	rand.Seed(time.Now().UnixMilli()) // 保证每秒生成不同的随机 token  , unix 时间戳，ms
 	ans := make([]byte, n)
 	for i := range ans {
@@ -32,17 +60,17 @@ func GengerateToken(n int) string {
 }
 
 // 更新 Token File
-func ModTokenFile(new_token Token, token_class string) error {
+func ModTokenFile(new_token Token, tokenFilePath string) error {
 	data, err := json.Marshal(&new_token)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(ConfigGetString("token_path")+token_class, data, 0666)
+	return os.WriteFile(tokenFilePath, data, 0666)
 }
 
-// 获取 token token_class 传入 token1(全权限，有效期) or token2（只能发送） 从而获取本地存储的 token 文件内容
-func GetToken(token_class string) (Token, error) {
-	tokenBytes, err := os.ReadFile(ConfigGetString("token_path") + token_class)
+// 获取 token tokenFilePath 传入 token1(全权限，有效期) or token2（只能发送） 从而获取本地存储的 token 文件内容
+func GetToken(tokenFilePath string) (Token, error) {
+	tokenBytes, err := os.ReadFile(tokenFilePath)
 	if err != nil {
 		return Token{}, err
 	}
@@ -55,40 +83,46 @@ func GetToken(token_class string) (Token, error) {
 	}
 }
 
-func VerifyToken1(inToken string) bool {
-	rightToken, err := GetToken("token1")
+// rightToken 正确的 Token
+// inToken 要验证的 token 字符串
+func VerifyToken(rightToken Token, inToken string) bool {
+	Debug("InToken: ", inToken)
+	Debug("Right Token: ", rightToken)
+	// 验证 Token 相符合 且未过期
+	return inToken == rightToken.TokenString && rightToken.IsLiving()
+}
+
+//tokenFilePath Token文件位置 并且自动更新
+func VerifyTokenByFilePath(tokenFilePath string, inToken string) bool {
+	rightToken, err := GetToken(tokenFilePath)
 	if err != nil {
 		log.Println("Token Get Error:", err)
 		return false
 	}
-	nowTime, err := time.Parse("2006-01-02 15:04:05", TimeFmt("2006-01-02 15:04:05"))
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-	rightTokenTime, err := time.Parse("2006-01-02 15:04:05", rightToken.GenerateTime)
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-	liveTime, _ := time.ParseDuration(ConfigGetString("token1_live_time"))
-	// log.Println(nowTime, rightTokenTime.Add(liveTime))
-	// 验证 Token 相符合 且 现在时间 < 生成时间 + 存活时间
-	if inToken == rightToken.TokenString && nowTime.Before(rightTokenTime.Add(liveTime)) {
+	Debug("InToken: ", inToken)
+	Debug("Right Token: ", rightToken.TokenString)
+	Debug("Right Token: ", rightToken)
+	// 验证 Token 相符合
+	if inToken == rightToken.TokenString {
+		//如果在符合的情况下但是过期了
+		if !rightToken.IsLiving() {
+			rightToken.Update()
+			ModTokenFile(rightToken, tokenFilePath)
+			return false
+		}
 		return true
 	}
 	return false
 }
 
-func VerifyToken2(inToken string) bool {
-	rightToken, err := GetToken("token2")
-	if err != nil {
-		log.Println("Token Get Error:", err)
-		return false
+// 判断 requestURI 为空 则使用 defaultTokenFilePath
+func RequestURIDefineOrDefalutTokenFilePath(requestURI string, defaultTokenFilePath string) string {
+	Debug("RequestURI: ", requestURI)
+	tokenFilePath := ConfigGetString(requestURI)
+	if tokenFilePath == "" {
+		Debug("config.yaml does not define which token to use")
+		Debug("Use Middleware Define Default Token: ", defaultTokenFilePath)
+		tokenFilePath = defaultTokenFilePath
 	}
-	// 验证 Token 相符合
-	if inToken == rightToken.TokenString {
-		return true
-	}
-	return false
+	return tokenFilePath
 }
