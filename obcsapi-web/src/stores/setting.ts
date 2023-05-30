@@ -4,15 +4,18 @@ import { ObcsapiMentionGet } from "@/api/obcsapi"
 
 export const LocalSetting = defineStore('setting', () => {
     const frontSize = ref("14px");
-    const mention: Ref<Array<string>> = ref([]);
+    const mention: Ref<Array<{label:string,value:string}>> = ref([]);
 
     onMounted(() => {
         ObcsapiMentionGet().then(obj => {
-            if(obj.tags!=null) {
-                mention.value = obj.tags;
+            console.log("Load Mention")
+            if (obj.tags != null) {
+                obj.tags.forEach((val: string) => {
+                    mention.value.push({ label: val, value: val });
+                })
             }
         });
-        
+
     })
 
     frontSize.value = JSON.parse(localStorage.getItem("theme") || "{}").frontSize
