@@ -263,6 +263,7 @@ func GetMoreDaliyMdText(addDateDay int) (string, error) {
 }
 
 func MdShowText(text string) string {
+	// 先替换一遍 .md 结尾的
 	text = MdShowTextDailyZk(text)
 	switch dataSource {
 	case S3:
@@ -303,13 +304,14 @@ func PicDownloader(url string) ([]byte, error) {
 
 // 读取 ![[日志/附件/202305/xxx.md]]
 func MdShowTextDailyZk(text string) string {
-	regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
 	pattern := regexp.MustCompile(`!\[\[(.*?)\]\]`)
 	replaceFunc := func(match []byte) []byte {
 		// 获取匹配到的链接 并转为 预签名 url
 		ans := text
 		fileKey := pattern.ReplaceAllString(string(match), "$1")
 		if strings.HasPrefix(fileKey, tools.NowRunConfig.DailyAttachmentDir()) && strings.HasSuffix(fileKey, ".md") {
+			ans, _ = GetTextObject(fileKey)
+		} else if strings.HasSuffix(fileKey, ".md") && tools.ConfigGetString("allow_wiki_link_all") == "true" {
 			ans, _ = GetTextObject(fileKey)
 		}
 		return []byte(fmt.Sprintf("[zk] %s", ans))

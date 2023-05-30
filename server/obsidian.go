@@ -200,7 +200,7 @@ type GeneralAllStruct struct {
 }
 
 func GeneralPostAllHandler(c *gin.Context) {
-	if tools.ConfigGetString("general_allowed") != "true" {
+	if tools.ConfigGetString("allow_general_all_post") != "true" {
 		c.Status(404)
 		return
 	}
@@ -236,7 +236,7 @@ func GeneralPostAllHandler(c *gin.Context) {
 }
 
 func GeneralGetAllHandler(c *gin.Context) {
-	if tools.ConfigGetString("general_allowed_get") != "true" {
+	if tools.ConfigGetString("allow_general_all_get") != "true" {
 		c.Status(404)
 		return
 	}

@@ -7,7 +7,8 @@ port: 8900
 # 前端登录账户密码 有效时间 720h
 user: kkbt 
 password: password
-general_allowed: false
+
+debug: false
 
 # 前端后地址 邮件中登录链接会用到
 backend_url: api.ftls.xyz
@@ -43,3 +44,15 @@ wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.D
 
 # 任务提醒
 cron: "1/60 * * * * ?" # 每分钟检查一次 
+
+# 权限设置 
+# 允许 general all 接口修改全文件，并对外提供服务
+allow_general_all_post: false
+# 允许 general all 接口获取全文件，并对外提供服务
+allow_general_all_get: false
+# 允许 ![[]] 替换获取全文件，并对前端登录用户提供服务
+allow_wiki_link_all: false
+
+
+### Token Settings 自定义路径使用的 Token ，不知道路径可打开 debug 
+/ob/general: token/token2.json

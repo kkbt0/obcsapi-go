@@ -26,7 +26,7 @@ Content-Type: application/json
 
 ### 
 POST {{host}}/ob/general
-Token: {{token2}}
+Token: {{token3}}
 Content-Type: application/json
 
 {"content":"zk 30个字符以上，并以zk 开头可以触发zk附件"}
