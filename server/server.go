@@ -64,11 +64,14 @@ func main() {
 
 	obGroup2 := r.Group("/ob", TokenAuthMiddleware("./token/token2.json")) // default token2
 	{
-		obGroup2.POST("fv", fvHandler)                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
-		obGroup2.POST("sr/webhook", SRWebHook)         // Obsidian Token2 POST 简悦 Webhook 使用
-		obGroup2.POST("general", GeneralHeader)        // Obsidian Token2 POST 通用接口 今日日记
-		obGroup2.POST("url", Url2MdHandler)            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
-		obGroup2.POST("generalall", GeneralAllHandler) // Obsidian Token2 POST 通用接口 全部文件都可以
+		obGroup2.POST("fv", fvHandler)          // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
+		obGroup2.POST("sr/webhook", SRWebHook)  // Obsidian Token2 POST 简悦 Webhook 使用
+		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
+		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
+
+		obGroup2.POST("generalall", GeneralPostAllHandler) // Obsidian Token2 POST 通用接口 全部文件都可以
+		obGroup2.GET("generalall", GeneralGetAllHandler)   // Obsidian Token2 POST 通用接口 全部文件都可以
+
 	}
 	r.POST("/ob/general/*paramtoken", SpecialTokenMiddleware("./token/token2.json"), GeneralHeader2) // Token2 flomo like api
 	r.POST("/ob/moonreader", StandardTokenAuthMiddleware("./token/token2.json"), MoodReaderHandler)  // Obsidian POST 静读天下 api 此 API 使用 Authorization 头验证

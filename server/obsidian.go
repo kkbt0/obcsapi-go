@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
 	"obcsapi-go/tools"
 
@@ -198,7 +199,7 @@ type GeneralAllStruct struct {
 	Content string `json:"content"`
 }
 
-func GeneralAllHandler(c *gin.Context) {
+func GeneralPostAllHandler(c *gin.Context) {
 	if tools.ConfigGetString("general_allowed") != "true" {
 		c.Status(404)
 		return
@@ -232,4 +233,18 @@ func GeneralAllHandler(c *gin.Context) {
 		return
 	}
 	c.String(200, "Success")
+}
+
+func GeneralGetAllHandler(c *gin.Context) {
+	if tools.ConfigGetString("general_allowed_get") != "true" {
+		c.Status(404)
+		return
+	}
+	filekey := c.Query("filekey")
+	text, err := dao.GetTextObject(filekey)
+	if err != nil {
+		c.Status(500)
+		return
+	}
+	c.String(200, string(text))
 }
