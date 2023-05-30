@@ -39,6 +39,11 @@ type ImageHostingConfig struct {
 	BdOcrAccessToken string `json:"bd_ocr_access_token"`
 }
 
+type BdOcrConfig struct {
+	ApiKey    string `json:"api_key"`
+	ApiSecret string `json:"api_secret"`
+}
+
 type WeChatMpConfig struct {
 	ReturnStr string `json:"return_str"`
 }
@@ -65,6 +70,7 @@ type RunConfig struct {
 	Webdav       WebDavConfig        `json:"webdav"`
 	Mail         MailSmtpConfig      `json:"mail"`
 	ImageHosting ImageHostingConfig  `json:"image_hosting"`
+	BdOcr        BdOcrConfig         `json:"bd_ocr"`
 	Reminder     ReminderConfig      `json:"reminder"`
 	Mention      MentionConfig       `json:"mention"`
 }
@@ -72,6 +78,24 @@ type RunConfig struct {
 func GetRunConfigHandler(c *gin.Context) {
 	ReloadRunConfig()
 	c.JSON(200, NowRunConfig)
+}
+
+func UpdateConfig(new RunConfig) error {
+	var config RunConfig = NowRunConfig
+	config = new // 覆盖一部分
+	data, err := json.Marshal(&config)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile("config.run.json", data, 0666)
+	if err != nil {
+		return err
+	}
+	err = ReloadRunConfig()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func PostConfigHandler(c *gin.Context) {
@@ -82,19 +106,7 @@ func PostConfigHandler(c *gin.Context) {
 		c.String(400, "参数错误")
 		return
 	}
-	data, err := json.Marshal(&config)
-	if err != nil {
-		c.Error(err)
-		c.Status(500)
-		return
-	}
-	err = os.WriteFile("config.run.json", data, 0666)
-	if err != nil {
-		c.Error(err)
-		c.Status(500)
-		return
-	}
-	err = ReloadRunConfig()
+	err = UpdateConfig(config)
 	if err != nil {
 		c.Error(err)
 		c.Status(500)

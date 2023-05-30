@@ -7,19 +7,23 @@ export const LocalSetting = defineStore('setting', () => {
     const mention: Ref<Array<{label:string,value:string}>> = ref([]);
 
     onMounted(() => {
+        getMention()
+    })
+
+    function getMention() {
         ObcsapiMentionGet().then(obj => {
             console.log("Load Mention")
             if (obj.tags != null) {
+                mention.value = []
                 obj.tags.forEach((val: string) => {
                     mention.value.push({ label: val, value: val });
                 })
             }
         });
-
-    })
+    }
 
     frontSize.value = JSON.parse(localStorage.getItem("theme") || "{}").frontSize
 
 
-    return { mention, frontSize }
+    return { mention, frontSize,getMention }
 })

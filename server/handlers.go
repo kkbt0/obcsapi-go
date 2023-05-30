@@ -264,3 +264,32 @@ func GetMentionHandler(c *gin.Context) {
 	tools.Debug(mention)
 	c.JSON(200, mention)
 }
+
+func UpdateBdAccessTokenHandler(c *gin.Context) {
+	accessToken, err := tools.BdGetAccessToken(tools.NowRunConfig.BdOcr.ApiKey, tools.NowRunConfig.BdOcr.ApiSecret)
+	if err != nil {
+		log.Println(err)
+		c.JSON(500, tools.RJson{
+			Code:    500,
+			Msg:     "服务器请求错误",
+			Success: false,
+		})
+	}
+	msg := "请求成功，但出现错误"
+	if accessToken.AccessToken != "" {
+		tools.NowRunConfig.ImageHosting.BdOcrAccessToken = accessToken.AccessToken
+		err := tools.UpdateConfig(tools.NowRunConfig)
+		if err != nil {
+			c.JSON(500, tools.RJson{
+				Code:    200,
+				Success: false,
+			})
+		}
+		msg = "请求并更新成功"
+	}
+	c.JSON(200, tools.RJson{
+		Code:    200,
+		Msg:     msg,
+		Success: true,
+	})
+}

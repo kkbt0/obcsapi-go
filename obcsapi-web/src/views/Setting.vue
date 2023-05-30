@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MemosConfig from "@/components/obcsapi/MemosConfig.vue";
 import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, type Ref } from "vue";
 import { NTabPane, NTabs, NInputNumber, NSelect, NDynamicInput } from "naive-ui";
 import { LocalSetting } from "@/stores/setting"
 import { ObcsapiConfigPost } from "@/api/obcsapi"
@@ -9,6 +9,7 @@ import { ObcsapiConfigPost } from "@/api/obcsapi"
 const router = useRouter()
 const setting = LocalSetting()
 const frontSize = ref(14);
+const mentionList:Ref<Array<string>> = ref([]);
 
 frontSize.value = parseInt(setting.frontSize);
 
@@ -23,9 +24,10 @@ function reLogin() {
 }
 
 function saveMention() {
-    ObcsapiConfigPost({ "mention": { "tags": LocalSetting().mention } }).then( text => {
-        if (text=="Success") {
+    ObcsapiConfigPost({ "mention": { "tags": mentionList.value } }).then(text => {
+        if (text == "Success") {
             window.$message.success("保存成功")
+            LocalSetting().getMention()
         }
     })
 }
@@ -43,7 +45,14 @@ let themeModeOptions = [{ label: "跟随系统", value: "" }, { label: "暗色�
 
 onMounted(() => {
     themeMode.value = localStorage.getItem("theme-mode") || "跟随系统";
+    getMention(); // 初始化这个组件的列表
 })
+
+function getMention(){
+    LocalSetting().mention.forEach( obj => {
+        mentionList.value.push(obj.value);
+    })
+}
 
 </script>
 <template>
@@ -73,7 +82,7 @@ onMounted(() => {
             <n-space vertical>
                 <a>提示词输入框 # 触发</a>
 
-                <n-dynamic-input v-model:value="LocalSetting().mention" placeholder="请输入提示词" :min="0" />
+                <n-dynamic-input v-model:value="mentionList" placeholder="请输入提示词" :min="0" />
                 <n-space justify="end">
                     <n-button @click="saveMention" type="info" quaternary>保存提示词</n-button>
                 </n-space>

@@ -82,7 +82,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			log.Println("ParseToken Error:", err)
 			if strings.Contains(err.Error(), "expired") {
-				c.String(401, "Token expired")
+				c.JSON(401, tools.RJson{Code: 401, Msg: "Token expired", Success: false})
 				return
 			}
 			c.Status(401)
@@ -99,7 +99,7 @@ func NewInfo(user User) *UserInfo {
 func LoginHandler(c *gin.Context) {
 	var userVo User
 	if c.ShouldBindJSON(&userVo) != nil {
-		c.JSON(400, gin.H{"code": 400, "msg": "参数错误", "success": false})
+		c.JSON(400, tools.RJson{Code: 400, Msg: "参数错误", Success: false})
 		return
 	}
 	if userVo.UserName == db.UserName && userVo.Password == db.Password {
@@ -117,5 +117,5 @@ func LoginHandler(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(400, gin.H{"code": 400, "msg": "登录失败", "success": false})
+	c.JSON(400, tools.RJson{Code: 400, Msg: "登录失败", Success: false})
 }

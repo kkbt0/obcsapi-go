@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiConfigGet, ObcsapiConfigPost, ObcsapiServerInfo } from "@/api/obcsapi"
 import { NScrollbar } from "naive-ui"
-import { ObcsapiTestMail } from "@/api/obcsapi";
+import { ObcsapiTestMail,ObcsapiUpdateBdGet } from "@/api/obcsapi";
 
 
 const formData = ref({});
@@ -190,6 +190,27 @@ const schema = ref({
                 },
             }
         },
+        bd_ocr: {
+            title: "百度OCR",
+            type: "object",
+            description: "百度 OCR 配置",
+            properties: {
+                api_key: {
+                    type: "string",
+                    title: "Api Key",
+                    'ui:options': {
+                        placeholder: "xxxxx",
+                    }
+                },
+                api_secret: {
+                    type: "string",
+                    title: "Api Secret",
+                    'ui:options': {
+                        placeholder: "xxxxx",
+                    }
+                }
+            }
+        },
         reminder: {
             title: "提醒服务",
             type: "object",
@@ -259,6 +280,15 @@ function sendMail() {
     })
 }
 
+function upDateBdOcrAccessToken() {
+    ObcsapiUpdateBdGet().then(res => {
+        window.$message.info(JSON.stringify(res))
+        getConfiguration()
+    }).catch(e => {
+        window.$message.info(e)
+    })
+}
+
 </script>
 <template>
     <h1 @click="showInfo = !showInfo"><a>Server Setting</a></h1>
@@ -272,5 +302,6 @@ function sendMail() {
     <n-scrollbar style="max-height: 75vh">
         <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" />
         <n-button @click="sendMail" quaternary>测试邮件</n-button>
+        <n-button @click="upDateBdOcrAccessToken" quaternary>更新BD OCR</n-button>
     </n-scrollbar>
 </template>

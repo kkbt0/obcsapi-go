@@ -107,6 +107,7 @@ func main() {
 		api1Group.GET("/mailtest", MailTesterHandler)               // 邮件测试
 		api1Group.POST("/talk", talk.TalkHandler)                   // 对话 API
 		api1Group.GET("/mention", GetMentionHandler)                // 提示词
+		api1Group.GET("/updatebd", UpdateBdAccessTokenHandler)      // 更新 BD Access Token
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数

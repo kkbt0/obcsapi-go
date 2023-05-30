@@ -4,16 +4,13 @@ import (
 	"bufio"
 	"crypto/md5"
 	_ "embed"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -140,50 +137,6 @@ func RandomString(n int) string {
 	b := make([]byte, n)
 	rand.Read(b)
 	return hex.EncodeToString(b)[0:n]
-}
-
-func BdGeneralBasicOcr(filePath string) ([]WordResult, error) {
-	// OCR START https://ai.baidu.com/ai-doc/OCR/zk3h7xz52
-	ocrUrl := fmt.Sprintf("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=%s", NowRunConfig.ImageHosting.BdOcrAccessToken)
-	//  Read file and post # image url pdf_file
-	f, err := os.Open(filePath)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	defer f.Close()
-	reader := bufio.NewReader(f)
-	content, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	base64Content := base64.StdEncoding.EncodeToString(content)
-	urlEncodedContent := url.QueryEscape(base64Content)
-	body := fmt.Sprintf("image=%s", urlEncodedContent)
-
-	res, err := http.Post(ocrUrl, "application/x-www-form-urlencoded", strings.NewReader(body))
-	if err != nil {
-		return []WordResult{}, err
-	}
-	defer res.Body.Close()
-	content, err = ioutil.ReadAll(res.Body)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	var result OcrResult
-	err = json.Unmarshal(content, &result)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	return result.WordsResults, nil
-}
-
-type OcrResult struct {
-	WordsResults    []WordResult `json:"words_result"`
-	WordsResultsNum int          `json:"words_result_num"`
-	LogId           int          `json:"log_id"`
-}
-type WordResult struct {
-	Words string `json:"words"`
 }
 
 //jwt secret + 日期 进行 MD5  保证来自服务器签发
