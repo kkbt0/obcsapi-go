@@ -106,6 +106,7 @@ func main() {
 		api1Group.POST("/config", tools.PostConfigHandler)          //运行时 可修改配置
 		api1Group.GET("/mailtest", MailTesterHandler)               // 邮件测试
 		api1Group.POST("/talk", talk.TalkHandler)                   // 对话 API
+		api1Group.GET("/mention", GetMentionHandler)                // 提示词
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数

@@ -55,6 +55,10 @@ type ReminderConfig struct {
 	ReminderDicionary    string `json:"reminder_dicionary"`
 }
 
+type MentionConfig struct {
+	Tags []string `json:"tags"`
+}
+
 type RunConfig struct {
 	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
 	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
@@ -62,6 +66,7 @@ type RunConfig struct {
 	Mail         MailSmtpConfig      `json:"mail"`
 	ImageHosting ImageHostingConfig  `json:"image_hosting"`
 	Reminder     ReminderConfig      `json:"reminder"`
+	Mention      MentionConfig       `json:"mention"`
 }
 
 func GetRunConfigHandler(c *gin.Context) {
@@ -70,7 +75,7 @@ func GetRunConfigHandler(c *gin.Context) {
 }
 
 func PostConfigHandler(c *gin.Context) {
-	var config RunConfig
+	var config RunConfig = NowRunConfig
 	err := c.ShouldBindJSON(&config)
 	if err != nil {
 		c.Error(err)

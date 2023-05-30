@@ -210,6 +210,18 @@ const schema = ref({
                     }
                 },
             }
+        },
+        mention: {
+            type: "object",
+            properties: {
+                tags: {
+                    type: "array",
+                    items: {
+                        type: "string",
+                    }
+                }
+            },
+            "ui:hidden": true,
         }
     }
 });

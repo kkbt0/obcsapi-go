@@ -258,3 +258,9 @@ func SendMailHandler(c *gin.Context) {
 	}
 	c.Status(200)
 }
+
+func GetMentionHandler(c *gin.Context) {
+	mention := tools.NowRunConfig.Mention
+	tools.Debug(mention)
+	c.JSON(200, mention)
+}

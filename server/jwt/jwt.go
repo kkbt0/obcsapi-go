@@ -99,7 +99,7 @@ func NewInfo(user User) *UserInfo {
 func LoginHandler(c *gin.Context) {
 	var userVo User
 	if c.ShouldBindJSON(&userVo) != nil {
-		c.String(http.StatusOK, "参数错误")
+		c.JSON(400, gin.H{"code": 400, "msg": "参数错误", "success": false})
 		return
 	}
 	if userVo.UserName == db.UserName && userVo.Password == db.Password {
@@ -117,5 +117,5 @@ func LoginHandler(c *gin.Context) {
 		})
 		return
 	}
-	c.String(400, "登录失败")
+	c.JSON(400, gin.H{"code": 400, "msg": "登录失败", "success": false})
 }
