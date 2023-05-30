@@ -58,23 +58,23 @@ func CheckFiles() {
 			log.Panicln("Error: Stat token/")
 		}
 	}
-	_, err = os.Stat("token/token1")
+	_, err = os.Stat("token/token1.json")
 	if err != nil {
 		if os.IsNotExist(err) {
-			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "30s", VerifyMode: "Token"}, "token1")
+			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "30s", VerifyMode: "Headers-Token"}, "./token/token1.json")
 		} else {
 			log.Println(err)
-			log.Panicln("Error: Stat token/token1")
+			log.Panicln("Error: Stat token/token1.json")
 		}
 	}
-	_, err = os.Stat("token/token2")
+	_, err = os.Stat("token/token2.json")
 	if err != nil {
 		if os.IsNotExist(err) {
 			time.Sleep(time.Duration(3) * time.Millisecond)
-			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "876000h", VerifyMode: "Token"}, "token2")
+			ModTokenFile(Token{TokenString: GengerateTokenString(32), GenerateTime: TimeFmt("2006-01-02 15:04:05"), LiveTime: "876000h", VerifyMode: "Headers-Token"}, "./token/token2.json")
 		} else {
 			log.Println(err)
-			log.Panicln("Error: Stat token/token2")
+			log.Panicln("Error: Stat token/token2.json")
 		}
 	}
 	_, err = os.Stat("tem.txt")
@@ -87,41 +87,13 @@ func CheckFiles() {
 	}
 }
 
-func ShowConfig() {
-	// Read configuration
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
-
-	// output configuration
-	log.Println(viper.GetString("name"), viper.GetString("version"), viper.GetString("description"))
-	log.Println("Server Time:", TimeFmt("2006-01-02 15:04"))
-	log.Println("Tokne File Path:", viper.GetString("token_path"))
-	log.Println("Run on", viper.GetString("host"))
-}
-
 // 从配置中获取 参数
 func ConfigGetString(parm string) string {
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
 	return viper.GetString(parm)
 }
 
 // 从配置中获取 参数
 func ConfigGetInt(parm string) int {
-	viper.SetConfigFile("config.yaml")
-	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
-	}
 	return viper.GetInt(parm)
 }
 
@@ -221,8 +193,18 @@ func ObFileAccessToken() string {
 	return hex.EncodeToString(md5Str.Sum(nil))
 }
 
+func InitViper() {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
+	}
+}
+
 func GenerateMd5() string {
 	CheckFiles() // 程序最开始要执行的部分
+	InitViper()
 	md5 := md5.New()
 	fileStr, err := os.ReadFile("config.yaml")
 	if err != nil {

@@ -13,11 +13,6 @@ import (
 
 // Token2 静读天下使用的 API
 func MoodReaderHandler(c *gin.Context) {
-	right_token2, _ := tools.GetToken("token2")
-	if c.Request.Header.Get("Authorization") != "Token "+right_token2.TokenString {
-		c.Status(401)
-		return
-	}
 	decoder := json.NewDecoder(c.Request.Body)
 	var moodReader MoodReader
 	err := decoder.Decode(&moodReader)
@@ -120,35 +115,39 @@ func GeneralHeader(c *gin.Context) {
 }
 
 func GeneralHeader2(c *gin.Context) {
-	switch c.Request.Method {
-	case "OPTIONS":
-		c.Status(200)
-	case "POST":
-		token2, _ := tools.GetToken("token2")
-		if c.Param("token2") != "/"+token2.TokenString {
-			fmt.Println(token2.TokenString)
-			fmt.Println(c.Param("token2"))
-			c.Status(401)
-			return
-		}
-		decoder := json.NewDecoder(c.Request.Body)
-		var memosData MemosData
-		err := decoder.Decode(&memosData)
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
-		err = DailyTextAppendMemos(memosData.Content)
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
-		c.String(200, "Success")
-	default:
-		c.Status(404)
+	fromMiddlewareTokenFilePath, exist := c.Get("tokenfilepath")
+	if !exist {
+		c.Status(500)
+		return
 	}
+	rightTokenFilePath, ok := fromMiddlewareTokenFilePath.(string)
+	if !ok {
+		c.Status(500)
+		return
+	}
+	tools.Debug("RightToken FilePath: ", rightTokenFilePath)
+
+	if !tools.VerifyTokenByFilePath(rightTokenFilePath, c.Param("paramtoken")[1:]) {
+		tools.Debug("ParamToken: ", c.Param("paramtoken"))
+		c.Status(401)
+		return
+	}
+	decoder := json.NewDecoder(c.Request.Body)
+	var memosData MemosData
+	err := decoder.Decode(&memosData)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	err = DailyTextAppendMemos(memosData.Content)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	c.String(200, "Success")
+
 }
 
 // Token2

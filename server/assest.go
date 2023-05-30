@@ -26,15 +26,14 @@ func ShowConfig() {
 	log.Println(viper.GetString("name"), version, "ConfigVersion", viper.GetString("version"), viper.GetString("description"))
 	log.Println("https://gitee.com/kkbt/obcsapi-go")
 	log.Println("Server Time:", tools.TimeFmt("2006-01-02 15:04"))
-	log.Println("Tokne File Path:", viper.GetString("token_path"))
 	log.Println("Run on", viper.GetString("host"))
 
 	// 显示 Token
-	token1, err := tools.GetToken("token1")
+	token1, err := tools.GetToken("./token/token1.json")
 	if err != nil {
 		panic(fmt.Errorf("error: Fatal error Get Token file: %s \n ", err))
 	}
-	token2, err := tools.GetToken("token2")
+	token2, err := tools.GetToken("./token/token2.json")
 	if err != nil {
 		panic(fmt.Errorf("error: Fatal error Get Token file: %s \n ", err))
 	}

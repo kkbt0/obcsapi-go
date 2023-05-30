@@ -71,13 +71,9 @@ type WeChatTemplateMessengDataVCPart struct {
 
 // 每日邮件
 func DailyEmailReminder() error {
-	token1, err := tools.GetToken("token1")
-	if err != nil {
-		log.Println(err)
-	}
-	login_address := fmt.Sprintf("%s?backend_address=%s&token=%s", tools.ConfigGetString("front_url"), tools.ConfigGetString("backend_url"), token1.TokenString)
+	login_address := "https://note.ftls.xyz/web/"
 	var ansList []string
-	ansList = append(ansList, "登录链接")
+	ansList = append(ansList, "默认笔记前端链接")
 	ansList = append(ansList, fmt.Sprintf("<a href=\"%s\">%s</a>", login_address, login_address))
 	ansList = append(ansList, "<h3>每日提醒</h3>\n")
 

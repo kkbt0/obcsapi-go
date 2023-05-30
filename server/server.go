@@ -52,13 +52,17 @@ func main() {
 	r.GET("/404", BaseHandler)             // 404
 	r.GET("/time", Greet)                  // 打招呼 测试使用 GET
 	r.GET("/info", InfoHandler)            // Obcsapi info
-	r.POST("/token", VerifyToken1Handler)  // 验证 Token1 有效性
 	r.Any("/api/wechat", WeChatMpHandlers) // wechat 机器人 用于公众测试号
 
-	r.POST("/api/wechatmpmsg", Token2AuthMiddleware(), WeChatMpInfoHandler) // 公众测试号 模板消息通知
-	r.POST("/api/sendmail", Token2AuthMiddleware(), SendMailHandler)        // 邮件消息通知
+	apiGroup := r.Group("/api", TokenAuthMiddleware("./token/token2.json")) // default token2
+	{
+		apiGroup.GET("testtoken", Greet)                  // test token
+		apiGroup.POST("wechatmpmsg", WeChatMpInfoHandler) // 公众测试号 模板消息通知
+		apiGroup.POST("sendmail", SendMailHandler)        // 邮件消息通知
 
-	obGroup2 := r.Group("/ob", Token2AuthMiddleware())
+	}
+
+	obGroup2 := r.Group("/ob", TokenAuthMiddleware("./token/token2.json")) // default token2
 	{
 		obGroup2.POST("fv", fvHandler)                 // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
 		obGroup2.POST("sr/webhook", SRWebHook)         // Obsidian Token2 POST 简悦 Webhook 使用
@@ -66,8 +70,9 @@ func main() {
 		obGroup2.POST("url", Url2MdHandler)            // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 		obGroup2.POST("generalall", GeneralAllHandler) // Obsidian Token2 POST 通用接口 全部文件都可以
 	}
-	r.POST("/ob/general/*token2", GeneralHeader2)   // flomo like api
-	r.POST("/ob/moonreader", MoodReaderHandler)     // Obsidian Token2 POST 静读天下 api 此 API 使用 Authorization 头验证
+	r.POST("/ob/general/*paramtoken", SpecialTokenMiddleware("./token/token2.json"), GeneralHeader2) // Token2 flomo like api
+	r.POST("/ob/moonreader", StandardTokenAuthMiddleware("./token/token2.json"), MoodReaderHandler)  // Obsidian POST 静读天下 api 此 API 使用 Authorization 头验证
+
 	r.GET("/public/*fileName", ObsidianPublicFiles) // Obsidian Public Files GET
 
 	r.POST("login", LimitLoginMiddleware(), jwt.LoginHandler)
@@ -75,7 +80,7 @@ func main() {
 	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB
 
-	r.POST("/api/upload", Token2AuthMiddleware(), ImagesHostUplaodHanler) //图床
+	r.POST("/api/upload", TokenAuthMiddleware("./token/token2.json"), ImagesHostUplaodHanler) //图床
 	r.Static("/images", "./webdav/images")
 
 	// Webdav

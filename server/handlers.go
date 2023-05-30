@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -28,23 +27,6 @@ func Greet(c *gin.Context) {
 
 func BaseHandler(c *gin.Context) {
 	c.String(404, "404")
-}
-
-// 验证 Token 1 有效性
-
-func VerifyToken1Handler(c *gin.Context) {
-	// 解析 token json {"token":"sometoken1"}
-	decoder := json.NewDecoder(c.Request.Body)
-	var tokenFromJSON tools.TokenFromJSON
-	err := decoder.Decode(&tokenFromJSON)
-	if err != nil {
-		fmt.Println("JSON Decoder Error:", err)
-	}
-	if tools.VerifyToken1(tokenFromJSON.TokenString) {
-		c.String(200, "a right Token")
-	} else {
-		c.String(200, "a error Token")
-	}
 }
 
 // 一个简易图床

@@ -1,6 +1,7 @@
 @host = http://localhost:8900
 @token1 = 8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q
-@token2 = fQbzONJAAw
+@token2 = xFz5sgWe0qQeOV97R4rauxQ8CAlrMuB9
+@token3 = xxxx
 ### Public Pages
 GET {{host}}/public/1.md
 ###
@@ -11,6 +12,10 @@ Content-Type: application/json
 {
     "token": "8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q"
 }
+
+###
+GET {{host}}/api/testtoken
+Token: xFz5sgWe0qQeOV97R4rauxQ8CAlrMuB9
 
 ################################
 POST {{host}}/ob/general
@@ -33,7 +38,7 @@ Content-Type: application/json
 
 {"content":"test From generalall","mod":"cover","file_key":"xxx.md"}
 ### flomo like
-POST {{host}}/ob/general/{{token2}}
+POST {{host}}/ob/general/xxxx
 Content-Type: application/json
 
 {"content":"test From general"}
