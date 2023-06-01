@@ -3,11 +3,16 @@ version: v4.2.0 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
+# 如果部署在二级目录，需求填写这个，否则 Swagger 错误，不使用无需关注
+# base_path: /obcsapi
 
 # 前端登录账户密码 有效时间 720h
 user: kkbt 
 password: password
 
+# Swagger 调试
+swagger: true
+# debug 模式
 debug: false
 
 # 前端后地址 邮件中登录链接会用到

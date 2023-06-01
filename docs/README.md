@@ -46,7 +46,7 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 | 图床  和 CLI上传工具                     | ×                | √              |
 | 公开文档功能                             | ×                | √              |
 | 邮件/微信任务提醒                        | ×                | √              |
-| Uniapp 前端                              | ×                | √              |
+| 前端                              | ×                | √              |
 | Docker                                   | <=3              | >=4            |
 
 Docker 3.0 之前的是 python 版本，之后的是 Go 版本。

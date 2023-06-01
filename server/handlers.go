@@ -87,6 +87,9 @@ type VersionResponseJosn struct {
 	Msg           string    `json:"msg"`
 }
 
+// @Summary 服务器信息与测试接口
+// @Produce json
+// @Router /info [get]
 func InfoHandler(c *gin.Context) {
 	c.JSON(200, VersionResponseJosn{
 		Code:          200,
@@ -290,6 +293,22 @@ func UpdateBdAccessTokenHandler(c *gin.Context) {
 	c.JSON(200, tools.RJson{
 		Code:    200,
 		Msg:     msg,
+		Success: true,
+	})
+}
+
+func UpdateViperHandler(c *gin.Context) {
+	err := tools.UpdateViper()
+	if err != nil {
+		log.Println(fmt.Errorf("error: Update Error config file: %s \n ", err))
+		c.JSON(500, tools.RJson{
+			Code:    500,
+			Success: false,
+		})
+		return
+	}
+	c.JSON(200, tools.RJson{
+		Code:    200,
 		Success: true,
 	})
 }

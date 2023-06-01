@@ -8,13 +8,18 @@ import (
 	"io"
 	"log"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
+	"obcsapi-go/docs"
 	"obcsapi-go/jwt"
 	"obcsapi-go/talk"
 	"obcsapi-go/tools"
 	"os"
 
+	_ "obcsapi-go/docs"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"golang.org/x/time/rate"
 )
 
@@ -25,6 +30,17 @@ var limiter = rate.NewLimiter(0.00001, 1)     // 限制 token 发送到 email (0
 var limitPublicPage = rate.NewLimiter(0.1, 1) // 公开文档限制
 var loginLimter = rate.NewLimiter(0.1, 3)     // 登录速率限制
 
+// @title Obcsapi
+// @version v4.2.0 版本
+// @description 基于 Obsidian S3 存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式同步，保存消息到 Obsidian 库。该调试页面大部分仅提供对 Headers-Token 验证方式的支持，其他如 Query-token，Headers-Authorization 除了特殊的几个其他并不支持。可以使用 https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client 可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件
+// @contact.url https://gitee.com/kkbt/obcsapi-go
+// @externalDocs.url https://kkbt.gitee.io/obcsapi-go/
+// @securityDefinitions.apikey Token
+// @in header
+// @name Token
+// @securityDefinitions.apikey AuthorizationToken
+// @in header
+// @name Authorization
 func main() {
 	ShowConfig() // 打印基础消息
 
@@ -108,9 +124,13 @@ func main() {
 		api1Group.POST("/talk", talk.TalkHandler)                   // 对话 API
 		api1Group.GET("/mention", GetMentionHandler)                // 提示词
 		api1Group.GET("/updatebd", UpdateBdAccessTokenHandler)      // 更新 BD Access Token
+		api1Group.GET("/updateconfig", UpdateViperHandler)          // 更新 Viper config.yaml
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数
+
+	docs.SwaggerInfo.BasePath = tools.ConfigGetString("base_path")
+	r.GET("/swagger/*any", ginSwagger.DisablingWrapHandler(swaggerfiles.Handler, "OBCSAPI_SWAGGER_DISABLE"))
 
 	RunCronJob() //  运行定时任务
 

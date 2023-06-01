@@ -1,0 +1,219 @@
+definitions:
+  dao.MemosData:
+    properties:
+      content:
+        type: string
+    type: object
+  dao.MoodReader:
+    properties:
+      highlights:
+        items:
+          $ref: '#/definitions/dao.MoodReaderHighlights'
+        type: array
+    type: object
+  dao.MoodReaderHighlights:
+    properties:
+      author:
+        type: string
+      note:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  main.GeneralAllStruct:
+    properties:
+      content:
+        type: string
+      file_key:
+        default: test.md
+        type: string
+      mod:
+        enum:
+        - append
+        - cover
+        type: string
+    type: object
+  main.SimpReadWebHookStruct:
+    properties:
+      content:
+        type: string
+      desc:
+        type: string
+      note:
+        type: string
+      tags:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+externalDocs:
+  url: https://kkbt.gitee.io/obcsapi-go/
+info:
+  contact:
+    url: https://gitee.com/kkbt/obcsapi-go
+  description: 基于 Obsidian S3 存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save
+    插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式同步，保存消息到 Obsidian
+    库。该调试页面大部分仅提供对 Headers-Token 验证方式的支持，其他如 Query-token，Headers-Authorization 除了特殊的几个其他并不支持。可以使用
+    https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client
+    可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件
+  title: Obcsapi
+  version: v4.2.0 版本
+paths:
+  /info:
+    get:
+      produces:
+      - application/json
+      responses: {}
+      summary: 服务器信息与测试接口
+  /ob/fv:
+    post:
+      consumes:
+      - text/plain
+      - application/octet-stream
+      description: 安卓软件 fv 悬浮球使用的 API 用于自定义任务的 图片、文字
+      parameters:
+      - description: fv payload 內容
+        in: body
+        name: 內容
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: fv 悬浮球使用的 API
+      tags:
+      - Ob
+  /ob/general:
+    post:
+      consumes:
+      - application/json
+      description: 通用 API 接口,添加 Memos
+      parameters:
+      - description: MemosData
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/dao.MemosData'
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: 通用 API 接口 Memos
+      tags:
+      - Ob
+  /ob/general/{token}:
+    post:
+      consumes:
+      - application/json
+      description: 通用 API 接口,添加 Memos
+      parameters:
+      - description: 设定的 token 值
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: MemosData
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/dao.MemosData'
+      produces:
+      - text/plain
+      responses: {}
+      summary: 通用 API 接口 (Memos Flomo Like API)
+      tags:
+      - Ob
+  /ob/generalall:
+    get:
+      description: 通用 API 接口，获取所有文件。需要配置声明允许使用该接口
+      parameters:
+      - description: 文件名，有路径，如 dir/text.md
+        in: query
+        name: filekey
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: 通用 API 接口 All
+      tags:
+      - Ob
+    post:
+      consumes:
+      - application/json
+      description: 通用 API 接口，覆盖修改或增添所有文件。需要配置声明允许使用该接口
+      parameters:
+      - description: GeneralAllStruct
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/main.GeneralAllStruct'
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: 通用 API 接口 All
+      tags:
+      - Ob
+  /ob/moonreader:
+    post:
+      consumes:
+      - application/json
+      description: 静读天下使用的 API，标注-设置-ReadWise 设置该路径和 token 值即可
+      parameters:
+      - description: MoodReader
+        in: body
+        name: 划线和标注
+        required: true
+        schema:
+          $ref: '#/definitions/dao.MoodReader'
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - AuthorizationToken: []
+      summary: 静读天下使用的 API
+      tags:
+      - Ob
+  /ob/sr/webhook:
+    post:
+      consumes:
+      - application/json
+      description: SimpRead 简悦 WebHook POST 简悦 WebHook 保存文章
+      parameters:
+      - description: SimpRead 简悦 POST
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/main.SimpReadWebHookStruct'
+      responses: {}
+      security:
+      - Token: []
+      summary: 简悦 WebHook 保存文章
+      tags:
+      - Ob
+securityDefinitions:
+  AuthorizationToken:
+    in: header
+    name: Authorization
+    type: apiKey
+  Token:
+    in: header
+    name: Token
+    type: apiKey
+swagger: "2.0"

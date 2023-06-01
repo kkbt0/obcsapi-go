@@ -1,1 +1,6 @@
-{"token":"xxxx","generate_time":"2023-05-29 22:16:54","live_time":"876000h","verify_mode":"Headers-Token"}
+{
+    "token": "xxxx",
+    "generate_time": "2023-05-29 22:16:54",
+    "live_time": "876000h",
+    "verify_mode": "Headers-Token"
+}

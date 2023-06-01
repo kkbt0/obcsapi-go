@@ -80,6 +80,17 @@ export const ObcsapiUpdateBdGet = async () => {
   return response.json();
 }
 
+export const ObcsapiUpdateConfig = async () => {
+  const response = await fetch(host + '/api/v1/updateconfig', {
+    headers: {
+      'Authorization': localStorage.getItem('token')||"",
+    }
+  });
+  return response.json();
+}
+
+
+
 
 export const ObcsapiConfigPost = async (bodyObject: any) => {
   const response = await fetch(host + '/api/v1/config', {

@@ -13,6 +13,14 @@ import (
 )
 
 // Token2 静读天下使用的 API
+// @Summary 静读天下使用的 API
+// @Description 静读天下使用的 API，标注-设置-ReadWise 设置该路径和 token 值即可
+// @Tags Ob
+// @Security AuthorizationToken
+// @Accept json
+// @Produce plain
+// @Param 划线和标注 body MoodReader true "MoodReader"
+// @Router /ob/moonreader [post]
 func MoodReaderHandler(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
 	var moodReader MoodReader
@@ -44,7 +52,14 @@ func MoodReaderHandler(c *gin.Context) {
 	c.String(200, "Success")
 }
 
-// 安卓软件 fv 悬浮球使用的 API 用于自定义任务的 图片、文字
+// @Summary fv 悬浮球使用的 API
+// @Description 安卓软件 fv 悬浮球使用的 API 用于自定义任务的 图片、文字
+// @Tags Ob
+// @Security Token
+// @Accept plain,octet-stream
+// @Produce plain
+// @Param 內容 body string true "fv payload 內容"
+// @Router /ob/fv [post]
 func fvHandler(c *gin.Context) {
 	if c.GetHeader("Content-Type") == "text/plain" {
 		content, _ := ioutil.ReadAll(c.Request.Body)
@@ -73,6 +88,13 @@ type SimpReadWebHookStruct struct {
 }
 
 // SimpRead WebHook Used Token2
+// @Summary 简悦 WebHook 保存文章
+// @Description SimpRead 简悦 WebHook POST 简悦 WebHook 保存文章
+// @Tags Ob
+// @Security Token
+// @Accept json
+// @Param json body SimpReadWebHookStruct true "SimpRead 简悦 POST"
+// @Router /ob/sr/webhook [post]
 func SRWebHook(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
 	var simpReadJson SimpReadWebHookStruct
@@ -89,32 +111,40 @@ func SRWebHook(c *gin.Context) {
 	MdTextStore(file_key, file_str)
 }
 
-// 通用 API 接口 使用 Token2 验证
+// @Summary 通用 API 接口 Memos
+// @Description 通用 API 接口,添加 Memos
+// @Tags Ob
+// @Security Token
+// @Accept json
+// @Produce plain
+// @Param json body MemosData true "MemosData"
+// @Router /ob/general [post]
 func GeneralHeader(c *gin.Context) {
-	switch c.Request.Method {
-	case "OPTIONS":
-		c.Status(200)
-	case "POST":
-		decoder := json.NewDecoder(c.Request.Body)
-		var memosData MemosData
-		err := decoder.Decode(&memosData)
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
-		err = DailyTextAppendMemos(memosData.Content)
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
-		c.String(200, "Success")
-	default:
-		c.Status(404)
+	decoder := json.NewDecoder(c.Request.Body)
+	var memosData MemosData
+	err := decoder.Decode(&memosData)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
 	}
+	err = DailyTextAppendMemos(memosData.Content)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	c.String(200, "Success")
 }
 
+// @Summary 通用 API 接口 (Memos Flomo Like API)
+// @Description 通用 API 接口,添加 Memos
+// @Tags Ob
+// @Accept json
+// @Produce plain
+// @Param token path string true "设定的 token 值"
+// @Param json body MemosData true "MemosData"
+// @Router /ob/general/{token} [post]
 func GeneralHeader2(c *gin.Context) {
 	fromMiddlewareTokenFilePath, exist := c.Get("tokenfilepath")
 	if !exist {
@@ -194,11 +224,19 @@ func Url2MdHandler(c *gin.Context) {
 // 通用接口
 
 type GeneralAllStruct struct {
-	Mod     string `json:"mod"`
-	FileKey string `json:"file_key"`
+	Mod     string `json:"mod" enums:"append,cover"`
+	FileKey string `json:"file_key" default:"test.md"`
 	Content string `json:"content"`
 }
 
+// @Summary 通用 API 接口 All
+// @Description 通用 API 接口，覆盖修改或增添所有文件。需要配置声明允许使用该接口
+// @Tags Ob
+// @Security Token
+// @Accept json
+// @Produce plain
+// @Param json body GeneralAllStruct true "GeneralAllStruct"
+// @Router /ob/generalall [post]
 func GeneralPostAllHandler(c *gin.Context) {
 	if tools.ConfigGetString("allow_general_all_post") != "true" {
 		c.Status(404)
@@ -235,6 +273,13 @@ func GeneralPostAllHandler(c *gin.Context) {
 	c.String(200, "Success")
 }
 
+// @Summary 通用 API 接口 All
+// @Description 通用 API 接口，获取所有文件。需要配置声明允许使用该接口
+// @Tags Ob
+// @Security Token
+// @Produce plain
+// @Param filekey query string true "文件名，有路径，如 dir/text.md"
+// @Router /ob/generalall [get]
 func GeneralGetAllHandler(c *gin.Context) {
 	if tools.ConfigGetString("allow_general_all_get") != "true" {
 		c.Status(404)

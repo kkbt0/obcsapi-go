@@ -153,6 +153,20 @@ func InitViper() {
 	if err != nil {
 		panic(fmt.Errorf("error: Fatal error config file: %s \n ", err))
 	}
+	// 配置	swagger 开关
+	if viper.GetBool("swagger") {
+		Debug("OBCSAPI_SWAGGER_DISABLE 删除,已开启 swagger")
+		os.Unsetenv("OBCSAPI_SWAGGER_DISABLE")
+	} else {
+		Debug("OBCSAPI_SWAGGER_DISABLE 设置为 1,已关闭 swagger")
+		os.Setenv("OBCSAPI_SWAGGER_DISABLE", "1")
+	}
+}
+
+func UpdateViper() error {
+	viper.SetConfigFile("config.yaml")
+	viper.SetConfigType("yaml")
+	return viper.ReadInConfig()
 }
 
 func GenerateMd5() string {
