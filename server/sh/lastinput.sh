@@ -5,7 +5,7 @@
 date=$(date +%Y%m%d)
 
 # 获取文件名
-filename="dialogues.${date}.log"
+filename="log/dialogues.${date}.log"
 
 # 获取最后一行以I:开头的行
 # grep "^I:" ./${filename} | tail -n 1

@@ -15,6 +15,7 @@ cp -R templates/ output/
 cp -R sh/ output/
 cd output 
 echo "Hello" > tem.txt
+mkdir log
 mkdir webdav
 cd webdav
 mkdir images

@@ -5,7 +5,7 @@ ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.cn,direct
 WORKDIR /home/workspace
 COPY . .
-RUN go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' .
+RUN go build -o server  -ldflags '-linkmode "external" -extldflags "-static"' . && strip -s server
 RUN mkdir app && mkdir app/static/ && \
     cp server app/ && cp docker-entrypoint.sh app/ && \
     cp -R static/ app/ && \
@@ -16,7 +16,7 @@ RUN mkdir app && mkdir app/static/ && \
 FROM alpine:latest
 LABEL maintainer="恐咖兵糖<0@ftls.xyz>"
 
-ENV VERSION 4.2.0
+ENV VERSION 4.2.1
 ENV GIN_MODE release
 ENV TZ=Asia/Shanghai
 

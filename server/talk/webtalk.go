@@ -27,7 +27,7 @@ func ChatText(text string) (string, error) {
 func ChatTalk(input string) (string, error) {
 	//打开对话日志文件，如果不存在则创建
 	date := tools.TimeFmt("20060102")
-	file, err := os.OpenFile("dialogues."+date+".log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	file, err := os.OpenFile("./log/dialogues."+date+".log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		log.Println("打开文件失败！", err)
 		return "", err

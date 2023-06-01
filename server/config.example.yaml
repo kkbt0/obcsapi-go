@@ -1,10 +1,15 @@
 name: obcsapi-go # 项目名称
-version: v4.2.0 # 项目版本
+version: v4.2.1 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
+# 后端地址 
+backend_url: localhost:8900
 # 如果部署在二级目录，需求填写这个，否则 Swagger 错误，不使用无需关注
-# base_path: /obcsapi
+# backend_base_path: /obcsapi
+# http(s):// + backend_url + backend_base_path
+backend_url_full: http://localhost:8900
+
 
 # 前端登录账户密码 有效时间 720h
 user: kkbt 
@@ -14,10 +19,6 @@ password: password
 swagger: true
 # debug 模式
 debug: false
-
-# 前端后地址 邮件中登录链接会用到
-backend_url: api.ftls.xyz
-backend_url_full: http://localhost:8900
 
 # S3 -> 1 ; CouchDb -> 2 ; Local -> 3 ; WebDav -> 4
 data_source: 3

@@ -14,7 +14,7 @@ server/gin.log
 server/obcsapi-go
 dir-ocr
 http/kkbt.http
-server/ob4.0.tar.gz
 .gitignore
 server/mykv.db
 server/config.run.json
+server/ob4.2.tar.gz

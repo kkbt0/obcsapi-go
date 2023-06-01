@@ -31,7 +31,7 @@ var limitPublicPage = rate.NewLimiter(0.1, 1) // 公开文档限制
 var loginLimter = rate.NewLimiter(0.1, 3)     // 登录速率限制
 
 // @title Obcsapi
-// @version v4.2.0 版本
+// @version v4.2.1 版本
 // @description 基于 Obsidian S3 存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式同步，保存消息到 Obsidian 库。该调试页面大部分仅提供对 Headers-Token 验证方式的支持，其他如 Query-token，Headers-Authorization 除了特殊的几个其他并不支持。可以使用 https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client 可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件
 // @contact.url https://gitee.com/kkbt/obcsapi-go
 // @externalDocs.url https://kkbt.gitee.io/obcsapi-go/
@@ -129,7 +129,7 @@ func main() {
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数
 
-	docs.SwaggerInfo.BasePath = tools.ConfigGetString("base_path")
+	docs.SwaggerInfo.BasePath = tools.ConfigGetString("backend_base_path")
 	r.GET("/swagger/*any", ginSwagger.DisablingWrapHandler(swaggerfiles.Handler, "OBCSAPI_SWAGGER_DISABLE"))
 
 	RunCronJob() //  运行定时任务

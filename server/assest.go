@@ -10,7 +10,7 @@ import (
 
 // 一些杂七杂八的函数 又不能放到 tools 里的
 
-var version string = "v4.2.0"
+var version string = "v4.2.1"
 
 func ShowConfig() {
 
@@ -39,8 +39,8 @@ func ShowConfig() {
 	}
 	log.Println("Your token is:")
 	log.Println("Token1", token1.TokenString, "GenerateTime", token1.GenerateTime)
-	log.Println("Token2", token2.TokenString)
-	log.Println("Token1 用于前端，有有效期概念。Token2 用于第三方 API 调用，无限时间。也可以在配置文件中设置很长时间的 Token1有效期")
-	log.Println("你可以访问 /api/sendtoken2mail 路径更新 Token1 ,如果你配置了邮箱服务，程序会将 Token 相关信息发送到指定邮箱")
+	log.Println("Token2", token2.TokenString, "GenerateTime", token2.GenerateTime)
+	log.Println("Token1, Token2 自动生成，用于第三方 API 调用。也可以在对应的文件中设置很长时间的有效期")
+	log.Println("你可以设置更多 token，在配置文件中使用")
 
 }
