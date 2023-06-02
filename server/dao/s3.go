@@ -180,3 +180,23 @@ func S3ReplaceMdUrl2PreSignedUrl(in_md []byte) []byte {
 	}
 	return pattern.ReplaceAllFunc(in_md, replaceFunc)
 }
+
+func S3ListObject(sess *session.Session, prefix string) ([]string, error) {
+	var result []string
+	svc := s3.New(sess)
+
+	input := &s3.ListObjectsV2Input{
+		Bucket: aws.String(tools.ConfigGetString("bucket")),
+	}
+	resultList, err := svc.ListObjectsV2(input)
+	if err != nil {
+		fmt.Println("Error", err)
+		return nil, err
+	}
+	for _, object := range resultList.Contents {
+		if strings.HasPrefix(*object.Key, prefix) && strings.Replace(*object.Key, prefix, "", 1) != "" {
+			result = append(result, *object.Key)
+		}
+	}
+	return result, nil
+}

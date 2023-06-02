@@ -7,6 +7,7 @@ import (
 	"obcsapi-go/tools"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // TODO: No such file 早晚得改 暂时将就着用吧
@@ -122,6 +123,23 @@ func LocalStorageGetMoreDaliyMdText(webDavPath string, addDateDay int) (string, 
 		return "", err
 	}
 	return day, nil
+}
+
+func LocalStorageListObject(webDavPath string, prefix string) ([]string, error) {
+	var result []string
+	err := filepath.Walk(webDavPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.HasPrefix(path, filepath.Clean(webDavPath)+"/"+prefix) {
+			result = append(result, strings.Replace(path, filepath.Clean(webDavPath)+"/", "", 1))
+		}
+		return nil
+	})
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }
 
 // ------ Tools ------

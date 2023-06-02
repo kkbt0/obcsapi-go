@@ -278,6 +278,24 @@ func MdShowText(text string) string {
 	return text
 }
 
+func ListObject(prefix string) ([]string, error) {
+	switch dataSource {
+	case S3:
+		// all objects filtered -r
+		return S3ListObject(sess, prefix)
+	case CouchDb:
+		// all objects filtered -r
+		return CouchDbListObject(couchDb, prefix)
+	case LocalStorage:
+		// all objects filtered -r
+		return LocalStorageListObject(webDavDirPath, prefix)
+	case WebDav:
+		// only one dir objects
+		return WebDavListObject(webDavClient, webDavPrePath, prefix)
+	}
+	return nil, errors.New("没有预料的情况，可能是数据源出现了问题")
+}
+
 // ------Tools--------
 
 // 下载图片到 tem.jpg

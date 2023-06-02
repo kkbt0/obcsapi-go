@@ -298,3 +298,28 @@ func CouchDbGetMoreDaliyMdText(db *kivik.DB, addDateDay int) (string, error) {
 	}
 	return day, nil
 }
+
+func CouchDbListObject(db *kivik.DB, prefix string) ([]string, error) {
+	var result []string
+	rows, err := db.AllDocs(context.TODO(), kivik.Options{"include_docs": true})
+	if err != nil {
+		log.Println(err)
+		return result, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var doc struct {
+			ID string `json:"_id"`
+		}
+		if err := rows.ScanDoc(&doc); err != nil {
+			log.Println(err)
+		}
+		if strings.HasPrefix(doc.ID, prefix) {
+			result = append(result, doc.ID)
+		}
+	}
+	if err := rows.Err(); err != nil {
+		log.Println(err)
+	}
+	return result, nil
+}

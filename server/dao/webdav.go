@@ -83,3 +83,19 @@ func WebDavGetMoreDaliyMdText(webDavClient *gowebdav.Client, prePath string, add
 	}
 	return day, nil
 }
+
+// Only Dir is supported
+func WebDavListObject(webDavClient *gowebdav.Client, prePath string, prefix string) ([]string, error) {
+	var result []string
+	files, err := webDavClient.ReadDir(prePath + prefix)
+	if err != nil {
+		return result, err
+	}
+	for _, file := range files {
+		//notice that [file] has os.FileInfo type
+		if !file.IsDir() {
+			result = append(result, file.Name())
+		}
+	}
+	return result, nil
+}
