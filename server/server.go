@@ -125,6 +125,7 @@ func main() {
 		api1Group.GET("/mention", GetMentionHandler)                // 提示词
 		api1Group.GET("/updatebd", UpdateBdAccessTokenHandler)      // 更新 BD Access Token
 		api1Group.GET("/updateconfig", UpdateViperHandler)          // 更新 Viper config.yaml
+		api1Group.GET("/random", RandomMemosHandler)                // 随机 Memos
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数

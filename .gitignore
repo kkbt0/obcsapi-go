@@ -9,7 +9,7 @@ server/webdav/
 server/output/
 server/server.zip
 demo-server/demo-server
-kkbt.md
+/kkbt
 server/gin.log
 server/obcsapi-go
 dir-ocr

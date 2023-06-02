@@ -3,7 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
+	"obcsapi-go/dao"
+	"obcsapi-go/skv"
 	"obcsapi-go/tools"
+	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -43,4 +48,25 @@ func ShowConfig() {
 	log.Println("Token1, Token2 自动生成，用于第三方 API 调用。也可以在对应的文件中设置很长时间的有效期")
 	log.Println("你可以设置更多 token，在配置文件中使用")
 
+}
+
+// fileKey, memosText
+func RandomMemos() (string, string) {
+	var usefullList []string
+	list, err := dao.ListObject(tools.NowRunConfig.DailyDir())
+	if err != nil {
+		log.Println(err)
+	}
+	for _, item := range list {
+		if strings.HasSuffix(item, ".md") {
+			usefullList = append(usefullList, item)
+		}
+	}
+	rand.Seed(time.Now().UnixNano())
+	// random FileKey -> get file -> Spilter
+	fileKey := usefullList[rand.Intn(len(usefullList))]
+	memosList := MarkdownSpilter(skv.GetByFileKey(fileKey))
+	// random Memos
+	memosText := memosList[rand.Intn(len(memosList))]
+	return fileKey, memosText
 }

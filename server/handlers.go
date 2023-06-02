@@ -312,3 +312,21 @@ func UpdateViperHandler(c *gin.Context) {
 		Success: true,
 	})
 }
+
+type RandomMemosStruct struct {
+	FileKey       string `json:"file_key"`
+	MemosText     string `json:"memos_text"`
+	MemosShowText string `json:"memos_show_text"`
+}
+
+func RandomMemosHandler(c *gin.Context) {
+	fileKey, memosText := RandomMemos()
+	if memosText == "" {
+		fileKey, memosText = RandomMemos()
+	}
+	c.JSON(200, RandomMemosStruct{
+		MemosText:     memosText,
+		MemosShowText: dao.MdShowText(memosText),
+		FileKey:       fileKey,
+	})
+}

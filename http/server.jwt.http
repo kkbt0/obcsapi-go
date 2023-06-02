@@ -38,4 +38,6 @@ Authorization: {{token}}
 ### mention
 GET {{apiv1}}/mention HTTP/1.1
 Authorization: {{token}}
-
+### random
+GET {{apiv1}}/random HTTP/1.1
+Authorization: {{token}}
