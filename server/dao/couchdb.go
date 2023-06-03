@@ -309,12 +309,13 @@ func CouchDbListObject(db *kivik.DB, prefix string) ([]string, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var doc struct {
-			ID string `json:"_id"`
+			ID      string `json:"_id"`
+			Deleted bool   `json:"deleted"`
 		}
 		if err := rows.ScanDoc(&doc); err != nil {
 			log.Println(err)
 		}
-		if strings.HasPrefix(doc.ID, prefix) {
+		if !doc.Deleted && strings.HasPrefix(doc.ID, prefix) {
 			result = append(result, doc.ID)
 		}
 	}
