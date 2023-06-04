@@ -182,25 +182,25 @@ const isCollapsed = ref(true);
 const checkNeedCollapse = ref(false);
 
 // 截取几行文字，返回的字符串最少100字符
-function truncateText(text:string ,lines: number):string {
-  // 将文本按行分割成数组
-  const textLines = text.split('\n');
-  const truncatedLines = textLines.slice(0, lines);
-  // 将截取的行重新组合成一个字符串
-  const truncatedText = truncatedLines.join('\n');
-  // 如果截取后的文本长度小于100个字符，则继续截取更多行
-  if (truncatedText.length < 100 && lines < textLines.length) {
-    return truncateText(text, lines + 1);
-  }
-  if (truncatedText == text) {
-    return truncatedText;
-  } else {
-    return truncatedText+'……';
-  }
+function truncateText(text: string, lines: number): string {
+    // 将文本按行分割成数组
+    const textLines = text.split('\n');
+    const truncatedLines = textLines.slice(0, lines);
+    // 将截取的行重新组合成一个字符串
+    const truncatedText = truncatedLines.join('\n');
+    // 如果截取后的文本长度小于100个字符，则继续截取更多行
+    if (truncatedText.length < 100 && lines < textLines.length) {
+        return truncateText(text, lines + 1);
+    }
+    if (truncatedText == text) {
+        return truncatedText;
+    } else {
+        return truncatedText + '……';
+    }
 }
 
 onMounted(() => {
-    checkNeedCollapse.value = truncateText(props.memosShowText,1) != props.memosShowText;
+    checkNeedCollapse.value = truncateText(props.memosShowText, 1) != props.memosShowText;
     isCollapsed.value = checkNeedCollapse.value;
 })
 
@@ -217,17 +217,18 @@ onMounted(() => {
 
         <template #header-extra>
             <n-space>
-                <n-button v-if="checkNeedCollapse" @click="isCollapsed = !isCollapsed;" quaternary type="primary" >{{ isCollapsed ? '◀' : '▼' }}</n-button>
-            <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-                <n-button quaternary>···</n-button>
-            </n-dropdown>
+                <n-button v-if="checkNeedCollapse" @click="isCollapsed = !isCollapsed;" quaternary type="primary">{{
+                    isCollapsed ? '◀' : '▼' }}</n-button>
+                <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+                    <n-button quaternary>···</n-button>
+                </n-dropdown>
             </n-space>
         </template>
         <!-- - 12:34 xxx -->
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
             <n-scrollbar x-scrollable style="max-width: 80vw;">
                 <div v-if="!isCollapsed" v-html="markdown(memosShowText.slice(7))" class="memos"></div>
-                <div v-else v-html="markdown(truncateText(memosShowText.slice(7),1))" class="memos"></div>
+                <div v-else v-html="markdown(truncateText(memosShowText.slice(7), 1))" class="memos"></div>
                 <n-space v-if="tasksList.length != 0" vertical>
                     <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
                         v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
@@ -271,9 +272,10 @@ onMounted(() => {
             </n-space>
         </template>
 
-        <template #action v-if="checkNeedCollapse&&!isCollapsed">
+        <template #action v-if="checkNeedCollapse && !isCollapsed">
             <n-space justify="end">
-                <n-button @click="isCollapsed = !isCollapsed;" quaternary type="primary" >{{ isCollapsed ? '展开' : '折叠' }}</n-button>
+                <n-button @click="isCollapsed = !isCollapsed;" quaternary type="primary">{{ isCollapsed ? '展开' : '折叠'
+                }}</n-button>
             </n-space>
         </template>
     </n-thing>

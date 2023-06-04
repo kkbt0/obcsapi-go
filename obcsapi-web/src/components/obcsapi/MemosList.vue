@@ -81,7 +81,7 @@ function scrollEvent(e: any) {
 </template>
 
 <style scoped>
-.n-list >>> .n-list-item-custom {
+.n-list :deep() .n-list-item-custom {
     padding: 10px 12px;
 }
 </style>
