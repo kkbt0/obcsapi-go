@@ -63,6 +63,15 @@ type ReminderConfig struct {
 type MentionConfig struct {
 	Tags []string `json:"tags"`
 }
+type S3CompatibleConfig struct {
+	UseS3Storage bool   `json:"use_s3_storage"`
+	EndPoint     string `json:"end_point"`
+	Region       string `json:"region"`
+	Bucket       string `json:"bucket"`
+	AccessKey    string `json:"access_key"`
+	SecretKey    string `json:"secret_key"`
+	BaseUrl      string `json:"base_url"`
+}
 
 type RunConfig struct {
 	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
@@ -73,6 +82,7 @@ type RunConfig struct {
 	BdOcr        BdOcrConfig         `json:"bd_ocr"`
 	Reminder     ReminderConfig      `json:"reminder"`
 	Mention      MentionConfig       `json:"mention"`
+	S3Compatible S3CompatibleConfig  `json:"s3_compatible"`
 }
 
 func GetRunConfigHandler(c *gin.Context) {

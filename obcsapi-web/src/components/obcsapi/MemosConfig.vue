@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiConfigGet, ObcsapiConfigPost, ObcsapiServerInfo } from "@/api/obcsapi"
 import { NScrollbar } from "naive-ui"
-import { ObcsapiTestMail,ObcsapiUpdateBdGet,ObcsapiUpdateConfig } from "@/api/obcsapi";
+import { ObcsapiTestMail, ObcsapiUpdateBdGet, ObcsapiUpdateConfig } from "@/api/obcsapi";
 
 
 const formData = ref({});
@@ -190,6 +190,63 @@ const schema = ref({
                 },
             }
         },
+        s3_compatible: {
+            title: "S3 兼容存储",
+            type: "object",
+            description: "开启此功能,上传图床时，文件同步上传 S3 ,并默认使用 S3 图片链接",
+            properties: {
+                use_s3_storage: {
+                    type: "boolean",
+                    description: "Use S3 storage",
+                    'ui:options': {
+                        placeholder: true,
+                    }
+                    
+                },
+                end_point: {
+                    type: "string",
+                    description: "End Point",
+                    'ui:options': {
+                        placeholder: "s3-cn-south-1.qiniucs.com",
+                    }
+                },
+                region: {
+                    type: "string",
+                    description: "Region",
+                    'ui:options': {
+                        placeholder: "s3-cn-south-1",
+                    }
+                },
+                bucket: {
+                    type: "string",
+                    description: "Bucket",
+                    'ui:options': {
+                        placeholder: "bucketname",
+                    }
+                },
+                access_key: {
+                    type: "string",
+                    description: "Access Key",
+                    'ui:options': {
+                        placeholder: "xxxxx",
+                    }
+                },
+                secret_key: {
+                    "type": "string",
+                    "description": "Secret Key",
+                    'ui:options': {
+                        placeholder: "xxxxx",
+                    }
+                },
+                base_url: {
+                    "type": "string",
+                    "description": "自定义域名，此项可以空，但图片可能会访问错误",
+                    'ui:options': {
+                        placeholder: "https://youdomain.com",
+                    }
+                }
+            }
+        },
         bd_ocr: {
             title: "百度OCR",
             type: "object",
@@ -304,9 +361,10 @@ function upDateBdOcrAccessToken() {
     <div v-if="showInfo && info">
         <a href="https://gitee.com/kkbt/obcsapi-go">Obsidian 云存储后端 API Go 版本项目地址 </a>
         <a href="https://kkbt.gitee.io/obcsapi-go/#/"> 📄文档</a><br>
-        {{ info.server_time }}<br>
+        ServerTime: {{ info.server_time }}<br>
         ServerVersion: {{ info.server_version }}<br>
         ServerConfigVersion: {{ info.config_version }} <br>
+        <a>注意：服务器不支持设置为空，所以如果想置空某一项，只能在服务器处修改 config.run.json 文件 , 然后重启程序</a>
     </div>
     <n-scrollbar style="max-height: 75vh">
         <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" />

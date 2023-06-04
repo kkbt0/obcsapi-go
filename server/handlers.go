@@ -9,6 +9,7 @@ import (
 	"obcsapi-go/jwt"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -71,10 +72,27 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		}
 	}
 	// END ocr
+	rUrl := fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, ""))
+	// Upload S3
+	if tools.NowRunConfig.S3Compatible.UseS3Storage {
+		file, err := os.ReadFile("./webdav/images/" + strings.Join(filePath, ""))
+		if err != nil {
+			c.Error(err)
+			c.Status(500)
+			return
+		}
+		rUrl, err = tools.S3FileStore("images/"+strings.Join(filePath, ""), file)
+		if err != nil {
+			c.Error(err)
+			c.Status(500)
+			return
+		}
+	}
+
 	c.JSON(200, gin.H{
 		"data": gin.H{
-			"url":  fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, "")),
-			"url2": fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, "")),
+			"url":  rUrl,
+			"url2": rUrl,
 		},
 	})
 }
