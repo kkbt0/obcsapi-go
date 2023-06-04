@@ -201,10 +201,12 @@ onMounted(() => {
         </template>
 
         <template #header-extra>
-            <n-button v-if="checkNeedCollapse()" @click="isCollapsed = !isCollapsed;" quaternary type="primary" >{{ isCollapsed ? '展开' : '折叠' }}</n-button>
+            <n-space>
+                <n-button v-if="checkNeedCollapse()" @click="isCollapsed = !isCollapsed;" quaternary type="primary" >{{ isCollapsed ? '◀' : '▼' }}</n-button>
             <n-dropdown trigger="hover" :options="options" @select="handleSelect">
                 <n-button quaternary>···</n-button>
             </n-dropdown>
+            </n-space>
         </template>
         <!-- - 12:34 xxx -->
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
@@ -254,6 +256,11 @@ onMounted(() => {
             </n-space>
         </template>
 
+        <template #action v-if="checkNeedCollapse()&&!isCollapsed">
+            <n-space justify="end">
+                <n-button @click="isCollapsed = !isCollapsed;" quaternary type="primary" >{{ isCollapsed ? '展开' : '折叠' }}</n-button>
+            </n-space>
+        </template>
     </n-thing>
 </template>
 
