@@ -207,7 +207,7 @@ const schema = ref({
                     type: "string",
                     description: "End Point",
                     'ui:options': {
-                        placeholder: "s3-cn-south-1.qiniucs.com",
+                        placeholder: "https://s3-cn-south-1.qiniucs.com",
                     }
                 },
                 region: {

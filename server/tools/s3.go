@@ -37,7 +37,7 @@ func S3FileStore(file_key string, inFileBytes []byte) (string, error) {
 	}
 	fmt.Printf("https://%s/%s/%s\n", NowRunConfig.S3Compatible.EndPoint, NowRunConfig.S3Compatible.Bucket, file_key)
 	if NowRunConfig.S3Compatible.BaseUrl == "" {
-		return fmt.Sprintf("https://%s/%s/%s", NowRunConfig.S3Compatible.EndPoint, NowRunConfig.S3Compatible.Bucket, file_key), nil
+		return fmt.Sprintf("%s/%s/%s", NowRunConfig.S3Compatible.EndPoint, NowRunConfig.S3Compatible.Bucket, file_key), nil
 	} else {
 		return fmt.Sprintf("%s/%s", NowRunConfig.S3Compatible.BaseUrl, file_key), nil
 	}
