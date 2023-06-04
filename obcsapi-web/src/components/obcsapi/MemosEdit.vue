@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { NThing, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar,NMention } from "naive-ui";
+import { NThing, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar, NMention } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
-import { ref, onUpdated } from "vue";
+import { ref, onUpdated, onMounted, nextTick } from "vue";
 import { memosData } from "@/stores/memos";
 import marked from "marked";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
@@ -164,8 +164,8 @@ function handleSelect(key: string | number) {
     } else if (key == 2) { // - xxx -> - [ ] xx
         let arr = inputText.value.split("\n");
         for (var i = 0; i < arr.length; i++) {
-            if( arr[i].trim().startsWith("- [") ) { // do nothing
-            } else if( arr[i].trim().startsWith("- ") ) {
+            if (arr[i].trim().startsWith("- [")) { // do nothing
+            } else if (arr[i].trim().startsWith("- ")) {
                 arr[i] = "- [ ]" + arr[i].trim().slice(1)
             } else { // xx
                 arr[i] = " - [ ] " + arr[i].trim()
@@ -178,6 +178,16 @@ function handleSelect(key: string | number) {
         delMemos()
     }
 }
+const isCollapsed = ref(true);
+
+function checkNeedCollapse(): boolean {
+    console.log(props.memosShowText.length > 100);
+    return props.memosShowText.length > 100
+}
+
+onMounted(() => {
+    isCollapsed.value = checkNeedCollapse();
+})
 
 </script>
 
@@ -191,21 +201,24 @@ function handleSelect(key: string | number) {
         </template>
 
         <template #header-extra>
+            <n-button v-if="checkNeedCollapse()" @click="isCollapsed = !isCollapsed;" quaternary type="primary" >{{ isCollapsed ? '展开' : '折叠' }}</n-button>
             <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-                <n-button quaternary>...</n-button>
+                <n-button quaternary>···</n-button>
             </n-dropdown>
         </template>
         <!-- - 12:34 xxx -->
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
             <n-scrollbar x-scrollable style="max-width: 80vw;">
-                <div v-html="markdown(memosShowText.slice(7))" class="memos"></div>
+                <div v-if="!isCollapsed" v-html="markdown(memosShowText.slice(7))" class="memos"></div>
+                <div v-else v-html="markdown(memosShowText.slice(7,100))" class="memos"></div>
                 <n-space v-if="tasksList.length != 0" vertical>
                     <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
                         v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
                 </n-space>
                 <n-image-group v-if="picList.length != 0">
                     <n-space>
-                        <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" loading="lazy" :src=picUrl />
+                        <n-image v-for="(picUrl, urlIndex) in picList" :key="urlIndex" width="100" loading="lazy"
+                            :src=picUrl />
                     </n-space>
                 </n-image-group>
             </n-scrollbar>
@@ -213,7 +226,8 @@ function handleSelect(key: string | number) {
         <!-- - xxx -->
         <template #description v-else-if="!edit">
             <n-scrollbar x-scrollable style="max-width: 100vw;">
-                <div v-html="markdown(memosShowText)" class="memos"></div>
+                <div v-if="!isCollapsed" v-html="markdown(memosShowText)" class="memos"></div>
+                <div v-else v-html="markdown(memosShowText.slice(0,100))" class="memos"></div>
                 <n-space v-if="tasksList.length != 0" vertical>
                     <n-checkbox v-for="(task, taskIndex) in tasksList" :key="taskIndex" :label="task"
                         v-model:checked="tasksCheckedList[taskIndex]" @update:checked="handleCheckedChange(taskIndex)" />
@@ -229,7 +243,7 @@ function handleSelect(key: string | number) {
         <template #description v-if="edit">
             <n-space vertical>
                 <n-mention v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
-                    :autosize="{ minRows: 3 }" :options="LocalSetting().mention" :prefix="['#']"/>
+                    :autosize="{ minRows: 3 }" :options="LocalSetting().mention" :prefix="['#']" />
                 <n-space justify="space-between">
                     <n-button quaternary type="error" @click="delMemos">Del</n-button>
                     <n-button quaternary type="info" @click="showUpload = !showUpload">Img</n-button>
@@ -246,5 +260,8 @@ function handleSelect(key: string | number) {
 <style scoped>
 .memos :deep() img {
     max-width: 40%;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    max-height: fit-content;
 }
 </style>

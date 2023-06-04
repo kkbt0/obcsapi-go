@@ -9,7 +9,7 @@ server/webdav/
 server/output/
 server/server.zip
 demo-server/demo-server
-/kkbt
+kkbt
 server/gin.log
 server/obcsapi-go
 dir-ocr
@@ -18,3 +18,4 @@ http/kkbt.http
 server/mykv.db
 server/config.run.json
 server/ob4.2.tar.gz
+server/pktoken
