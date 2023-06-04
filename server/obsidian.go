@@ -7,6 +7,7 @@ import (
 	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
 	"obcsapi-go/tools"
+	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/gin-gonic/gin"
@@ -217,16 +218,24 @@ func Url2MdHandler(c *gin.Context) {
 		c.Status(500)
 		return
 	}
+	title := strings.Split(markdown, "\n")[0]
 	serverTime := tools.TimeFmt("200601021504")
-	yaml := fmt.Sprintf("---\nurl: %s\nsctime: %s\n---\n", urlStruct.Url, serverTime)
-	file_key := fmt.Sprintf("%sHtmlPages/%s.md", tools.NowRunConfig.OtherDataDir(), serverTime)
+	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n", urlStruct.Url, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), serverTime)
+	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", tools.NowRunConfig.OtherDataDir(), tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), serverTime)
 	err = MdTextStore(file_key, yaml+markdown)
 	if err != nil {
 		c.Error(err)
 		c.Status(500)
 		return
 	}
-	c.Status(200)
+	c.JSON(200, tools.RJson{
+		Code: 200,
+		Data: gin.H{
+			"file_key": file_key,
+			"title":    title,
+		},
+		Success: true,
+	})
 }
 
 // 通用接口

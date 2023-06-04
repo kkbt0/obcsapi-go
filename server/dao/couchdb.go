@@ -97,7 +97,7 @@ func CouchDbCheckObject(db *kivik.DB, text_file_key string) (bool, bool) {
 func CouchDbFileStorage(db *kivik.DB, file_key string, file_bytes []byte) error {
 	now := time.Now().UnixMilli()
 	leftId := fmt.Sprintf("h:%d", now)
-	fmt.Println(leftId)
+	tools.Debug(leftId)
 	leftData := base64.StdEncoding.EncodeToString(file_bytes)
 	leftDoc := LeftDoc{
 		ID:   leftId,
@@ -110,7 +110,7 @@ func CouchDbFileStorage(db *kivik.DB, file_key string, file_bytes []byte) error 
 	}
 	exist, delSign := CouchDbCheckObject(db, file_key)
 	if !exist && !delSign { // 数据库没这条记录
-		fmt.Println("数据库没这条记录")
+		tools.Debug("数据库没这条记录")
 		fileDoc := FileDoc{
 			ID:       file_key,
 			Children: []string{leftId},
@@ -127,7 +127,7 @@ func CouchDbFileStorage(db *kivik.DB, file_key string, file_bytes []byte) error 
 	} else if (!exist && delSign) || (exist && !delSign) { // 数据库有记录
 		var fileNodeDoc FileDoc
 		db.Get(context.TODO(), file_key).ScanDoc(&fileNodeDoc)
-		fmt.Println("数据库有记录")
+		tools.Debug("数据库有记录")
 		fileDoc := FileDoc{
 			Rev:      fileNodeDoc.Rev,
 			ID:       file_key,
@@ -149,7 +149,7 @@ func CouchDbFileStorage(db *kivik.DB, file_key string, file_bytes []byte) error 
 func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 	now := time.Now().UnixMilli()
 	leftId := fmt.Sprintf("h:%d", now)
-	fmt.Println(leftId)
+	tools.Debug(leftId)
 	leftDoc := LeftDoc{
 		ID:   leftId,
 		Data: text,
@@ -161,7 +161,7 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 	}
 	exist, delSign := CouchDbCheckObject(db, file_key)
 	if !exist && !delSign { // 数据库没这条记录
-		fmt.Println("数据库没这条记录")
+		tools.Debug("数据库没这条记录")
 		fileDoc := FileDoc{
 			ID:       file_key,
 			Children: []string{leftId},
@@ -178,7 +178,7 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 	} else if (!exist && delSign) || (exist && !delSign) { // 数据库有记录
 		var fileNodeDoc FileDoc
 		db.Get(context.TODO(), file_key).ScanDoc(&fileNodeDoc)
-		fmt.Println("数据库有记录")
+		tools.Debug("数据库有记录")
 		fileDoc := FileDoc{
 			Rev:      fileNodeDoc.Rev,
 			ID:       file_key,
@@ -200,7 +200,7 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 func CouchDbTextAppend(db *kivik.DB, file_key string, text string) error {
 	now := time.Now().UnixMilli()
 	leftId := fmt.Sprintf("h:%d", now)
-	fmt.Println(leftId)
+	tools.Debug(leftId)
 	leftDoc := LeftDoc{
 		ID:   leftId,
 		Data: text,
@@ -230,7 +230,7 @@ func CouchDbTextAppend(db *kivik.DB, file_key string, text string) error {
 	} else if !exist && delSign { // 数据库存在，但是有删除标记
 		var fileNodeDoc FileDoc
 		db.Get(context.TODO(), file_key).ScanDoc(&fileNodeDoc)
-		fmt.Println("数据库存在，但是有删除标记")
+		tools.Debug("数据库存在，但是有删除标记")
 		fileDoc := FileDoc{
 			Rev:      fileNodeDoc.Rev,
 			ID:       file_key,
@@ -249,7 +249,7 @@ func CouchDbTextAppend(db *kivik.DB, file_key string, text string) error {
 	} else if exist && !delSign { // 数据库存在，正常情况
 		var fileNodeDoc FileDoc
 		db.Get(context.TODO(), file_key).ScanDoc(&fileNodeDoc)
-		fmt.Println("数据库存在，正常情况")
+		tools.Debug("数据库存在，正常情况")
 		fileDoc := FileDoc{
 			Rev:      fileNodeDoc.Rev,
 			ID:       file_key,
