@@ -182,7 +182,7 @@ func JwtHello(c *gin.Context) {
 }
 
 func MailTesterHandler(c *gin.Context) {
-	err := SendMail("测试邮件", "测试内容")
+	err := tools.SendMail("测试邮件", "测试内容")
 	if err != nil {
 		c.Error(err)
 		c.String(500, err.Error())
@@ -253,7 +253,7 @@ func SendMailHandler(c *gin.Context) {
 		c.String(400, "参数错误")
 		return
 	}
-	err := SendMail(sendMailStruct.Subject, sendMailStruct.Content)
+	err := tools.SendMail(sendMailStruct.Subject, sendMailStruct.Content)
 	if err != nil {
 		c.Status(500)
 		c.Error(err)

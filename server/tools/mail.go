@@ -1,10 +1,9 @@
-package main
+package tools
 
 import (
 	"fmt"
 	"log"
 	"net/smtp"
-	"obcsapi-go/tools"
 
 	"github.com/jordan-wright/email"
 )
@@ -12,7 +11,7 @@ import (
 // 发送邮件 需要传入 主题 和 内容 ，其余配置选项均从配置中读取使用
 func SendMail(subjct string, content string) error {
 
-	config := tools.NowRunConfig.Mail
+	config := NowRunConfig.Mail
 
 	// 配置邮件
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
