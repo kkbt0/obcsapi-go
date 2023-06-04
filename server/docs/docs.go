@@ -243,6 +243,38 @@ const docTemplate = `{
                 ],
                 "responses": {}
             }
+        },
+        "/ob/url": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "裁剪网页",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "裁剪网页",
+                "parameters": [
+                    {
+                        "description": "MemosData",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dao.UrlStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
@@ -278,6 +310,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dao.UrlStruct": {
+            "type": "object",
+            "properties": {
+                "url": {
                     "type": "string"
                 }
             }

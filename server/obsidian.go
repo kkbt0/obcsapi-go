@@ -182,6 +182,14 @@ func GeneralHeader2(c *gin.Context) {
 }
 
 // Token2
+// @Summary 裁剪网页
+// @Description 裁剪网页
+// @Tags Ob
+// @Accept json
+// @Produce plain
+// @Security Token
+// @Param json body UrlStruct true "MemosData"
+// @Router /ob/url [post]
 func Url2MdHandler(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
 	var urlStruct UrlStruct

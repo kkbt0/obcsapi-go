@@ -22,6 +22,11 @@ definitions:
       title:
         type: string
     type: object
+  dao.UrlStruct:
+    properties:
+      url:
+        type: string
+    type: object
   main.GeneralAllStruct:
     properties:
       content:
@@ -205,6 +210,26 @@ paths:
       security:
       - Token: []
       summary: 简悦 WebHook 保存文章
+      tags:
+      - Ob
+  /ob/url:
+    post:
+      consumes:
+      - application/json
+      description: 裁剪网页
+      parameters:
+      - description: MemosData
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/dao.UrlStruct'
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: 裁剪网页
       tags:
       - Ob
 securityDefinitions:

@@ -1,32 +1,50 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
-	"os"
+	"net/http"
 
-	"github.com/studio-b12/gowebdav"
+	md "github.com/JohannesKaufmann/html-to-markdown"
 )
 
 func main() {
-	c := gowebdav.NewClient("http://localhost:8900/webdav", "kkbt", "xxxxx")
-	err := c.Write("testdb/xxx.md", []byte("New xxx"), 0644)
+	url := "https://www.ftls.xyz/posts/anki-sync-server-rs-docker/" // 替换为您要下载的网页URL
+
+	// 发送HTTP GET请求并获取响应
+	response, err := http.Get(url)
 	if err != nil {
-		log.Println(err)
+		fmt.Println("HTTP GET error:", err)
+		return
 	}
-	err = c.Write("testdb/xxx1.md", []byte("New xxx1"), 0644)
+	defer response.Body.Close()
+
+	// 读取响应的HTML内容
+	htmlBytes, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Println(err)
+		fmt.Println("HTML read error:", err)
+		return
 	}
-	err = c.Write("testdb/xxx/xxx/xxx1.md", []byte("New xxx1"), 0644)
-	if err != nil {
-		log.Println(err)
-	}
+
+	// 将HTML内容转换为Markdown
+	markdown := convertToMarkdown(htmlBytes)
+
+	fmt.Println(markdown)
 }
 
-func ReadTalkLog(path string) (string, error) {
-	file, err := os.ReadFile("io.txt")
+func convertToMarkdown(html []byte) string {
+	// TODO: 在这里编写将HTML转换为Markdown的代码
+	// 您可以使用golang.org/x/net/html包来解析HTML并将其转换为Markdown格式
+
+	// 示例代码中暂未包含转换逻辑，您需要根据自己的需求实现该功能
+
+	converter := md.NewConverter("", true, nil)
+	markdown, err := converter.ConvertString(string(html))
+
 	if err != nil {
-		return "", err
+		log.Println(err)
 	}
-	return string(file), nil
+
+	return markdown // 返回Markdown字符串
 }
