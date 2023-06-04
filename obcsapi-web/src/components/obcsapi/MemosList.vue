@@ -1,55 +1,70 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from "vue";
+import { reactive, nextTick, ref } from "vue";
 import { NList, NListItem, NScrollbar, NSpace } from "naive-ui"
 import { memosData } from "@/stores/memos";
 import MemosEdit from "@/components/obcsapi/MemosEdit.vue"
-import { ObcsapiGetMemos } from "@/api/obcsapi";
 
-const memosIndexList = reactive(memosData().memosMap)
-const memos = memosData();
-const loadMemosCount = ref(0); // 取负数 然后 waitMoreMemos()
+const memosIndexList = reactive(memosData().memosMap);
 
-onMounted(() => {
-    waitMoreMemos(20)
-})
+// 自动加载更多
+let scroll: any;
+//窗口可视范围高度
+let clientHeight: any;
+//文档内容实际高度  总高度（包括超出视窗的溢出部分）
+let scrollHeight: number;
+const isLoading = ref(false);
 
-async function moreMemos() {
-    await ObcsapiGetMemos(memos.dayBefore).then(data => {
-        console.log(data.date)
-        memos.addDaily(data.date, data)
-        loadMemosCount.value += data.md_text.length // 统计 memos 数量
-        memos.dayBefore -= 1;
-    }).catch(err => {
-        console.log(err)
-    })
+upDateScroll();
+async function upDateScroll() {
+    await nextTick();
+    scrollInit();
 }
 
-async function waitMoreMemos(needNum: number) {
-    console.log(`Loading more ${needNum} memos`)
-    let maxRequest = 5
-    let tem = loadMemosCount.value + needNum
-    while (loadMemosCount.value < tem && maxRequest > 0) {
-        await moreMemos()
-        maxRequest -= 1
-    }
-
+function scrollInit() {
+    scroll = document.getElementById("scrollId");
+    clientHeight = scroll.innerHeight || Math.min(scroll.clientHeight, scroll.clientHeight);
+    let children = scroll.querySelectorAll(".child");
+    scrollHeight = 0;
+    children.forEach(function (child: any) {
+        scrollHeight += child.offsetHeight;
+    });
 }
 
 function LoadMoreMemosList() {
-    waitMoreMemos(20)
+    isLoading.value = true;
+    memosData().waitMoreMemos(20).then(() => {
+        scrollInit()
+        isLoading.value = false;
+    }).catch((e) => {
+        console.log(e);
+        isLoading.value = false;
+    });
 }
 
+
+function scrollEvent(e: any) {
+    //滚动条滚动距离
+    let scrollTop = e.target.scrollTop;
+    if (clientHeight + scrollTop >= scrollHeight) {
+        if (isLoading.value) {
+            return;
+        }
+        console.log("scroll end");
+        LoadMoreMemosList();
+    }
+}
 </script>
 
 <template>
-    <n-scrollbar style="max-height: 75vh">
-        <div v-if="memosData().memosIndexList" v-for="(dayKey, key1) in memosData().memosIndexList" :key="key1">
+    <n-scrollbar style="max-height: 80vh" id="scrollId" @scroll="scrollEvent">
+        <div v-if="memosData().memosIndexList" v-for="(dayKey, key1) in memosData().memosIndexList" :key="key1"
+            class="child">
             <!-- 每天的列表 -->
             <n-list bordered v-if="memosIndexList.get(dayKey) != undefined">
                 <!-- 列表中的 Memos -->
                 <div v-for="(memosShowText, key2) in memosIndexList.get(dayKey).md_show_text.slice().reverse()" :key="key2">
-                    <n-list-item v-if="memosShowText.trim() != ''">
-                            <MemosEdit :memosShowText="memosShowText"
+                    <n-list-item v-if="memosShowText.trim() != ''" class="n-list-item-custom">
+                        <MemosEdit :memosShowText="memosShowText"
                             :memosRaw="memosIndexList.get(dayKey).md_text[memosIndexList.get(dayKey).md_text.length - key2 - 1]"
                             :dayKey="dayKey" :line="memosIndexList.get(dayKey).md_text.length - key2 - 1" />
                     </n-list-item>
@@ -57,10 +72,16 @@ function LoadMoreMemosList() {
                 </div>
             </n-list>
         </div>
-    </n-scrollbar>
-    <n-space justify="end">
-        <n-button quaternary type="primary" @click="LoadMoreMemosList">Load More</n-button>
+        <n-space justify="space-around">
+        <n-button quaternary type="primary" @click="LoadMoreMemosList" :disabled="isLoading">{{ isLoading ? 'Loading More' :
+            'Load More' }}</n-button>
     </n-space>
+    </n-scrollbar>
+
 </template>
 
-<style scoped></style>
+<style scoped>
+.n-list >>> .n-list-item-custom {
+    padding: 10px 12px;
+}
+</style>

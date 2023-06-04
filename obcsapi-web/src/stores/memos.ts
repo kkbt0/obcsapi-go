@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { ObcsapiGetMemos } from '@/api/obcsapi';
 
 export const memosData = defineStore('memos', () => {
     // ref -> basic ; reactive -> object
@@ -23,5 +24,33 @@ export const memosData = defineStore('memos', () => {
         localStorage.setItem("mainMdList", JSON.stringify([...memosMap.value]));
 
     }
-    return { memosIndexList, memosMap , dayBefore,addDaily , setMap}
+
+
+
+    // Load Memos
+    const loadMemosCount = ref(0); // 取负数 然后 waitMoreMemos()
+    async function moreMemos() {
+        await ObcsapiGetMemos(dayBefore.value).then(data => {
+            console.log(data.date)
+            addDaily(data.date, data)
+            loadMemosCount.value += data.md_text.length // 统计 memos 数量
+            dayBefore.value -= 1;
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+    
+    async function waitMoreMemos(needNum: number) {
+        console.log(`Loading more ${needNum} memos`)
+        let maxRequest = 5
+        let tem = loadMemosCount.value + needNum
+        while (loadMemosCount.value < tem && maxRequest > 0) {
+            await moreMemos()
+            maxRequest -= 1
+        }
+    }
+
+    waitMoreMemos(20);
+
+    return { memosIndexList, memosMap , dayBefore,addDaily , setMap , waitMoreMemos}
 })
