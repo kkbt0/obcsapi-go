@@ -33,7 +33,7 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 | 体积                                     | 未压缩 100Mb+    | 未压缩50Mb-    |
 | 修改难度                                 | 简单<sup>2</sup> | 比python复杂   |
 | 微信公众号(测试号)<sup>3</sup>           | √                | √              |
-| 微信文章裁剪                             | √                | ×              |
+| 微信文章裁剪                             | √                | √              |
 | 简悦 SimpRead Webook                     | √                | √              |
 | fv悬浮球文字图片分享保存                 | √                | √              |
 | 静读天下 MoonReader 高亮标注<sup>4</sup> | √                | √              |
@@ -46,7 +46,9 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 | 图床  和 CLI上传工具                     | ×                | √              |
 | 公开文档功能                             | ×                | √              |
 | 邮件/微信任务提醒                        | ×                | √              |
-| 前端                              | ×                | √              |
+| 前端                                     | ×                | √              |
+| 对话/指令模式                            | ×                | √              |
+| 自定义运行脚本                           | ×                | √              |
 | Docker                                   | <=3              | >=4            |
 
 Docker 3.0 之前的是 python 版本，之后的是 Go 版本。
