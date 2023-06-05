@@ -87,6 +87,10 @@ function markdown(md: string) {
 }
 
 function handleCheckedChange(taskIndex: number) {
+    if (isCollapsed.value) {
+        isCollapsed.value = false;
+        return;
+    }
     let text = inputText.value;
     let isEmpty = false;
     const tasksRegex = /- \[[x ]\] .*/gm;
@@ -226,7 +230,7 @@ onMounted(() => {
         </template>
         <!-- - 12:34 xxx -->
         <template #description v-if="!edit && memosShowText.slice(2, 7).match(/[0-2][0-9]\:[0-5][0-9]/g)">
-            <n-scrollbar x-scrollable style="max-width: 80vw;">
+            <n-scrollbar x-scrollable class="scrollbar-content">
                 <div v-if="!isCollapsed" v-html="markdown(memosShowText.slice(7))" class="memos"></div>
                 <div v-else v-html="markdown(truncateText(memosShowText.slice(7), 1))" class="memos"></div>
                 <n-space v-if="tasksList.length != 0" vertical>
@@ -243,7 +247,7 @@ onMounted(() => {
         </template>
         <!-- - xxx -->
         <template #description v-else-if="!edit">
-            <n-scrollbar x-scrollable style="max-width: 100vw;">
+            <n-scrollbar x-scrollable class="scrollbar-content" >
                 <div v-if="!isCollapsed" v-html="markdown(memosShowText)" class="memos"></div>
                 <div v-else v-html="markdown((truncateText(memosShowText.slice(0),1)))" class="memos"></div>
                 <n-space v-if="tasksList.length != 0" vertical>
@@ -287,5 +291,11 @@ onMounted(() => {
     overflow: hidden;
     transition: max-height 0.3s ease;
     max-height: fit-content;
+}
+.memos :deep() pre {
+    max-width: 80vw;
+}
+.memos :deep() p {
+    word-break:break-all;
 }
 </style>
