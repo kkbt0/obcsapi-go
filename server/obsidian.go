@@ -221,7 +221,7 @@ func Url2MdHandler(c *gin.Context) {
 	title := strings.Split(markdown, "\n")[0]
 	serverTime := tools.TimeFmt("200601021504")
 	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n", urlStruct.Url, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), serverTime)
-	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", tools.NowRunConfig.OtherDataDir(), tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), serverTime)
+	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", tools.NowRunConfig.OtherDataDir(), serverTime, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)))
 	err = MdTextStore(file_key, yaml+markdown)
 	if err != nil {
 		c.Error(err)
