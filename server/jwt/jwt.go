@@ -96,6 +96,13 @@ func NewInfo(user User) *UserInfo {
 	return &UserInfo{Id: user.Id, UserName: user.UserName}
 }
 
+// @Summary 前端登录
+// @Description 前端登录
+// @Tags 前端
+// @Accept json
+// @Produce json
+// @Param json body User true "User"
+// @Router /login [post]
 func LoginHandler(c *gin.Context) {
 	var userVo User
 	if c.ShouldBindJSON(&userVo) != nil {

@@ -192,6 +192,12 @@ func WebDavServeAuth(c *gin.Context) bool {
 
 // JWT API v1
 // Hello
+// @Summary JWT 测试接口
+// @Tags 前端
+// @Security JWT
+// @Accept plain,octet-stream
+// @Produce plain
+// @Router /api/v1/sayHello [get]
 func JwtHello(c *gin.Context) {
 	auth := c.Request.Header.Get("Authorization")
 	claims, _ := jwt.ParseToken(auth)
@@ -237,6 +243,13 @@ type WeChatInfoStruct struct {
 	Content string `json:"content"`
 }
 
+// @Summary 微信通知
+// @Tags 通知
+// @Security Token
+// @Accept json
+// @Produce plain
+// @Param json body WeChatInfoStruct true "WeChatInfoStruct"
+// @Router /api/wechatmpmsg [post]
 func WeChatMpInfoHandler(c *gin.Context) {
 	var weChatInfoStruct WeChatInfoStruct
 	if c.ShouldBindJSON(&weChatInfoStruct) != nil {
@@ -261,6 +274,13 @@ type SendMailStruct struct {
 	Content string `json:"content"`
 }
 
+// @Summary 邮件通知
+// @Tags 通知
+// @Accept json
+// @Security Token
+// @Produce plain
+// @Param json body SendMailStruct true "SendMailStruct"
+// @Router /api/sendmail [post]
 func SendMailHandler(c *gin.Context) {
 	var sendMailStruct SendMailStruct
 	if c.ShouldBindJSON(&sendMailStruct) != nil {
@@ -337,6 +357,10 @@ type RandomMemosStruct struct {
 	MemosShowText string `json:"memos_show_text"`
 }
 
+// @Summary 随机回顾
+// @Tags 前端
+// @Security JWT
+// @Router /api/v1/random [get]
 func RandomMemosHandler(c *gin.Context) {
 	fileKey, memosText := RandomMemos()
 	if memosText == "" {

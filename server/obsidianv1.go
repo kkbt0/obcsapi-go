@@ -46,6 +46,13 @@ func MarkdownSpilter(text string) []string {
 }
 
 // ?day=-1 yesterday daily
+// @Summary Memos 请求
+// @Description 默认一周以前的查找缓存返回 即 <= -7 且不允许请求 一年之前的日记
+// @Tags 前端
+// @Security JWT
+// @Produce json
+// @Param day query integer  false  "请求几天前的"
+// @Router /api/v1/daily [get]
 func ObV1GetDailyHandler(c *gin.Context) {
 	addData := c.Query("day")
 	addDataInt := 0
@@ -85,6 +92,12 @@ func ObV1GetDailyHandler(c *gin.Context) {
 }
 
 // ?day=-1 yesterday daily 请求日记
+// @Summary Memos 请求 (无缓存)
+// @Tags 前端
+// @Security JWT
+// @Produce json
+// @Param day query integer  false  "请求几天前的"
+// @Router /api/v1/daily/nocache [get]
 func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 	addData := c.Query("day")
 	addDataInt := 0
@@ -129,6 +142,14 @@ type ObV1ModMdText struct {
 
 // 根据行号 修改内容
 // eg: {"line_num":99,"content":"new Memos","day": "2023-01-01","old":""}
+// @Summary 根据行号修改内容
+// @Description 根据行号修改内容，line_num 大于原文件行数，如 9999 新增 Memos 。需要原文件不完整 FileKey 和原来的行的内容进行校验。成功后返回更新后的内容。
+// @Tags 前端
+// @Security JWT
+// @Accept json
+// @Produce json
+// @Param json body ObV1ModMdText true "根据行号修改内容"
+// @Router /api/v1/line [post]
 func ObV1PostLineHandler(c *gin.Context) {
 	var modText ObV1ModMdText
 	if c.ShouldBindJSON(&modText) != nil {
@@ -181,6 +202,11 @@ func ObV1PostLineHandler(c *gin.Context) {
 	})
 }
 
+// @Summary 更新文件的缓存
+// @Tags 前端
+// @Security JWT
+// @Param key query string  true  "更新文件 FileKey 完整的"
+// @Router /api/v1/cacheupdate [post]
 func ObV1UpdateCacheHandler(c *gin.Context) {
 	key := c.Query("key")
 	if key == "" {

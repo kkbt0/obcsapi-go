@@ -41,6 +41,9 @@ var loginLimter = rate.NewLimiter(0.1, 3)     // 登录速率限制
 // @securityDefinitions.apikey AuthorizationToken
 // @in header
 // @name Authorization
+// @securityDefinitions.apikey JWT
+// @in header
+// @name Authorization
 func main() {
 	ShowConfig() // 打印基础消息
 

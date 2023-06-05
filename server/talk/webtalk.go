@@ -58,6 +58,13 @@ type TalkStruct struct {
 	Content string `json:"content"`
 }
 
+// @Summary 指令模式接口
+// @Tags 前端
+// @Security JWT
+// @Accept json
+// @Produce plain
+// @Param json body TalkStruct true "TalkStruct"
+// @Router /api/v1/talk [post]
 func TalkHandler(c *gin.Context) {
 	var talkStruct TalkStruct
 	if c.ShouldBindJSON(&talkStruct) != nil {

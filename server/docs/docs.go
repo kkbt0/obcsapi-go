@@ -18,12 +18,273 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/sendmail": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "通知"
+                ],
+                "summary": "邮件通知",
+                "parameters": [
+                    {
+                        "description": "SendMailStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.SendMailStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/cacheupdate": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "更新文件的缓存",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "更新文件 FileKey 完整的",
+                        "name": "key",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/daily": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "默认一周以前的查找缓存返回 即 \u003c= -7 且不允许请求 一年之前的日记",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "Memos 请求",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求几天前的",
+                        "name": "day",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/daily/nocache": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "Memos 请求 (无缓存)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求几天前的",
+                        "name": "day",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/line": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "根据行号修改内容，line_num 大于原文件行数，如 9999 新增 Memos 。需要原文件不完整 FileKey 和原来的行的内容进行校验。成功后返回更新后的内容。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "根据行号修改内容",
+                "parameters": [
+                    {
+                        "description": "根据行号修改内容",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.ObV1ModMdText"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/random": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "随机回顾",
+                "responses": {}
+            }
+        },
+        "/api/v1/sayHello": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "consumes": [
+                    "text/plain",
+                    "application/octet-stream"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "JWT 测试接口",
+                "responses": {}
+            }
+        },
+        "/api/v1/talk": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "指令模式接口",
+                "parameters": [
+                    {
+                        "description": "TalkStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/talk.TalkStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/wechatmpmsg": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "通知"
+                ],
+                "summary": "微信通知",
+                "parameters": [
+                    {
+                        "description": "WeChatInfoStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.WeChatInfoStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/info": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "summary": "服务器信息与测试接口",
+                "responses": {}
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "前端登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "前端登录",
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/jwt.User"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -322,6 +583,20 @@ const docTemplate = `{
                 }
             }
         },
+        "jwt.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "main.GeneralAllStruct": {
             "type": "object",
             "properties": {
@@ -338,6 +613,34 @@ const docTemplate = `{
                         "append",
                         "cover"
                     ]
+                }
+            }
+        },
+        "main.ObV1ModMdText": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "line_num": {
+                    "type": "integer"
+                },
+                "old": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SendMailStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
                 }
             }
         },
@@ -363,10 +666,31 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "main.WeChatInfoStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "talk.TalkStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {
         "AuthorizationToken": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "JWT": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
