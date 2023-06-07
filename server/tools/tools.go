@@ -40,7 +40,7 @@ func CheckFiles() {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			data, _ := json.Marshal(&RunConfig{})
+			data, _ := json.Marshal(exampleRunconfig())
 			os.WriteFile("config.run.json", data, 0666)
 		} else {
 			log.Panicln("Error: Stat config.run.json")
@@ -180,4 +180,35 @@ func GenerateMd5() string {
 	md5.Write(fileStr)
 	MD5Str := hex.EncodeToString(md5.Sum(nil))
 	return MD5Str
+}
+
+func exampleRunconfig() RunConfig {
+	var exampleRunconfig RunConfig
+	exampleRunconfig.ObDaily = ObsidianDailyConfig{
+		ObDailyDir:           "日记/",
+		ObDaily:              "2006-01-02",
+		ObDailyAttachmentDir: "附件/",
+		ObOtherDataDir:       "其他/",
+	}
+	exampleRunconfig.WeChatMp.ReturnStr = "📩 已保存，<a href='https://note.ftls.xyz/web/'>点击查看今日笔记</a>"
+	exampleRunconfig.Webdav = WebDavConfig{
+		Server:     false,
+		Username:   "testuser",
+		Password:   "testpassword",
+		ObLocalDir: "note/",
+	}
+	exampleRunconfig.ImageHosting = ImageHostingConfig{
+		BaseURL:          "http://localhost:8900/images/",
+		Prefix:           "200601/kkbt_",
+		UseRawName:       true,
+		RandomCharLength: 5,
+	}
+	exampleRunconfig.Reminder = ReminderConfig{
+		DailyEmailRemderTime: "9999",
+		ReminderDicionary:    "dictionary-200k.txt",
+	}
+	exampleRunconfig.Mention = MentionConfig{
+		Tags: []string{"收藏"},
+	}
+	return exampleRunconfig
 }
