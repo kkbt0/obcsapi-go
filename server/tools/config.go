@@ -73,7 +73,12 @@ type S3CompatibleConfig struct {
 	BaseUrl      string `json:"base_url"`
 }
 
+type BasicConfig struct {
+	DisableLogin bool `json:"disable_login"`
+}
+
 type RunConfig struct {
+	Basic        BasicConfig         `json:"basic"`
 	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
 	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
 	Webdav       WebDavConfig        `json:"webdav"`

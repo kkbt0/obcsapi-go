@@ -184,6 +184,7 @@ func GenerateMd5() string {
 
 func exampleRunconfig() RunConfig {
 	var exampleRunconfig RunConfig
+	exampleRunconfig.Basic.DisableLogin = false
 	exampleRunconfig.ObDaily = ObsidianDailyConfig{
 		ObDailyDir:           "日记/",
 		ObDaily:              "2006-01-02",

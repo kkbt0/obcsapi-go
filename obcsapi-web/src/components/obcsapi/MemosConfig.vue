@@ -10,6 +10,20 @@ const formData = ref({});
 const schema = ref({
     type: "object",
     properties: {
+        basic: {
+            title: "基础设置",
+            type: "object",
+            properties: {
+                disable_login: {
+                    title: "禁用登录",
+                    type: "boolean",
+                    description: "禁用登录，已经下发的 token 可以继续使用。",
+                    'ui:options': {
+                        placeholder: false,
+                    }
+                }
+            }
+        },
         ob_daily_config: {
             title: "Obsidian Daily 设置",
             type: "object",

@@ -104,6 +104,10 @@ func NewInfo(user User) *UserInfo {
 // @Param json body User true "User"
 // @Router /login [post]
 func LoginHandler(c *gin.Context) {
+	if tools.NowRunConfig.Basic.DisableLogin {
+		c.JSON(400, tools.RJson{Code: 400, Msg: "已启用禁止登录", Success: false})
+		return
+	}
 	var userVo User
 	if c.ShouldBindJSON(&userVo) != nil {
 		c.JSON(400, tools.RJson{Code: 400, Msg: "参数错误", Success: false})
