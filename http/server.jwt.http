@@ -34,10 +34,18 @@ Authorization: {{token}}
 ### Config
 GET {{apiv1}}/config HTTP/1.1
 Authorization: {{token}}
+### Config
+POST {{apiv1}}/config HTTP/1.1
+Authorization: {{token}}
+Content-Type: application/json
 
+{"line_num":99,"content":"newline"}
 ### mention
 GET {{apiv1}}/mention HTTP/1.1
 Authorization: {{token}}
 ### random
 GET {{apiv1}}/random HTTP/1.1
+Authorization: {{token}}
+### List
+GET {{apiv1}}/list HTTP/1.1
 Authorization: {{token}}

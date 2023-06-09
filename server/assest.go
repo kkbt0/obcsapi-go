@@ -15,7 +15,7 @@ import (
 
 // 一些杂七杂八的函数 又不能放到 tools 里的
 
-var version string = "v4.2.2"
+var version string = "v4.2.3"
 
 func ShowConfig() {
 

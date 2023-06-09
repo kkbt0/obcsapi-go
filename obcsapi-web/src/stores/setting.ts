@@ -5,6 +5,8 @@ import { ObcsapiMentionGet } from "@/api/obcsapi"
 export const LocalSetting = defineStore('setting', () => {
     const frontSize = ref("14px");
     const mention: Ref<Array<{label:string,value:string}>> = ref([]);
+    const recentEditList: Ref<string[]>= ref([]);
+    recentEditList.value = JSON.parse(localStorage.getItem('recentEditList')||'["test.md"]');
 
     onMounted(() => {
         getMention()
@@ -25,5 +27,5 @@ export const LocalSetting = defineStore('setting', () => {
     frontSize.value = JSON.parse(localStorage.getItem("theme") || "{}").frontSize
 
 
-    return { mention, frontSize,getMention }
+    return { mention, frontSize,getMention ,recentEditList}
 })

@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
+	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
@@ -220,4 +222,43 @@ func ObV1UpdateCacheHandler(c *gin.Context) {
 		return
 	}
 	c.Status(200)
+}
+
+func LisFileHandler(c *gin.Context) {
+	list, err := dao.ListObject("")
+	if err != nil {
+		log.Println(err)
+		c.Status(500)
+		return
+	}
+	c.JSON(200, list)
+}
+
+func TextGetHandler(c *gin.Context) {
+	fileKey := c.Query("fileKey")
+	text, err := GetTextObject(fileKey)
+	if err != nil {
+		log.Println(err)
+		c.Status(500)
+		return
+	}
+	c.String(200, text)
+}
+
+func TextPostHandler(c *gin.Context) {
+	fileKey := c.Query("fileKey")
+	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Println(err)
+		c.Status(500)
+		return
+	}
+	bodyString := string(bodyBytes)
+	err = MdTextStore(fileKey, bodyString)
+	if err != nil {
+		c.Error(err)
+		c.Status(500)
+		return
+	}
+	c.String(200, "Success")
 }

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 // 限制短时间多次请求
@@ -125,6 +126,34 @@ func AllowOPTIONS() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if c.Request.Method == "OPTIONS" {
 			c.Status(200)
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+// 实验性质功能开关
+func ExperimentalFeatures() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		if !viper.GetBool("experimental_features") {
+			c.Status(404)
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+
+// configName 不配置默认 flase rev 翻转
+func ConfigAllow(configName string, rev bool) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		allow := viper.GetBool(configName) // 配置文件是否允许
+		if rev {                           // 如果翻转
+			allow = !allow
+		}
+		if !allow {
+			c.Status(404)
 			c.Abort()
 			return
 		}

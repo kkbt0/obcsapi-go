@@ -31,7 +31,7 @@ var limitPublicPage = rate.NewLimiter(0.1, 1) // 公开文档限制
 var loginLimter = rate.NewLimiter(0.1, 3)     // 登录速率限制
 
 // @title Obcsapi
-// @version v4.2.2 版本
+// @version v4.2.3 版本
 // @description 基于 Obsidian S3 存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式同步，保存消息到 Obsidian 库。该调试页面大部分仅提供对 Headers-Token 验证方式的支持，其他如 Query-token，Headers-Authorization 除了特殊的几个其他并不支持。可以使用 https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client 可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件
 // @contact.url https://gitee.com/kkbt/obcsapi-go
 // @externalDocs.url https://kkbt.gitee.io/obcsapi-go/
@@ -121,14 +121,22 @@ func main() {
 		api1Group.POST("/line", ObV1PostLineHandler)                // 行修改
 		api1Group.POST("/cacheupdate", ObV1UpdateCacheHandler)      // 更新缓存 ?key=1.md
 		api1Group.POST("/upload", ImagesHostUplaodHanler)           // jwt 图床
-		api1Group.GET("/config", tools.GetRunConfigHandler)         // 运行时 可修改配置
-		api1Group.POST("/config", tools.PostConfigHandler)          //运行时 可修改配置
-		api1Group.GET("/mailtest", MailTesterHandler)               // 邮件测试
-		api1Group.POST("/talk", talk.TalkHandler)                   // 对话 API
-		api1Group.GET("/mention", GetMentionHandler)                // 提示词
-		api1Group.GET("/updatebd", UpdateBdAccessTokenHandler)      // 更新 BD Access Token
-		api1Group.GET("/updateconfig", UpdateViperHandler)          // 更新 Viper config.yaml
-		api1Group.GET("/random", RandomMemosHandler)                // 随机 Memos
+		// 运行时 可修改配置 GET/POST
+		api1Group.GET("/config", tools.GetRunConfigHandler)
+		api1Group.POST("/config", ConfigAllow("lock_config", true), tools.PostConfigHandler)
+		// 更新 Viper config.yaml
+		api1Group.GET("/updateconfig", ConfigAllow("lock_config", true), UpdateViperHandler)
+		api1Group.GET("/updatebd", UpdateBdAccessTokenHandler) // 更新 BD Access Token
+
+		api1Group.GET("/mailtest", MailTesterHandler) // 邮件测试
+		api1Group.POST("/talk", talk.TalkHandler)     // 对话 API
+		api1Group.GET("/mention", GetMentionHandler)  // 提示词
+		api1Group.GET("/random", RandomMemosHandler)  // 随机 Memos
+		// 实验性质
+		// 前端编辑器 列出文件 GET/POST 文件
+		api1Group.GET("/list", ConfigAllow("experimental_features", false), LisFileHandler)
+		api1Group.GET("/text", ConfigAllow("experimental_features", false), TextGetHandler)
+		api1Group.POST("/text", ConfigAllow("experimental_features", false), TextPostHandler)
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数

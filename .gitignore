@@ -6,6 +6,7 @@ server/tem.file
 # 可执行文件
 server/server
 server/webdav/
+server/website/
 server/output/
 server/server.zip
 demo-server/demo-server
@@ -14,7 +15,6 @@ server/gin.log
 server/obcsapi-go
 dir-ocr
 http/kkbt.http
-.gitignore
 server/mykv.db
 server/config.run.json
 server/ob4.2.tar.gz

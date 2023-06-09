@@ -11,8 +11,9 @@ import (
 
 func WebDavGetTextObject(webDavClient *gowebdav.Client, prePath string, fileKey string) (string, error) {
 	bytes, err := WebDavGetObject(webDavClient, prePath, fileKey)
+	// TODO: 统一 404 ""
 	if err != nil {
-		return "", err
+		return "", nil
 	}
 	return string(bytes), nil
 }
@@ -86,15 +87,31 @@ func WebDavGetMoreDaliyMdText(webDavClient *gowebdav.Client, prePath string, add
 
 // Only Dir is supported
 func WebDavListObject(webDavClient *gowebdav.Client, prePath string, prefix string) ([]string, error) {
-	var result []string
-	files, err := webDavClient.ReadDir(prePath + prefix)
+	list, err := WebDavWalkObject(prePath + prefix)
+	for i, s := range list {
+		list[i] = strings.Replace(s, prePath, "", 1)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+func WebDavWalkObject(fileDir string) ([]string, error) {
+	var result []string = []string{}
+	files, err := webDavClient.ReadDir(fileDir)
 	if err != nil {
 		return result, err
 	}
 	for _, file := range files {
-		//notice that [file] has os.FileInfo type
-		if !file.IsDir() {
-			result = append(result, file.Name())
+		if file.IsDir() {
+			list, err := WebDavWalkObject(fileDir + file.Name() + "/")
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, list...)
+		} else {
+			result = append(result, fileDir+file.Name())
 		}
 	}
 	return result, nil
