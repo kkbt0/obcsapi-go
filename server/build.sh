@@ -13,6 +13,7 @@ cp run.sh output/
 cp -R static/ output/
 cp -R templates/ output/
 cp -R sh/ output/
+cp -R website/ output/
 cd output 
 echo "Hello" > tem.txt
 mkdir log
