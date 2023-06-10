@@ -100,7 +100,7 @@ const schema = ref({
                 },
                 ob_local_dir: {
                     type: "string",
-                    title: "日记位置",
+                    title: "库文件夹位置",
                     description: "数据源选择本地时，存放的本地文件夹位置。需要和removely save文件夹一样，正常为 Ob 库的名。",
                     'ui:options': {
                         placeholder: "日记/",
