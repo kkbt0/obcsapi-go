@@ -13,15 +13,29 @@ fileKey.value = <string>useRoute().query['fileKey'] || LocalSetting().recentEdit
 const dataTree: Ref<TreeOption[]> = ref([
     getRecentList()
 ])
+// 用于点击事件判断的文件列表
 const fileKeyList: Ref<string[]> = ref(LocalSetting().recentEditList.slice());
-ObcsapiListFile().then(list => {
+// 从 Local 中初始化文件树
+ReBuildTree(LocalSetting().allFileKeyList);
+
+function ReGetObcsapiListFile() {
+    ObcsapiListFile().then(list => {
+        ReBuildTree(list);
+        LocalSetting().allFileKeyList = list;
+        localStorage.setItem('AllFileKeyList', JSON.stringify(LocalSetting().allFileKeyList));
+    })
+}
+
+function ReBuildTree(list: any) {
+    // ['xx.md']
     list.forEach((i: string) => {
         fileKeyList.value.push(i);
     })
+    dataTree.value = [ getRecentList() ]; // 初始化文件树
     buildTree(list).forEach(item => {
         dataTree.value.push(item);
     })
-})
+}
 
 const updatePrefixWithExpaned = (
     _keys: Array<string | number>,
@@ -105,9 +119,10 @@ function getRecentList(): TreeOption {
     <n-space vertical>
         <n-tree v-show="showTree" block-line expand-on-click :data="dataTree" :node-props="nodeProps"
             :on-update:expanded-keys="updatePrefixWithExpaned" />
-        <Editor :fileKey="fileKey" style="height: 85vh;"/>
+        <a v-show="showTree" @click="ReGetObcsapiListFile">ReGetObcsapiListFile</a>
+        <Editor :fileKey="fileKey" style="height: 85vh;" />
         <n-space justify="end">
-            <a @click="showTree=!showTree">Edit: {{ fileKey }}</a>
+            <a @click="showTree = !showTree">Edit: {{ fileKey }}</a>
         </n-space>
     </n-space>
 </template>

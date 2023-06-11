@@ -80,7 +80,7 @@ function createLastButton() {
 }
 
 function SaveMarkdown() {
-    let text = editor.getMarkdown().replace(/^(\*)/gm, "-");;
+    let text = editor.getMarkdown().replace(/^(\*\*)/gm, "--").replace(/^(\*)/gm, "-");
     ObcsapiTextPost(props.fileKey, text).then(res => {
         if (res.status == 200) {
             window.$message.success("Success!");
