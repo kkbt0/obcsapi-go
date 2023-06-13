@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { ObcsapiGetMemos } from '@/api/obcsapi';
+import { LocalSetting } from "@/stores/setting"
 
 export const memosData = defineStore('memos', () => {
     // ref -> basic ; reactive -> object
@@ -50,7 +51,7 @@ export const memosData = defineStore('memos', () => {
         }
     }
 
-    waitMoreMemos(20);
+    waitMoreMemos(LocalSetting().localSetting.LoadMemos||20);
 
     return { memosIndexList, memosMap , dayBefore,addDaily , setMap , waitMoreMemos}
 })

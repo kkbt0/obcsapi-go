@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { type MentionInst, NSpace, NButton, NMention } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { memosData } from "@/stores/memos";
@@ -9,7 +9,14 @@ import { LocalSetting } from "@/stores/setting"
 const inputText = ref("");
 const memos = memosData();
 const showUpload = ref(false);
-const myMentionRef = ref<MentionInst | null>(null)
+const myMentionRef = ref<MentionInst | null>(null);
+
+onMounted(() => {
+  if (LocalSetting().localSetting.AutoFocus) {
+    myMentionRef.value?.focus();
+  }
+})
+
 
 function sendMemos() {
   if (inputText.value) {

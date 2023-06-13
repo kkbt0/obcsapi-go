@@ -9,7 +9,7 @@ import { ObcsapiConfigPost } from "@/api/obcsapi"
 const router = useRouter()
 const setting = LocalSetting()
 const frontSize = ref(14);
-const mentionList:Ref<Array<string>> = ref([]);
+const mentionList: Ref<Array<string>> = ref([]);
 
 frontSize.value = parseInt(setting.frontSize);
 
@@ -38,18 +38,20 @@ function saveSetting() {
     localStorage.setItem("theme", JSON.stringify({ frontSize: `${frontSize.value}px` }))
     setting.frontSize = `${frontSize.value}px`;
     localStorage.setItem("theme-mode", themeMode.value.toString());
+    localStorage.setItem("LocalSetting",JSON.stringify(LocalSetting().localSetting));
     location.reload();
 }
 
-let themeModeOptions = [{ label: "跟随系统", value: "" }, { label: "暗色模式", value: "dark-mode" }, { label: "浅色模式", value: "light-mode" }]
+const themeModeOptions = [{ label: "跟随系统", value: "" }, { label: "暗色模式", value: "dark-mode" }, { label: "浅色模式", value: "light-mode" }]
 
 onMounted(() => {
     themeMode.value = localStorage.getItem("theme-mode") || "跟随系统";
+    console.log(LocalSetting().localSetting.LoadMemos);
     getMention(); // 初始化这个组件的列表
 })
 
-function getMention(){
-    LocalSetting().mention.forEach( obj => {
+function getMention() {
+    LocalSetting().mention.forEach(obj => {
         mentionList.value.push(obj.value);
     })
 }
@@ -65,7 +67,14 @@ function getMention(){
                     <template #prefix>字体大小</template>
                     <template #suffix>px</template>
                 </n-input-number>
+                <div>主题</div>
                 <n-select v-model:value="themeMode" :options="themeModeOptions" />
+                <div>自动对焦</div>
+                <n-switch v-model:value="LocalSetting().localSetting.AutoFocus" />
+                <div>每次最少加载 Memos 数量 默认20 ；并且每次加载最多请求 5 个文件</div>
+                <n-input-number v-model:value="LocalSetting().localSetting.LoadMemos">
+                    <template #suffix>条</template>
+                </n-input-number>
                 <n-space>
                     <n-button @click="saveSetting" type="info" quaternary>保存设置</n-button>
                     <n-button @click="clearCache" type="info" quaternary>清除缓存</n-button>

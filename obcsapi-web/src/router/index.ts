@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/MemosView.vue')
+      component: () => import('../views/HomeView.vue')
     },
     {
       path: '/login',
@@ -16,7 +16,7 @@ const router = createRouter({
     {
       path: '/setting',
       name: 'setting',
-      component: () => import('../views/Setting.vue')
+      component: () => import('../views/SettingView.vue')
     },
     {
       path: '/talk',

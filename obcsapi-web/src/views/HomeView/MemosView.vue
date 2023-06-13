@@ -7,20 +7,6 @@ import MemosList from "@/components/obcsapi/MemosList.vue";
 import { ObcsapiTestJwt } from "@/api/obcsapi";
 
 const router = useRouter();
-const isMove = ref(false);
-
-console.log(useRoute().query)
-let page = useRoute().query['page'];
-if (page == "edit") {
-    isMove.value = true;
-    console.log(useRoute().query['fileKey'])
-    router.push({
-        path: "edit",
-        query: {
-            "fileKey": useRoute().query['fileKey']
-        }
-    })
-}
 
 onMounted(() => {
     console.log(`Initiating`)
@@ -39,12 +25,10 @@ onMounted(() => {
 
 <template>
     <br>
-    <main v-if="!isMove">
-        <n-space vertical>
-            <MemosInput />
-            <MemosList />
-        </n-space>
-    </main>
+    <n-space vertical>
+        <MemosInput />
+        <MemosList />
+    </n-space>
 </template>
 
 <style scoped></style>

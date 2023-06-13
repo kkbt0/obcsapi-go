@@ -3,6 +3,7 @@ import { reactive, nextTick, ref } from "vue";
 import { NList, NListItem, NScrollbar, NSpace } from "naive-ui"
 import { memosData } from "@/stores/memos";
 import MemosEdit from "@/components/obcsapi/MemosEdit.vue"
+import { LocalSetting } from "@/stores/setting"
 
 const memosIndexList = reactive(memosData().memosMap);
 
@@ -32,7 +33,7 @@ function scrollInit() {
 
 function LoadMoreMemosList() {
     isLoading.value = true;
-    memosData().waitMoreMemos(20).then(() => {
+    memosData().waitMoreMemos(LocalSetting().localSetting.LoadMemos||20).then(() => {
         scrollInit()
         isLoading.value = false;
     }).catch((e) => {
