@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import { ObcsapiMentionGet } from "@/api/obcsapi"
 
 class LocalSettingsClass {
-    AutoFocus: boolean = false
     LoadMemos: number = 20
 }
 

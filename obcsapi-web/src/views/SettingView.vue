@@ -69,8 +69,6 @@ function getMention() {
                 </n-input-number>
                 <div>主题</div>
                 <n-select v-model:value="themeMode" :options="themeModeOptions" />
-                <div>自动对焦</div>
-                <n-switch v-model:value="LocalSetting().localSetting.AutoFocus" />
                 <div>每次最少加载 Memos 数量 默认20 ；并且每次加载最多请求 5 个文件</div>
                 <n-input-number v-model:value="LocalSetting().localSetting.LoadMemos">
                     <template #suffix>条</template>
