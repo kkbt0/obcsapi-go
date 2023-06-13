@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NThing, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NScrollbar, NMention } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
-import { ref, onUpdated, onMounted, nextTick } from "vue";
+import { ref, onUpdated, onMounted, watch } from "vue";
 import { memosData } from "@/stores/memos";
 import marked from "marked";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
@@ -29,6 +29,10 @@ onUpdated(() => {
     inputText.value = props.memosRaw;
 })
 
+watch(() => inputText.value, (newVal) => {
+    LocalSetting().lastInputPush(newVal);
+});
+
 function moreAction() {
     edit.value = !edit.value;
 }
@@ -39,6 +43,7 @@ function saveMemos() {
         window.$message.success("Suceess Send");
         edit.value = false;
         showUpload.value = false;
+        localStorage.setItem("lastInput", "");
     }).catch(e => {
         console.log(e);
         window.$message.warning("Err Save: " + e);
@@ -267,10 +272,10 @@ onMounted(() => {
                 <n-mention v-model:value="inputText" type="textarea" class="memos-input" placeholder="Memos"
                     :autosize="{ minRows: 3 }" :options="LocalSetting().mention" :prefix="['#']" />
                 <n-space justify="space-between">
-                    <n-button quaternary type="error" @click="delMemos">Del</n-button>
-                    <n-button quaternary type="info" @click="showUpload = !showUpload">Img</n-button>
-                    <n-button quaternary @click="edit = !edit">Cancle</n-button>
-                    <n-button quaternary type="primary" @click="saveMemos">Save</n-button>
+                    <n-button quaternary type="error" @click="delMemos">❌</n-button>
+                    <n-button quaternary type="info" @click="showUpload = !showUpload">📌</n-button>
+                    <n-button quaternary @click="edit = !edit">🔙</n-button>
+                    <n-button quaternary type="primary" @click="saveMemos">💾</n-button>
                 </n-space>
                 <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />
             </n-space>

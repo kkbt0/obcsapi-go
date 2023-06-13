@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { ref,nextTick  } from "vue";
+import { ref,watch  } from "vue";
 import { type MentionInst, NSpace, NButton, NMention } from "naive-ui";
 import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { memosData } from "@/stores/memos";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 import { LocalSetting } from "@/stores/setting"
 
-const inputText = ref("");
+const inputText = ref( LocalSetting().lastInput);
 const memos = memosData();
 const showUpload = ref(false);
 const myMentionRef = ref<MentionInst | null>(null);
+
+watch(() => inputText.value, (newVal) => {
+  LocalSetting().lastInputPush(newVal);
+});
 
 function sendMemos() {
   if (inputText.value) {
@@ -18,6 +22,7 @@ function sendMemos() {
       inputText.value = "";
       showUpload.value = false;
       window.$message.success("Suceess Send");
+      localStorage.setItem("lastInput", "");
     }).catch(e => {
       console.log(e);
     });
