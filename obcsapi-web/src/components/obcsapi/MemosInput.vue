@@ -6,7 +6,7 @@ import { memosData } from "@/stores/memos";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 import { LocalSetting } from "@/stores/setting"
 
-const inputText = ref( LocalSetting().lastInput);
+const inputText = ref("");
 const memos = memosData();
 const showUpload = ref(false);
 const myMentionRef = ref<MentionInst | null>(null);

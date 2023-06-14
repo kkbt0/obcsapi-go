@@ -17,11 +17,13 @@ export const memosData = defineStore('memos', () => {
         set.add(key);
         memosIndexList.value = Array.from(set);
         // memosIndexList.value.sort();
+        localStorage.setItem("mainMdListIndex", JSON.stringify([...set]));
         setMap(key, value);
     }
 
     function setMap(key: string, value: any) {
         memosMap.value.set(key,value)
+        // TODO: 本地在网速慢的时候使用缓存
         localStorage.setItem("mainMdList", JSON.stringify([...memosMap.value]));
 
     }
@@ -51,6 +53,14 @@ export const memosData = defineStore('memos', () => {
         }
     }
 
+    function UseCacheFirst() {
+        if (LocalSetting().localSetting.UseCacheFirst==true) {
+            console.log("UseCache")
+            memosIndexList.value = JSON.parse(localStorage.getItem("mainMdListIndex")||"[]");
+        }
+    }
+
+    UseCacheFirst()
     waitMoreMemos(LocalSetting().localSetting.LoadMemos||20);
 
     return { memosIndexList, memosMap , dayBefore,addDaily , setMap , waitMoreMemos}

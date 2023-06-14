@@ -169,3 +169,14 @@ export const ObcsapiTextPost = async (filekey: string, text: string) => {
   });
   return response;
 }
+
+
+export const ObcsapiUpdateCache = async (filekey: string) => {
+  const response = await fetch(host + '/api/v1/cacheupdate?key=' + encodeURI(filekey), {
+    method: 'POST',
+    headers: {
+      'Authorization': localStorage.getItem('token') || "",
+    }
+  });
+  return response;
+}

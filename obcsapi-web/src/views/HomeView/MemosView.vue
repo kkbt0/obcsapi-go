@@ -15,7 +15,6 @@ onMounted(() => {
             router.push("/login");
         }
     }).catch(err => {
-        router.push("/login");
         console.log(err)
     })
 })

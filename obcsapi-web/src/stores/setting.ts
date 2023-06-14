@@ -4,6 +4,7 @@ import { ObcsapiMentionGet } from "@/api/obcsapi"
 
 class LocalSettingsClass {
     LoadMemos: number = 20
+    UseCacheFirst: boolean = false
 }
 
 export const LocalSetting = defineStore('setting', () => {
@@ -41,6 +42,7 @@ export const LocalSetting = defineStore('setting', () => {
     function lastInputPush(text: string) {
         clearTimeout(timer);
         timer = setTimeout(function () {
+            LocalSetting().lastInput = text;
             localStorage.setItem("lastInput", text);
         }, 1000);
     }

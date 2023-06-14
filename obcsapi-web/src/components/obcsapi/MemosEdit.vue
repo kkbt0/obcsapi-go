@@ -164,7 +164,7 @@ function handleSelect(key: string | number) {
             realText = inputText.value.slice(2)
         }
         console.log(realText)
-        LocalSetting().delMemosListPush(realText);
+        LocalSetting().delMemosListPush(inputText.value);
         ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, "").then(data => { // 先删除
             if (data.md_text != undefined) {
                 memos.setMap(data.date, data)
