@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, nextTick, ref } from "vue";
-import { NList, NListItem, NScrollbar, NSpace } from "naive-ui"
+import { NList, NListItem, NScrollbar, NSpace, NBackTop } from "naive-ui"
 import { memosData } from "@/stores/memos";
 import MemosEdit from "@/components/obcsapi/MemosEdit.vue"
 import { LocalSetting } from "@/stores/setting"
@@ -33,7 +33,7 @@ function scrollInit() {
 
 function LoadMoreMemosList() {
     isLoading.value = true;
-    memosData().waitMoreMemos(LocalSetting().localSetting.LoadMemos||20).then(() => {
+    memosData().waitMoreMemos(LocalSetting().localSetting.LoadMemos || 20).then(() => {
         scrollInit()
         isLoading.value = false;
     }).catch((e) => {
@@ -74,11 +74,11 @@ function scrollEvent(e: any) {
             </n-list>
         </div>
         <n-space justify="space-around">
-        <n-button quaternary type="primary" @click="LoadMoreMemosList" :disabled="isLoading">{{ isLoading ? 'Loading More' :
-            'Load More' }}</n-button>
-    </n-space>
+            <n-button quaternary type="primary" @click="LoadMoreMemosList" :disabled="isLoading">
+                {{ isLoading ? 'Loading More' : 'Load More' }}</n-button>
+        </n-space>
+        <n-back-top :right="25" />
     </n-scrollbar>
-
 </template>
 
 <style scoped>
