@@ -51,6 +51,7 @@ function saveMemos() {
 }
 
 function delMemos() {
+    LocalSetting().delMemosListPush(inputText.value);
     ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, "").then(data => {
         memos.setMap(data.date, data)
         window.$message.success("Suceess Del");

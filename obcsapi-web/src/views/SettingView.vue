@@ -2,8 +2,9 @@
 import MemosConfig from "@/components/obcsapi/MemosConfig.vue";
 import { useRouter } from "vue-router";
 import { ref, onMounted, type Ref } from "vue";
-import { NTabPane, NTabs, NInputNumber, NSelect, NDynamicInput } from "naive-ui";
+import { NTabPane, NTabs, NInputNumber, NSelect, NDynamicInput, NList, NListItem,NCollapse,NCollapseItem } from "naive-ui";
 import { LocalSetting } from "@/stores/setting"
+import { memosData } from "@/stores/memos";
 import { ObcsapiConfigPost } from "@/api/obcsapi"
 
 const router = useRouter()
@@ -15,6 +16,8 @@ frontSize.value = parseInt(setting.frontSize);
 
 function clearCache() {
     localStorage.removeItem("mainMdList")
+    localStorage.removeItem("delMemosList")
+    localStorage.removeItem("AllFileKeyList")
     window.$message.info("Clearing")
 }
 function reLogin() {
@@ -38,7 +41,7 @@ function saveSetting() {
     localStorage.setItem("theme", JSON.stringify({ frontSize: `${frontSize.value}px` }))
     setting.frontSize = `${frontSize.value}px`;
     localStorage.setItem("theme-mode", themeMode.value.toString());
-    localStorage.setItem("LocalSetting",JSON.stringify(LocalSetting().localSetting));
+    localStorage.setItem("LocalSetting", JSON.stringify(LocalSetting().localSetting));
     location.reload();
 }
 
@@ -46,7 +49,6 @@ const themeModeOptions = [{ label: "跟随系统", value: "" }, { label: "暗色
 
 onMounted(() => {
     themeMode.value = localStorage.getItem("theme-mode") || "跟随系统";
-    console.log(LocalSetting().localSetting.LoadMemos);
     getMention(); // 初始化这个组件的列表
 })
 
@@ -73,6 +75,17 @@ function getMention() {
                 <n-input-number v-model:value="LocalSetting().localSetting.LoadMemos">
                     <template #suffix>条</template>
                 </n-input-number>
+                <div>已缓存文件列表 {{ LocalSetting().allFileKeyList.length }} 项</div>
+                <div>已缓存日记文件 {{ memosData().memosMap.size }} 个</div>
+                <div>已删除 {{ LocalSetting().delMemosList.length }} 个 Memos </div>
+                <n-collapse>
+                    <n-collapse-item title="已删除 Memos" name="1">
+                        <n-list v-for="(val, index) in LocalSetting().delMemosList" :key="index">
+                            <n-list-item>{{ val }}</n-list-item>
+                        </n-list>
+                    </n-collapse-item>
+                </n-collapse>
+
                 <n-space>
                     <n-button @click="saveSetting" type="info" quaternary>保存设置</n-button>
                     <n-button @click="clearCache" type="info" quaternary>清除缓存</n-button>
