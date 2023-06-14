@@ -39,11 +39,16 @@ function moreAction() {
 
 function saveMemos() {
     ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, inputText.value).then(data => {
-        memos.setMap(data.date, data)
-        window.$message.success("Suceess Send");
-        edit.value = false;
-        showUpload.value = false;
-        localStorage.setItem("lastInput", "");
+        if (data.md_text != undefined) {
+            memos.setMap(data.date, data)
+            window.$message.success("Suceess Send");
+            edit.value = false;
+            showUpload.value = false;
+            localStorage.setItem("lastInput", "");
+        } else {
+            window.$message.error("Err Save: " + JSON.stringify(data));
+        }
+
     }).catch(e => {
         console.log(e);
         window.$message.warning("Err Save: " + e);
@@ -53,9 +58,14 @@ function saveMemos() {
 function delMemos() {
     LocalSetting().delMemosListPush(inputText.value);
     ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, "").then(data => {
-        memos.setMap(data.date, data)
-        window.$message.success("Suceess Del");
-        edit.value = false;
+        if (data.md_text != undefined) {
+            memos.setMap(data.date, data)
+            window.$message.success("Suceess Del");
+            edit.value = false;
+        } else {
+            window.$message.error("Err Save: " + JSON.stringify(data));
+        }
+
     }).catch(e => {
         console.log(e);
         window.$message.warning("Err Del: " + e);
@@ -154,19 +164,25 @@ function handleSelect(key: string | number) {
             realText = inputText.value.slice(2)
         }
         console.log(realText)
+        LocalSetting().delMemosListPush(realText);
         ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, "").then(data => { // 先删除
-            memos.setMap(data.date, data)
-            window.$message.success("Suceess Del");
-            edit.value = false;
-            ObcsapiPostMemos("", 9999, "", realText).then(data => { //再新增
+            if (data.md_text != undefined) {
                 memos.setMap(data.date, data)
-                window.$message.success("Suceess ReSend");
+                window.$message.success("Suceess Del");
                 edit.value = false;
-                showUpload.value = false;
-            }).catch(e => {
-                console.log(e);
-                window.$message.warning("Err ReSend: " + e);
-            });
+                ObcsapiPostMemos("", 9999, "", realText).then(data => { //再新增
+                    memos.setMap(data.date, data)
+                    window.$message.success("Suceess ReSend");
+                    edit.value = false;
+                    showUpload.value = false;
+                }).catch(e => {
+                    console.log(e);
+                    window.$message.warning("Err ReSend: " + e);
+                });
+            } else {
+                window.$message.error("Err Save: " + JSON.stringify(data));
+            }
+
         }).catch(e => {
             console.log(e);
             window.$message.warning("Err Del: " + e);
@@ -253,7 +269,7 @@ onMounted(() => {
         </template>
         <!-- - xxx -->
         <template #description v-else-if="!edit">
-            <n-scrollbar x-scrollable class="scrollbar-content" >
+            <n-scrollbar x-scrollable class="scrollbar-content">
                 <div v-if="!isCollapsed" v-html="markdown(memosShowText)" class="memos"></div>
                 <div v-else v-html="markdown((truncateText(memosShowText.slice(0),1)))" class="memos"></div>
                 <n-space v-if="tasksList.length != 0" vertical>
@@ -298,10 +314,12 @@ onMounted(() => {
     transition: max-height 0.3s ease;
     max-height: fit-content;
 }
+
 .memos :deep() pre {
     max-width: 80vw;
 }
+
 .memos :deep() p {
-    word-break:break-all;
+    word-break: break-all;
 }
 </style>
