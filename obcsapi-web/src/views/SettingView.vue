@@ -93,8 +93,12 @@ function updateServerCache() {
                 <n-input-number v-model:value="LocalSetting().localSetting.LoadMemos">
                     <template #suffix>条</template>
                 </n-input-number>
-                <div>加载完成前使用浏览器缓存</div>
-                <n-switch v-model:value="LocalSetting().localSetting.UseCacheFirst"></n-switch>
+                <div>加载前使用浏览器缓存</div>
+                <n-switch v-model:value="LocalSetting().localSetting.UseCacheFirst" />
+                <div>加载前使用浏览器缓存文件个数，如果数量过大初次渲染时间会较长</div>
+                <n-input-number v-model:value="LocalSetting().localSetting.UseCacheFileNum">
+                    <template #suffix>个文件</template>
+                </n-input-number>
                 <div>已缓存文件列表 {{ LocalSetting().allFileKeyList.length }} 项</div>
                 <div>存在的日记文件索引 {{ memosData().memosIndexList.length }} 个</div>
                 <div>已缓存日记文件 {{ memosData().memosMap.size }} 个</div>

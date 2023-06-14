@@ -5,6 +5,7 @@ import { ObcsapiMentionGet } from "@/api/obcsapi"
 class LocalSettingsClass {
     LoadMemos: number = 20
     UseCacheFirst: boolean = false
+    UseCacheFileNum: number = 5
 }
 
 export const LocalSetting = defineStore('setting', () => {

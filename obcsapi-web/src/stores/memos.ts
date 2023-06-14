@@ -56,7 +56,7 @@ export const memosData = defineStore('memos', () => {
     function UseCacheFirst() {
         if (LocalSetting().localSetting.UseCacheFirst==true) {
             console.log("UseCache")
-            memosIndexList.value = JSON.parse(localStorage.getItem("mainMdListIndex")||"[]").slice(5);
+            memosIndexList.value = JSON.parse(localStorage.getItem("mainMdListIndex")||"[]").slice(0,LocalSetting().localSetting.UseCacheFileNum);
         }
     }
 
