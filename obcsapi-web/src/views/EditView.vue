@@ -3,10 +3,11 @@ import { ref, type Ref } from 'vue'
 import { type TreeOption, NTree, NSpace } from 'naive-ui'
 import { ObcsapiListFile } from "@/api/obcsapi"
 import Editor from '@/components/obcsapi/Editor.vue';
+import DailyCal from '@/components/obcsapi/DailyCal.vue';
 import { LocalSetting } from '@/stores/setting';
 import { useRoute } from "vue-router";
 
-const showTree = ref(false);
+const showMode = ref(0);
 const fileKey = ref("edit.md");
 fileKey.value = <string>useRoute().query['fileKey'] || LocalSetting().recentEditList[0];
 
@@ -114,15 +115,23 @@ function getRecentList(): TreeOption {
     return tree;
 }
 
+function CalClicks(infileKey: string) {
+    console.log("Load ","日志/"+infileKey+".md");
+    fileKey.value = "日志/"+infileKey+".md";
+}
+
 </script>
 <template>
     <n-space vertical>
-        <n-tree v-show="showTree" block-line expand-on-click :data="dataTree" :node-props="nodeProps"
+        <DailyCal v-show="showMode==2" @cal-click="CalClicks"/>
+        <n-tree v-show="showMode==1" block-line expand-on-click :data="dataTree" :node-props="nodeProps"
             :on-update:expanded-keys="updatePrefixWithExpaned" />
-        <a v-show="showTree" @click="ReGetObcsapiListFile">ReGetObcsapiListFile</a>
+        <a v-show="showMode==1" @click="ReGetObcsapiListFile">ReGetObcsapiListFile</a>
         <Editor :fileKey="fileKey" style="height: 85vh;" />
-        <n-space justify="end">
-            <a @click="showTree = !showTree">Edit: {{ fileKey }}</a>
+        <n-space justify="space-between">
+            <a @click="showMode =2">Cal</a>
+            <a @click="showMode =1">FileList</a>
+            <a @click="showMode =0">Edit: {{ fileKey }}</a>
         </n-space>
     </n-space>
 </template>
