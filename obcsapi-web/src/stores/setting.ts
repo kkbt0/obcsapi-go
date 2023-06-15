@@ -58,7 +58,7 @@ export const LocalSetting = defineStore('setting', () => {
 
 
     return {
-        mention, frontSize, recentEditList,
+        mention, frontSize, recentEditList,getFromServerRunConfig,
         allFileKeyList, localSetting,
         lastInput, lastInputPush,
         delMemosListPush, delMemosList
