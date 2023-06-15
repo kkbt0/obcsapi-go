@@ -16,7 +16,7 @@ export const memosData = defineStore('memos', () => {
         let set = new Set(memosIndexList.value);
         set.add(key);
         memosIndexList.value = Array.from(set);
-        // memosIndexList.value.sort();
+        memosIndexList.value.sort().reverse();
         localStorage.setItem("mainMdListIndex", JSON.stringify([...set]));
         setMap(key, value);
     }
