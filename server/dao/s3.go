@@ -3,6 +3,7 @@ package dao
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"obcsapi-go/tools"
 	"os"
 	"regexp"
@@ -163,6 +164,13 @@ func S3ReplaceMdUrl2PreSignedUrl(in_md []byte) []byte {
 		// 获取匹配到的链接 并转为 预签名 url
 		description := pattern.ReplaceAllString(string(match), "$1")
 		link := pattern.ReplaceAllString(string(match), "$2")
+		tem, err := url.QueryUnescape(link)
+		if err != nil {
+			log.Println(err)
+		} else {
+			tools.Debug(link, "->", tem)
+			link = tem
+		}
 		link2 := link
 		// 若请求 以 .md 结尾，则拒绝，避免文本泄露
 		if strings.HasSuffix(link, ".md") {

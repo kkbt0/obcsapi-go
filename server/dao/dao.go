@@ -16,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	_ "github.com/go-kivik/couchdb/v3"
 	"github.com/go-kivik/kivik/v3"
+	"github.com/spf13/viper"
 	"github.com/studio-b12/gowebdav"
 )
 
@@ -267,7 +268,11 @@ func MdShowText(text string) string {
 	text = MdShowTextDailyZk(text)
 	switch dataSource {
 	case S3:
-		return string(S3ReplaceMdUrl2PreSignedUrl([]byte(text)))
+		if viper.GetBool("s3_wiki_link_use_presign") {
+			return string(S3ReplaceMdUrl2PreSignedUrl([]byte(text)))
+		} else {
+			return ObFileUrl(text)
+		}
 	case CouchDb:
 		return ObFileUrl(text)
 	case LocalStorage:

@@ -33,6 +33,7 @@ secret_key: xxxxxxxxxxxxxx
 end_point: https://cos.ap-beijing.myqcloud.com
 region: ap-beijing
 bucket: obsidion-xxxxxxxxxxxxxx
+s3_wiki_link_use_presign: true
 
 # WeDav 配置
 web_dav_url: https://dav.jianguoyun.com/dav/
