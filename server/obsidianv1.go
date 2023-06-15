@@ -236,12 +236,13 @@ func LisFileHandler(c *gin.Context) {
 
 func TextGetHandler(c *gin.Context) {
 	fileKey := c.Query("fileKey")
-	text, err := GetTextObject(fileKey)
+	err := skv.PutByFileKey(fileKey)
 	if err != nil {
 		log.Println(err)
 		c.Status(500)
 		return
 	}
+	text := skv.GetByFileKey(fileKey)
 	c.String(200, text)
 }
 
