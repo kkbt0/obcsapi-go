@@ -1,11 +1,13 @@
 import { ref, type Ref, onMounted } from 'vue'
 import { defineStore } from 'pinia'
-import { ObcsapiMentionGet } from "@/api/obcsapi"
+import { ObcsapiConfigGet } from "@/api/obcsapi"
 
 class LocalSettingsClass {
     LoadMemos: number = 20
     UseCacheFirst: boolean = false
     UseCacheFileNum: number = 5
+    CalObDailyFir: string = "日记/"
+    CalObDaily: string = "2006-01-02"
 }
 
 export const LocalSetting = defineStore('setting', () => {
@@ -23,19 +25,20 @@ export const LocalSetting = defineStore('setting', () => {
     delMemosList.value = JSON.parse(localStorage.getItem('delMemosList') || '[]');
 
     onMounted(() => {
-        getMention()
+        getFromServerRunConfig()
     })
 
-    function getMention() {
-        ObcsapiMentionGet().then(obj => {
-            console.log("Load Mention")
-            if (obj.tags != null) {
+    function getFromServerRunConfig() {
+        ObcsapiConfigGet().then((config: any) => {
+            if (config.mention.tags != null) {
                 mention.value = []
-                obj.tags.forEach((val: string) => {
+                config.mention.tags.forEach((val: string) => {
                     mention.value.push({ label: val, value: val });
                 })
             }
-        });
+            localSetting.value.CalObDailyFir = config.ob_daily_config.ob_daily_dir;
+            localSetting.value.CalObDaily = config.ob_daily_config.ob_daily;
+        })
     }
 
     frontSize.value = JSON.parse(localStorage.getItem("theme") || "{}").frontSize
@@ -54,9 +57,10 @@ export const LocalSetting = defineStore('setting', () => {
     }
 
 
-    return { mention, frontSize, getMention, recentEditList, 
-        allFileKeyList, localSetting, 
+    return {
+        mention, frontSize, recentEditList,
+        allFileKeyList, localSetting,
         lastInput, lastInputPush,
-        delMemosListPush,delMemosList
+        delMemosListPush, delMemosList
     }
 })

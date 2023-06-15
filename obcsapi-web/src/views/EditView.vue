@@ -116,8 +116,8 @@ function getRecentList(): TreeOption {
 }
 
 function CalClicks(infileKey: string) {
-    console.log("Load ","日志/"+infileKey+".md");
-    fileKey.value = "日志/"+infileKey+".md";
+    console.log("Load:",infileKey+".md");
+    fileKey.value = infileKey+".md";
 }
 
 </script>

@@ -2,7 +2,7 @@
 import MemosConfig from "@/components/obcsapi/MemosConfig.vue";
 import { useRouter } from "vue-router";
 import { ref, onMounted, type Ref } from "vue";
-import { NTabPane, NTabs, NInputNumber, NSelect, NDynamicInput, NList, NListItem,NCollapse,NCollapseItem } from "naive-ui";
+import { NTabPane, NTabs, NInputNumber, NSelect, NDynamicInput, NList, NListItem, NCollapse, NCollapseItem } from "naive-ui";
 import { LocalSetting } from "@/stores/setting"
 import { memosData } from "@/stores/memos";
 import { ObcsapiConfigPost, ObcsapiUpdateCache } from "@/api/obcsapi"
@@ -61,14 +61,14 @@ function getMention() {
 }
 
 function updateServerCache() {
-    if(updateFileKey.value!="") {
-        ObcsapiUpdateCache(updateFileKey.value).then( res => {
-            if(res.status==200) {
+    if (updateFileKey.value != "") {
+        ObcsapiUpdateCache(updateFileKey.value).then(res => {
+            if (res.status == 200) {
                 window.$message.success("Success")
             } else {
                 window.$message.warning(`${res.status}`)
             }
-        }).catch( err => {
+        }).catch(err => {
             window.$message.error(err)
         });
     } else {
@@ -89,32 +89,35 @@ function updateServerCache() {
                 </n-input-number>
                 <div>主题</div>
                 <n-select v-model:value="themeMode" :options="themeModeOptions" />
-                <div>每次最少加载 Memos 数量 默认20 ；并且每次加载最多请求 5 个文件</div>
-                <n-input-number v-model:value="LocalSetting().localSetting.LoadMemos">
-                    <template #suffix>条</template>
-                </n-input-number>
-                <div>加载前使用浏览器缓存</div>
-                <n-switch v-model:value="LocalSetting().localSetting.UseCacheFirst" />
-                <div>加载前使用浏览器缓存文件个数，如果数量过大初次渲染时间会较长</div>
-                <n-input-number v-model:value="LocalSetting().localSetting.UseCacheFileNum">
-                    <template #suffix>个文件</template>
-                </n-input-number>
                 <div>已缓存文件列表 {{ LocalSetting().allFileKeyList.length }} 项</div>
                 <div>存在的日记文件索引 {{ memosData().memosIndexList.length }} 个</div>
                 <div>已缓存日记文件 {{ memosData().memosMap.size }} 个</div>
                 <div>已删除 {{ LocalSetting().delMemosList.length }} 个 Memos </div>
                 <n-collapse>
-                    <n-collapse-item title="已删除 Memos" name="1">
+                    <n-collapse-item title="缓存配置" name="1">
+                        <div>每次最少加载 Memos 数量 默认20 ；并且每次加载最多请求 5 个文件</div>
+                        <n-input-number v-model:value="LocalSetting().localSetting.LoadMemos">
+                            <template #suffix>条</template>
+                        </n-input-number>
+                        <div>加载前使用浏览器缓存</div>
+                        <n-switch v-model:value="LocalSetting().localSetting.UseCacheFirst" />
+                        <div>加载前使用浏览器缓存文件个数，如果数量过大初次渲染时间会较长</div>
+                        <n-input-number v-model:value="LocalSetting().localSetting.UseCacheFileNum">
+                            <template #suffix>个文件</template>
+                        </n-input-number>
+
+                    </n-collapse-item>
+                    <n-collapse-item title="已删除 Memos" name="2">
                         <n-list v-for="(val, index) in LocalSetting().delMemosList" :key="index">
                             <n-list-item>{{ val }}</n-list-item>
                         </n-list>
                     </n-collapse-item>
-                    <n-collapse-item title="最后输入缓存" name="2">
-                        {{   LocalSetting().lastInput  }}
+                    <n-collapse-item title="最后输入缓存" name="3">
+                        {{ LocalSetting().lastInput }}
                     </n-collapse-item>
-                    <n-collapse-item title="更新服务器指定文件缓存" name="3">
+                    <n-collapse-item title="更新服务器指定文件缓存" name="4">
                         <n-input v-model:value="updateFileKey" />
-                <n-button @click="updateServerCache"  type="info" quaternary>更新服务器指定文件缓存</n-button>
+                        <n-button @click="updateServerCache" type="info" quaternary>更新服务器指定文件缓存</n-button>
                     </n-collapse-item>
                 </n-collapse>
                 <n-space>
