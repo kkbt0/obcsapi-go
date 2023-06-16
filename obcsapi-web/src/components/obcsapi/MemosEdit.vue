@@ -108,7 +108,7 @@ function markdown(md: string) {
     nowMd = md;
 
     let renderMd = new marked.Renderer();
-    renderMd.paragraph = function (text: string) {
+    renderMd.text = function (text: string) {
         return text.replace(/(#[^#\s]+)/g, '<a>$1</a>');
     };
     return marked(nowMd || '', {
@@ -236,7 +236,7 @@ function truncateText(text: string, lines: number): string {
     if (truncatedText == text) {
         return truncatedText;
     } else {
-        return truncatedText + '……';
+        return truncatedText + ' ……';
     }
 }
 
