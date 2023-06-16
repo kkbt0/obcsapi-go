@@ -33,6 +33,16 @@ watch(() => inputText.value, (newVal) => {
     LocalSetting().lastInputPush(newVal);
 });
 
+watch(() => props.memosRaw, (newVal) => {
+    checkNeedCollapse.value = truncateText(props.memosShowText, 1) != props.memosShowText;
+    isCollapsed.value = checkNeedCollapse.value;
+});
+
+onMounted(() => {
+    checkNeedCollapse.value = truncateText(props.memosShowText, 1) != props.memosShowText;
+    isCollapsed.value = checkNeedCollapse.value;
+})
+
 function moreAction() {
     edit.value = !edit.value;
 }
@@ -225,10 +235,6 @@ function truncateText(text: string, lines: number): string {
     }
 }
 
-onMounted(() => {
-    checkNeedCollapse.value = truncateText(props.memosShowText, 1) != props.memosShowText;
-    isCollapsed.value = checkNeedCollapse.value;
-})
 
 </script>
 
