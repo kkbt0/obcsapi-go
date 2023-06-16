@@ -120,6 +120,8 @@ function updateServerCache() {
                         <n-button @click="updateServerCache" type="info" quaternary>更新服务器指定文件缓存</n-button>
                     </n-collapse-item>
                 </n-collapse>
+                <div>Web {{ LocalSetting().webDesc }}</div>
+                
                 <n-space>
                     <n-button @click="saveSetting" type="info" quaternary>保存设置</n-button>
                     <n-button @click="clearCache" type="info" quaternary>清除缓存</n-button>

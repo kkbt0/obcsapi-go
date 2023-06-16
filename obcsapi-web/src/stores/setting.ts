@@ -11,6 +11,7 @@ class LocalSettingsClass {
 }
 
 export const LocalSetting = defineStore('setting', () => {
+    const webDesc = "v20230616-1415 for server_v4.2.4";
     const frontSize = ref("14px");
     const mention: Ref<Array<{ label: string, value: string }>> = ref([]);
     const recentEditList: Ref<string[]> = ref([]);
@@ -58,7 +59,7 @@ export const LocalSetting = defineStore('setting', () => {
 
 
     return {
-        mention, frontSize, recentEditList,getFromServerRunConfig,
+        mention, frontSize, recentEditList,getFromServerRunConfig, webDesc,
         allFileKeyList, localSetting,
         lastInput, lastInputPush,
         delMemosListPush, delMemosList

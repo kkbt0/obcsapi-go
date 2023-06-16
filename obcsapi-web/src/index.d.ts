@@ -24,6 +24,7 @@ throw new Error("Method not implemented.")
       getHeight: () => any
       on: (event: string, callback: Function) => any
       focus: () => any
+      blur: () => any
       setMarkdown: (markdown: string , cursorToEnd: boolean) => any
       insertToolbarItem: (indexInfo:Object, item:string|Object) => any
     }
