@@ -107,8 +107,13 @@ function markdown(md: string) {
     md = md.replace(tasksRegex, '')
     nowMd = md;
 
+    let renderMd = new marked.Renderer();
+    renderMd.paragraph = function (text: string) {
+        return text.replace(/(#[^#\s]+)/g, '<a>$1</a>');
+    };
     return marked(nowMd || '', {
-        breaks: true
+        breaks: true,
+        renderer: renderMd
     })
 }
 
