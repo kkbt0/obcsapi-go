@@ -4,13 +4,14 @@ import { useRouter, useRoute } from "vue-router";
 import { ref } from "vue";
 
 const isMove = ref(false);
+const router = useRouter();
 
 console.log("Page Route: ",useRoute().query)
 let page = useRoute().query['page'];
 if (page == "edit") {
     isMove.value = true;
     console.log(useRoute().query['fileKey'])
-    useRouter().push({
+    router.push({
         path: "edit",
         query: {
             "fileKey": useRoute().query['fileKey']

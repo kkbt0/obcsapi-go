@@ -180,3 +180,15 @@ export const ObcsapiUpdateCache = async (filekey: string) => {
   });
   return response;
 }
+
+export const ObcsapiSerchKvCache = async (key: string) => {
+  const response = await fetch(host + '/api/v1/search', {
+    method: 'POST',
+    headers: {
+      'Authorization': localStorage.getItem('token') || "",
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ "key": key }),
+  });
+  return response;
+}

@@ -5,10 +5,11 @@ import { ObcsapiListFile } from "@/api/obcsapi"
 import Editor from '@/components/obcsapi/Editor.vue';
 import DailyCal from '@/components/obcsapi/DailyCal.vue';
 import { LocalSetting } from '@/stores/setting';
-import { useRoute } from "vue-router";
+import { useRoute , useRouter } from "vue-router";
 
 const showMode = ref(0);
 const fileKey = ref("edit.md");
+const router = useRouter();
 fileKey.value = <string>useRoute().query['fileKey'] || LocalSetting().recentEditList[0];
 
 const dataTree: Ref<TreeOption[]> = ref([
@@ -120,6 +121,10 @@ function CalClicks(infileKey: string) {
     fileKey.value = infileKey+".md";
 }
 
+function goSearchPage() {
+    router.push("/search");
+}
+
 </script>
 <template>
     <n-space vertical>
@@ -131,6 +136,7 @@ function CalClicks(infileKey: string) {
         <n-space justify="space-between">
             <a @click="showMode =2">Cal</a>
             <a @click="showMode =1">FileList</a>
+            <a @click="goSearchPage">Search</a>
             <a @click="showMode =0">Edit: {{ fileKey }}</a>
         </n-space>
     </n-space>
