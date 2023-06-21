@@ -137,6 +137,7 @@ func main() {
 		api1Group.GET("/list", ConfigAllow("experimental_features", false), LisFileHandler)
 		api1Group.GET("/text", ConfigAllow("experimental_features", false), TextGetHandler)
 		api1Group.POST("/text", ConfigAllow("experimental_features", false), TextPostHandler)
+		api1Group.POST("/search", ConfigAllow("experimental_features", false), KvSerchHandler)
 	}
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数

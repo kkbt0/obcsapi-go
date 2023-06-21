@@ -3,6 +3,7 @@ package skv
 import (
 	"log"
 	"obcsapi-go/dao"
+	"strings"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -108,4 +109,31 @@ func PutFile(filekey string, val string) error {
 		log.Println(err)
 	}
 	return err
+}
+
+type KvSerchResult struct {
+	Key string `json:"filekey"`
+	Val string `json:"content"`
+}
+
+func KvSerch(key string) ([]KvSerchResult, error) {
+	var ans []KvSerchResult = []KvSerchResult{}
+	err := db.View(func(tx *bolt.Tx) error {
+		// Assume bucket exists and has keys
+		b := tx.Bucket([]byte("MyBlocks"))
+
+		c := b.Cursor()
+
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			if strings.Contains(string(k), key) || strings.Contains(string(v), key) {
+				ans = append(ans, KvSerchResult{Key: string(k), Val: string(v)})
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return ans, nil
+
 }

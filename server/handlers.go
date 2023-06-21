@@ -372,3 +372,22 @@ func RandomMemosHandler(c *gin.Context) {
 		FileKey:       fileKey,
 	})
 }
+
+type KvSerchPost struct {
+	Key string `json:"key"`
+}
+
+func KvSerchHandler(c *gin.Context) {
+	var kvSerchPost KvSerchPost
+	if c.ShouldBindJSON(&kvSerchPost) != nil {
+		c.String(400, "参数错误")
+		return
+	}
+	result, err := skv.KvSerch(kvSerchPost.Key)
+	if err != nil {
+		log.Println(err)
+		c.Status(500)
+		return
+	}
+	c.JSON(200, result)
+}

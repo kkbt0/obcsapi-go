@@ -49,3 +49,9 @@ Authorization: {{token}}
 ### List
 GET {{apiv1}}/list HTTP/1.1
 Authorization: {{token}}
+###
+POST {{apiv1}}/search HTTP/1.1
+Authorization: {{token}}
+Content-Type: application/json
+
+{"key":"xxx"}
