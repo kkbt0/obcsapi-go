@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NList, NListItem, NThing, NEmpty, NMention } from 'naive-ui';
+import { NList, NListItem, NThing, NEmpty, NMention,NBackTop } from 'naive-ui';
 import { ref, onMounted } from 'vue';
 import { ObcsapiSerchKvCache } from '@/api/obcsapi';
 import { useRoute, useRouter } from 'vue-router';
@@ -52,6 +52,7 @@ function gotoEdit() {
         <n-space justify="end">
             <n-button @click="searchServer">Search</n-button>
         </n-space>
+        <n-back-top :right="25" />
         <div v-if="!result || result.length == 0">
             <n-empty description="空">
                 <template #extra>
@@ -61,10 +62,13 @@ function gotoEdit() {
                 </template>
             </n-empty>
         </div>
+        <div v-else>
+            <a>Result: {{ result.length }} files</a>
+        </div>
         <n-list bordered>
             <n-list-item v-for="(val, index) in result" :key="index" class="search-item">
                 <n-thing :title="val.filekey" @click="clickSearch(val.filekey)">
-                    <div v-html="val.content.replace(inputText, `<a>${inputText}</a>`)"></div>
+                    <div v-html="val.content.replaceAll(inputText, `<a>${inputText}</a>`)"></div>
                 </n-thing>
             </n-list-item>
         </n-list>
