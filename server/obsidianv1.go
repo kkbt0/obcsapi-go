@@ -255,6 +255,7 @@ func TextPostHandler(c *gin.Context) {
 		return
 	}
 	bodyString := string(bodyBytes)
+	skv.PutFile(fileKey, bodyString)
 	err = MdTextStore(fileKey, bodyString)
 	if err != nil {
 		c.Error(err)

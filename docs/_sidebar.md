@@ -9,6 +9,7 @@
   * [功能使用](md/go-version/4-%E5%8A%9F%E8%83%BD%E4%BD%BF%E7%94%A8.md)
   * [图床说明](md/go-version/5-%E5%9B%BE%E5%BA%8A%E8%AF%B4%E6%98%8E.md)
   * [通用接口](md/go-version/6-%E9%80%9A%E7%94%A8%E6%8E%A5%E5%8F%A3.md)
+  * [缓存说明](md/go-version/97-%E7%BC%93%E5%AD%98%E8%AF%B4%E6%98%8E.md)
   * [开发说明](md/go-version/98-%E5%BC%80%E5%8F%91%E8%AF%B4%E6%98%8E.md)
   * [更新记录](md/go-version/99-%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95.md)
 * Python 版本

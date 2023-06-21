@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
+	"github.com/spf13/viper"
 )
 
-var db, _ = bolt.Open("mykv.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+var db, _ = bolt.Open(GetKvDbFile(), 0600, &bolt.Options{Timeout: 1 * time.Second})
 
 func InitKv() error {
 	err := db.Update(func(tx *bolt.Tx) error {
@@ -136,4 +137,12 @@ func KvSerch(key string) ([]KvSerchResult, error) {
 	}
 	return ans, nil
 
+}
+
+func GetKvDbFile() string {
+	name := viper.GetString("kvdb")
+	if name == "" {
+		name = "mykv.db"
+	}
+	return name
 }

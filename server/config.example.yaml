@@ -14,6 +14,7 @@ backend_url_full: http://localhost:8900
 # 前端登录账户密码 有效时间 720h
 user: kkbt 
 password: password
+kvdb: mykv.db
 
 # Swagger 调试
 swagger: true
