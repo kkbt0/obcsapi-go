@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { NList, NListItem, NThing, NEmpty } from 'naive-ui';
-import { ref } from 'vue';
+import { NList, NListItem, NThing, NEmpty, NMention } from 'naive-ui';
+import { ref, onMounted } from 'vue';
 import { ObcsapiSerchKvCache } from '@/api/obcsapi';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { LocalSetting } from '@/stores/setting';
 
 const inputText = ref("");
 const result = ref();
 const router = useRouter();
 
+onMounted(() => {
+    if (useRoute().query['key'] != undefined) {
+        console.log("Search: ",useRoute().query['key']);
+        inputText.value = <string>useRoute().query['key'];
+        searchServer();
+    }
+})
+
 function searchServer() {
+    inputText.value = inputText.value.trim();
     ObcsapiSerchKvCache(inputText.value).then(res => {
         if (res.status != 200) {
             window.$message.warning(`${res.status}`)
@@ -38,7 +48,7 @@ function gotoEdit() {
 <template>
     <br>
     <n-space vertical>
-        <n-input v-model:value="inputText" />
+        <n-mention v-model:value="inputText" :prefix="['#']" :options="LocalSetting().mention" />
         <n-space justify="end">
             <n-button @click="searchServer">Search</n-button>
         </n-space>
@@ -54,7 +64,7 @@ function gotoEdit() {
         <n-list bordered>
             <n-list-item v-for="(val, index) in result" :key="index" class="search-item">
                 <n-thing :title="val.filekey" @click="clickSearch(val.filekey)">
-                    {{ val.content }}
+                    <div v-html="val.content.replace(inputText, `<a>${inputText}</a>`)"></div>
                 </n-thing>
             </n-list-item>
         </n-list>
