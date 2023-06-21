@@ -103,7 +103,7 @@ info:
     https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client
     可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件
   title: Obcsapi
-  version: v4.2.4 版本
+  version: v4.2.5 版本
 paths:
   /api/sendmail:
     post:

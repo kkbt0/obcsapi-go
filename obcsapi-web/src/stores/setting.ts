@@ -11,7 +11,7 @@ class LocalSettingsClass {
 }
 
 export const LocalSetting = defineStore('setting', () => {
-    const webDesc = "v20230617-1110 for server_v4.2.4";
+    const webDesc = "v20230617-1110 for server_v4.2.5";
     const frontSize = ref("14px");
     const mention: Ref<Array<{ label: string, value: string }>> = ref([]);
     const recentEditList: Ref<string[]> = ref([]);
