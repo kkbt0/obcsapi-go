@@ -186,10 +186,11 @@ func exampleRunconfig() RunConfig {
 	var exampleRunconfig RunConfig
 	exampleRunconfig.Basic.DisableLogin = false
 	exampleRunconfig.ObDaily = ObsidianDailyConfig{
-		ObDailyDir:           "日记/",
-		ObDaily:              "2006-01-02",
-		ObDailyAttachmentDir: "附件/",
-		ObOtherDataDir:       "其他/",
+		ObDailyDir:                        "日记/",
+		ObDaily:                           "2006-01-02",
+		ObDailyAttachmentDir:              "附件/",
+		ObDailyAttachmentDirUnderDailyDir: true,
+		ObOtherDataDir:                    "其他/",
 	}
 	exampleRunconfig.WeChatMp.ReturnStr = "📩 已保存，<a href='https://note.ftls.xyz/web/'>点击查看今日笔记</a>"
 	exampleRunconfig.Webdav = WebDavConfig{

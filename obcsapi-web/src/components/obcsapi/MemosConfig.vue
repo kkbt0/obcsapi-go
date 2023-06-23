@@ -44,10 +44,15 @@ const schema = ref({
                         placeholder: "200601/2006-01-02",
                     }
                 },
+                ob_daily_attachment_dir_under_daily: {
+                    type: "boolean",
+                    title: "日记附件文件夹前缀",
+                    description: "日记附件文件夹是否会在日记文件夹之下"
+                },
                 ob_daily_attachment_dir: {
                     type: "string",
                     title: "日记附件文件夹",
-                    description: "该文件夹会在日记文件夹之下 格式化时间",
+                    description: "日记附件文件夹 格式化时间",
                     'ui:options': {
                         placeholder: "附件/200601/",
                     }

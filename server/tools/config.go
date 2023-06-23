@@ -49,10 +49,11 @@ type WeChatMpConfig struct {
 }
 
 type ObsidianDailyConfig struct {
-	ObDailyDir           string `json:"ob_daily_dir"`
-	ObDaily              string `json:"ob_daily"`
-	ObDailyAttachmentDir string `json:"ob_daily_attachment_dir"`
-	ObOtherDataDir       string `json:"ob_other_data_dir"`
+	ObDailyDir                        string `json:"ob_daily_dir"`
+	ObDaily                           string `json:"ob_daily"`
+	ObDailyAttachmentDir              string `json:"ob_daily_attachment_dir"`
+	ObDailyAttachmentDirUnderDailyDir bool   `json:"ob_daily_attachment_dir_under_daily"`
+	ObOtherDataDir                    string `json:"ob_other_data_dir"`
 }
 
 type ReminderConfig struct {
@@ -176,8 +177,11 @@ func (runConfig *RunConfig) DailyFileKeyTime(inTime time.Time) string {
 	return runConfig.DailyDir() + time.Now().Add(time.Hour*time.Duration(diff.Hours())).In(time.FixedZone("CST", 8*3600)).Format(runConfig.ObDaily.ObDaily) + ".md"
 }
 
-// 06日志/  + 附件/202302/
+// [06日志/]  + 附件/202302/
 func (runConfig *RunConfig) DailyAttachmentDir() string {
+	if NowRunConfig.ObDaily.ObDailyAttachmentDirUnderDailyDir {
+		return TimeFmt(runConfig.ObDaily.ObDailyAttachmentDir)
+	}
 	return runConfig.DailyDir() + TimeFmt(runConfig.ObDaily.ObDailyAttachmentDir)
 }
 
