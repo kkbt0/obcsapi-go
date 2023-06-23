@@ -83,7 +83,8 @@ func ObV1GetDailyHandler(c *gin.Context) {
 		}
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
 	}
-	md_show_text := MarkdownSpilter(MdShowText(text))
+	md_show_text := MarkdownSpilter(MdShowText(
+		tools.NowRunConfig.DailyDir()+tools.NowRunConfig.DailyDateKeyMore(addDataInt)+".md", text))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
 		MdShowText: md_show_text, // TODO 显示图像
@@ -125,7 +126,8 @@ func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 		}
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
 	}
-	md_show_text := MarkdownSpilter(MdShowText(text))
+	md_show_text := MarkdownSpilter(MdShowText(
+		tools.NowRunConfig.DailyDir()+tools.NowRunConfig.DailyDateKeyMore(addDataInt)+".md", text))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(text),
 		MdShowText: md_show_text,
@@ -195,7 +197,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 	newText := strings.Join(textList, "\n")
 	MdTextStore(fileKey, newText) // 存入数据源
 	skv.PutFile(fileKey, newText) // 存入缓存
-	md_show_text := MarkdownSpilter(MdShowText(newText))
+	md_show_text := MarkdownSpilter(MdShowText(fileKey, newText))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(newText),
 		MdShowText: md_show_text,

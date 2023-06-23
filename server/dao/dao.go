@@ -263,22 +263,23 @@ func GetMoreDaliyMdText(addDateDay int) (string, error) {
 	return "", errors.New("没有预料的情况，可能是数据源出现了问题")
 }
 
-func MdShowText(text string) string {
+func MdShowText(fileKey string, text string) string {
+	tools.Debug("From File:", fileKey)
 	// 先替换一遍 .md 结尾的
-	text = MdShowTextDailyZk(text)
+	text = MdShowTextDailyZk(fileKey, text)
 	switch dataSource {
 	case S3:
 		if viper.GetBool("s3_wiki_link_use_presign") {
 			return string(S3ReplaceMdUrl2PreSignedUrl([]byte(text)))
 		} else {
-			return ObFileUrl(text)
+			return ObFileUrl(fileKey, text)
 		}
 	case CouchDb:
-		return ObFileUrl(text)
+		return ObFileUrl(fileKey, text)
 	case LocalStorage:
-		return ObFileUrl(text)
+		return ObFileUrl(fileKey, text)
 	case WebDav:
-		return ObFileUrl(text) // 其实 Basic Auth 也可以获取，不过 markdown 预览不支持
+		return ObFileUrl(fileKey, text) // 其实 Basic Auth 也可以获取，不过 markdown 预览不支持
 	}
 	return text
 }
@@ -326,13 +327,16 @@ func PicDownloader(url string) ([]byte, error) {
 }
 
 // 读取 ![[日志/附件/202305/xxx.md]]
-func MdShowTextDailyZk(text string) string {
+func MdShowTextDailyZk(fromFileKey string, text string) string {
 	pattern := regexp.MustCompile(`!\[\[(.*?)\]\]`)
 	replaceFunc := func(match []byte) []byte {
 		// 获取匹配到的链接 并转为 预签名 url
 		ans := "There is something wrong !"
 		var err error
 		fileKey := pattern.ReplaceAllString(string(match), "$1")
+		if strings.HasPrefix(fileKey, "../") {
+			fileKey = GetAbsoluteFileKey(fromFileKey, fileKey)
+		}
 		if strings.HasPrefix(fileKey, tools.NowRunConfig.DailyAttachmentDir()) && strings.HasSuffix(fileKey, ".md") {
 			ans, err = GetTextObject(fileKey)
 		} else if strings.HasSuffix(fileKey, ".md") && tools.ConfigGetString("allow_wiki_link_all") == "true" {
@@ -348,12 +352,15 @@ func MdShowTextDailyZk(text string) string {
 
 }
 
-func ObFileUrl(text string) string {
+func ObFileUrl(fromFileKey string, text string) string {
 	pattern := regexp.MustCompile(`!\[(.*?)\]\(([^http:].*)\)`)
 	//pattern := regexp.MustCompile(`!\[(.*?)\]\(\s*([^)"'\s]+)\s*\)`)
 	replaceFunc := func(match []byte) []byte {
 		description := pattern.ReplaceAllString(string(match), "$1")
 		link := pattern.ReplaceAllString(string(match), "$2")
+		if strings.HasPrefix(link, "../") {
+			link = GetAbsoluteFileKey(fromFileKey, link)
+		}
 		link2 := link
 		// 若请求 以 .md 结尾，则拒绝，避免文本泄露
 		if !strings.HasSuffix(link, ".md") {

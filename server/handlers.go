@@ -368,7 +368,7 @@ func RandomMemosHandler(c *gin.Context) {
 	}
 	c.JSON(200, RandomMemosStruct{
 		MemosText:     memosText,
-		MemosShowText: dao.MdShowText(memosText),
+		MemosShowText: dao.MdShowText(fileKey, memosText),
 		FileKey:       fileKey,
 	})
 }
