@@ -9,7 +9,6 @@ import (
 	"obcsapi-go/jwt"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
-	"os"
 	"path"
 	"strings"
 	"time"
@@ -50,12 +49,20 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		filePath = append(filePath, "_"+tools.RandomString(config.RandomCharLength)) // 200601/test_e5md1
 	}
 	filePath = append(filePath, typeName) // 200601/test_e5md1.jpg
-	c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
+
+	// choice mode
+
+	// read the file into buffer
+	uploadedFile, _ := file.Open()
+	defer uploadedFile.Close()
+	buffer := make([]byte, file.Size)
+	_, _ = uploadedFile.Read(buffer)
+
 	// Bd ocr
-	if config.BdOcrAccessToken != "" {
+	if config.UsBdOcr {
 		switch typeName {
 		case ".jpg", ".jpeg", ".png", ".bmp":
-			ans, err := tools.BdGeneralBasicOcr("./webdav/images/" + strings.Join(filePath, ""))
+			ans, err := tools.BdGeneralBasicOcr(buffer)
 			if err != nil {
 				c.Error(err)
 			}
@@ -66,27 +73,30 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 			inMdText := fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, ""))
 			inMdText += fmt.Sprintf("\n%s\n\n---\n", strings.Join(textList, "\n"))
 			dao.TextAppend(tools.NowRunConfig.OtherDataDir()+"OcrData/bdocr-"+tools.TimeFmt("200601")+".md", inMdText)
-			fmt.Println(ans)
+			tools.Debug(ans)
 		default:
 			log.Println("UnSupported file type: ", typeName)
 		}
 	}
 	// END ocr
+
+	// store
 	rUrl := fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, ""))
-	// Upload S3
-	if tools.NowRunConfig.S3Compatible.UseS3Storage {
-		file, err := os.ReadFile("./webdav/images/" + strings.Join(filePath, ""))
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
-		rUrl, err = tools.S3FileStore("images/"+strings.Join(filePath, ""), file)
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
-			return
-		}
+	switch tools.NowRunConfig.ImageHosting.StorageMode {
+	case "local":
+		err = c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
+	case "obsidian":
+		err = dao.ObjectStore(strings.Join(filePath, ""), buffer)
+		rUrl = strings.Join(filePath, "")
+	case "s3":
+		rUrl, err = tools.S3FileStore("images/"+strings.Join(filePath, ""), buffer)
+	default:
+		err = c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
+	}
+	if err != nil {
+		c.Status(500)
+		log.Println(err)
+		return
 	}
 
 	c.JSON(200, gin.H{

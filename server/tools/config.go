@@ -32,10 +32,12 @@ type MailSmtpConfig struct {
 }
 
 type ImageHostingConfig struct {
+	StorageMode      string `json:"storage_mode"`
 	BaseURL          string `json:"base_url"`
 	Prefix           string `json:"prefix"`
 	UseRawName       bool   `json:"use_raw_name"`
 	RandomCharLength int    `json:"random_char_length"`
+	UsBdOcr          bool   `json:"use_bd_ocr"`
 	BdOcrAccessToken string `json:"bd_ocr_access_token"`
 }
 
@@ -65,13 +67,12 @@ type MentionConfig struct {
 	Tags []string `json:"tags"`
 }
 type S3CompatibleConfig struct {
-	UseS3Storage bool   `json:"use_s3_storage"`
-	EndPoint     string `json:"end_point"`
-	Region       string `json:"region"`
-	Bucket       string `json:"bucket"`
-	AccessKey    string `json:"access_key"`
-	SecretKey    string `json:"secret_key"`
-	BaseUrl      string `json:"base_url"`
+	EndPoint  string `json:"end_point"`
+	Region    string `json:"region"`
+	Bucket    string `json:"bucket"`
+	AccessKey string `json:"access_key"`
+	SecretKey string `json:"secret_key"`
+	BaseUrl   string `json:"base_url"`
 }
 
 type BasicConfig struct {

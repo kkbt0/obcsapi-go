@@ -174,6 +174,13 @@ const schema = ref({
             type: "object",
             description: "ImageHosting 图床文件 有四部分构成 url 文件夹及前缀，原名字，随机字符。图床文件夹及文件前缀 eg 2006-01-02 15:04:05 如 按月存放是 01/ ; 按 年存放 2006/ ; 文件前缀 200601 ; 文件夹和文件前缀 200601/200601_",
             properties: {
+                storage_mode: {
+                    type: "string",
+                    title: "存储位置选择",
+                    description: "local 服务器存储；obsidian Ob库存储；s3 对象存储",
+                    enum: ["local", "obsidian", "s3"],
+                    enumNames: ["local", "obsidian", "s3"]
+                },
                 base_url: {
                     type: "string",
                     title: "BaseUrl ",
@@ -200,6 +207,10 @@ const schema = ref({
                         placeholder: "5",
                     }
                 },
+                use_bd_ocr: {
+                    type: "boolean",
+                    title: "是否使用 百度 OCR",
+                },
                 bd_ocr_access_token: {
                     type: "string",
                     title: "百度 OCR Access Token",
@@ -212,16 +223,8 @@ const schema = ref({
         s3_compatible: {
             title: "S3 兼容存储",
             type: "object",
-            description: "开启此功能,上传图床时，文件同步上传 S3 ,并默认使用 S3 图片链接",
+            description: "上传图床时使用的 S3 配置",
             properties: {
-                use_s3_storage: {
-                    type: "boolean",
-                    description: "Use S3 storage",
-                    'ui:options': {
-                        placeholder: true,
-                    }
-                    
-                },
                 end_point: {
                     type: "string",
                     description: "End Point",

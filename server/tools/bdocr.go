@@ -1,14 +1,12 @@
 package tools
 
 import (
-	"bufio"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 )
 
@@ -29,21 +27,11 @@ type AccessToken struct {
 	SessionSecret string `json:"session_secret"`
 }
 
-func BdGeneralBasicOcr(filePath string) ([]WordResult, error) {
+func BdGeneralBasicOcr(image []byte) ([]WordResult, error) {
 	// OCR START https://ai.baidu.com/ai-doc/OCR/zk3h7xz52
 	ocrUrl := fmt.Sprintf("https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=%s", NowRunConfig.ImageHosting.BdOcrAccessToken)
 	//  Read file and post # image url pdf_file
-	f, err := os.Open(filePath)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	defer f.Close()
-	reader := bufio.NewReader(f)
-	content, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return []WordResult{}, err
-	}
-	base64Content := base64.StdEncoding.EncodeToString(content)
+	base64Content := base64.StdEncoding.EncodeToString(image)
 	urlEncodedContent := url.QueryEscape(base64Content)
 	body := fmt.Sprintf("image=%s", urlEncodedContent)
 
@@ -52,7 +40,7 @@ func BdGeneralBasicOcr(filePath string) ([]WordResult, error) {
 		return []WordResult{}, err
 	}
 	defer res.Body.Close()
-	content, err = ioutil.ReadAll(res.Body)
+	content, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return []WordResult{}, err
 	}
