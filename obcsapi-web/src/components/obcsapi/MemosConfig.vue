@@ -393,5 +393,6 @@ function upDateBdOcrAccessToken() {
         <n-button @click="sendMail" quaternary>测试邮件</n-button>
         <n-button @click="upDateBdOcrAccessToken" quaternary>更新BD OCR</n-button>
     </n-scrollbar>
+    <n-button @click="handlerSubmit" quaternary>保存</n-button>
     <n-button @click="obcsapiUpdateConfig" quaternary>更新config.yaml</n-button>
 </template>

@@ -3,6 +3,8 @@ version: v4.2.5 # 项目版本
 description: by kkbt # 描述
 host: 0.0.0.0 
 port: 8900
+# server_cert_path: cert/server.pem
+# server_key_path: cert/server-key.pem
 # 后端地址 
 backend_url: localhost:8900
 # 如果部署在二级目录，需求填写这个，否则 Swagger 错误，不使用无需关注

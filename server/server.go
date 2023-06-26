@@ -18,6 +18,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"golang.org/x/time/rate"
@@ -147,5 +148,11 @@ func main() {
 
 	RunCronJob() //  运行定时任务
 
-	r.Run(fmt.Sprintf("%s:%s", tools.ConfigGetString("host"), tools.ConfigGetString("port"))) // 运行服务
+	if viper.GetString("server_cert_path") != "" {
+		r.RunTLS(
+			fmt.Sprintf("%s:%s", viper.GetString("host"), viper.GetString("port")),
+			viper.GetString("server_cert_path"), viper.GetString("server_key_path"))
+	} else {
+		r.Run(fmt.Sprintf("%s:%s", viper.GetString("host"), viper.GetString("port"))) // 运行服务
+	}
 }
