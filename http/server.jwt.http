@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {"username": "kkbt", "password": "kkbt123456"}
 ###
-GET {{apiv1}}/sayHello
+GET {{apiv1}}/sayHello?field=msg
 Authorization: {{token}}
 ###
 OPTIONS {{apiv1}}/daily?day=-1

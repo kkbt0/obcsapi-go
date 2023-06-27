@@ -3,6 +3,7 @@ package tools
 import (
 	"encoding/json"
 	"log"
+	"obcsapi-go/gr"
 	"os"
 	"time"
 
@@ -117,20 +118,16 @@ func UpdateConfig(new RunConfig) error {
 
 func PostConfigHandler(c *gin.Context) {
 	var config RunConfig = NowRunConfig
-	err := c.ShouldBindJSON(&config)
-	if err != nil {
-		c.Error(err)
-		c.String(400, "参数错误")
+	var err error
+	if err = c.ShouldBindJSON(&config); err != nil {
+		gr.ErrServerError(c, err)
 		return
 	}
-	err = UpdateConfig(config)
-	if err != nil {
-		c.Error(err)
-		c.Status(500)
+	if err = UpdateConfig(config); err != nil {
+		gr.ErrServerError(c, err)
 		return
 	}
-	c.String(200, "Success")
-
+	gr.Success(c)
 }
 
 func ReloadRunConfig() error {

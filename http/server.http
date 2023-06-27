@@ -53,6 +53,8 @@ Content-Type: application/json
 ###
 GET {{host}}/404
 ###
+GET {{host}}/404?field=msg
+###
 GET {{host}}/info
 
 ###

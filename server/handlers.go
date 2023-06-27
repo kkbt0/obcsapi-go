@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"obcsapi-go/dao"
+	"obcsapi-go/gr"
 	"obcsapi-go/jwt"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
@@ -21,12 +22,8 @@ func IndexHandler(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/web/")
 }
 
-func Greet(c *gin.Context) {
-	c.String(200, "Hello World! %s", time.Now())
-}
-
-func BaseHandler(c *gin.Context) {
-	c.String(404, "404")
+func NotFoundHandler(c *gin.Context) {
+	gr.ErrNotFound(c)
 }
 
 // 一个简易图床
@@ -135,7 +132,7 @@ func ObsidianPublicFiles(c *gin.Context) {
 	md := skv.GetByFileKey(fileName)
 	go UpdateSkvCache(fileName)
 	if md == "" {
-		c.String(404, "Not Found")
+		gr.ErrNotFound(c)
 		return
 	}
 	if c.Query("raw") == "true" {
@@ -206,23 +203,22 @@ func WebDavServeAuth(c *gin.Context) bool {
 // @Tags 前端
 // @Security JWT
 // @Accept plain,octet-stream
-// @Produce plain
+// @Produce json
 // @Router /api/v1/sayHello [get]
 func JwtHello(c *gin.Context) {
 	auth := c.Request.Header.Get("Authorization")
 	claims, _ := jwt.ParseToken(auth)
 	log.Println(claims)
-	c.String(http.StatusOK, "hello")
+	gr.RJSON(c, nil, 200, 200, "hello", gr.H{})
 }
 
 func MailTesterHandler(c *gin.Context) {
 	err := tools.SendMail("测试邮件", "测试内容")
 	if err != nil {
-		c.Error(err)
-		c.String(500, err.Error())
+		gr.ErrServerError(c, err)
 		return
 	}
-	c.String(200, "Successfully Send")
+	gr.Success(c)
 }
 
 // 根据 ?fileKey=xxx.jpg 获取文件
@@ -230,20 +226,20 @@ func ObFileHanlder(c *gin.Context) {
 	// 处理验证
 	accessToken := c.Query("accessToken")
 	if accessToken != tools.ObFileAccessToken() {
-		c.Status(401)
+		gr.ErrAuth(c)
 		return
 	}
 
 	// 获取文件部分
 	fileKey := c.Query("fileKey")
 	if fileKey == "" {
-		c.Status(404)
+		gr.ErrNotFound(c)
 		return
 	}
 	data, err := dao.GetObject(fileKey)
 	if err != nil || data == nil {
 		log.Println(err)
-		c.Status(404)
+		gr.ErrNotFound(c)
 		return
 	}
 	c.Writer.Write(data)
@@ -257,26 +253,25 @@ type WeChatInfoStruct struct {
 // @Tags 通知
 // @Security Token
 // @Accept json
-// @Produce plain
+// @Produce json
 // @Param json body WeChatInfoStruct true "WeChatInfoStruct"
 // @Router /api/wechatmpmsg [post]
 func WeChatMpInfoHandler(c *gin.Context) {
 	var weChatInfoStruct WeChatInfoStruct
 	if c.ShouldBindJSON(&weChatInfoStruct) != nil {
-		c.String(400, "参数错误")
+		gr.ErrBindJSONErr(c)
 		return
 	}
 	if weChatInfoStruct.Content == "" {
-		c.String(400, "参数错误")
+		gr.ErrEmpty(c)
 		return
 	}
 	err := WeChatTemplateMesseng(weChatInfoStruct.Content)
 	if err != nil {
-		c.Status(500)
-		c.Error(err)
+		gr.ErrServerError(c, err)
 		return
 	}
-	c.Status(200)
+	gr.Success(c)
 }
 
 type SendMailStruct struct {
@@ -288,26 +283,25 @@ type SendMailStruct struct {
 // @Tags 通知
 // @Accept json
 // @Security Token
-// @Produce plain
+// @Produce json
 // @Param json body SendMailStruct true "SendMailStruct"
 // @Router /api/sendmail [post]
 func SendMailHandler(c *gin.Context) {
 	var sendMailStruct SendMailStruct
 	if c.ShouldBindJSON(&sendMailStruct) != nil {
-		c.String(400, "参数错误")
+		gr.ErrBindJSONErr(c)
 		return
 	}
 	if sendMailStruct.Content == "" || sendMailStruct.Subject == "" {
-		c.String(400, "参数错误")
+		gr.ErrEmpty(c)
 		return
 	}
 	err := tools.SendMail(sendMailStruct.Subject, sendMailStruct.Content)
 	if err != nil {
-		c.Status(500)
-		c.Error(err)
+		gr.ErrServerError(c, err)
 		return
 	}
-	c.Status(200)
+	gr.Success(c)
 }
 
 func GetMentionHandler(c *gin.Context) {
@@ -319,46 +313,28 @@ func GetMentionHandler(c *gin.Context) {
 func UpdateBdAccessTokenHandler(c *gin.Context) {
 	accessToken, err := tools.BdGetAccessToken(tools.NowRunConfig.BdOcr.ApiKey, tools.NowRunConfig.BdOcr.ApiSecret)
 	if err != nil {
-		log.Println(err)
-		c.JSON(500, tools.RJson{
-			Code:    500,
-			Msg:     "服务器请求错误",
-			Success: false,
-		})
+		gr.ErrServerError(c, err)
 	}
 	msg := "请求成功，但出现错误"
 	if accessToken.AccessToken != "" {
 		tools.NowRunConfig.ImageHosting.BdOcrAccessToken = accessToken.AccessToken
 		err := tools.UpdateConfig(tools.NowRunConfig)
 		if err != nil {
-			c.JSON(500, tools.RJson{
-				Code:    200,
-				Success: false,
-			})
+			gr.ErrServerError(c, err)
+			return
 		}
 		msg = "请求并更新成功"
 	}
-	c.JSON(200, tools.RJson{
-		Code:    200,
-		Msg:     msg,
-		Success: true,
-	})
+	gr.RJSON(c, nil, 200, 200, msg, gin.H{})
 }
 
 func UpdateViperHandler(c *gin.Context) {
 	err := tools.UpdateViper()
 	if err != nil {
-		log.Println(fmt.Errorf("error: Update Error config file: %s \n ", err))
-		c.JSON(500, tools.RJson{
-			Code:    500,
-			Success: false,
-		})
+		gr.ErrServerError(c, fmt.Errorf("error: Update Error config file: %s \n ", err))
 		return
 	}
-	c.JSON(200, tools.RJson{
-		Code:    200,
-		Success: true,
-	})
+	gr.Success(c)
 }
 
 type RandomMemosStruct struct {
@@ -390,13 +366,12 @@ type KvSerchPost struct {
 func KvSerchHandler(c *gin.Context) {
 	var kvSerchPost KvSerchPost
 	if c.ShouldBindJSON(&kvSerchPost) != nil {
-		c.String(400, "参数错误")
+		gr.ErrBindJSONErr(c)
 		return
 	}
 	result, err := skv.KvSerch(kvSerchPost.Key)
 	if err != nil {
-		log.Println(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	c.JSON(200, result)

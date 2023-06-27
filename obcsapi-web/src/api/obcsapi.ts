@@ -110,7 +110,7 @@ export const ObcsapiTestJwt = async () => {
       'Authorization': localStorage.getItem('token') || "",
     },
   });
-  return response;
+  return response.json();
 }
 
 export const ObcsapiServerInfo = async () => {

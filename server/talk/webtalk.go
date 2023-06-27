@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"obcsapi-go/gr"
 	"obcsapi-go/tools"
 	"os"
 
@@ -68,16 +69,16 @@ type TalkStruct struct {
 func TalkHandler(c *gin.Context) {
 	var talkStruct TalkStruct
 	if c.ShouldBindJSON(&talkStruct) != nil {
-		c.String(400, "参数错误")
+		gr.ErrBindJSONErr(c)
 		return
 	}
 	if talkStruct.Content == "" {
-		c.String(400, "参数错误")
+		gr.ErrEmpty(c)
 		return
 	}
 	r_str, err := ChatText(talkStruct.Content)
 	if err != nil {
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	c.String(200, r_str)

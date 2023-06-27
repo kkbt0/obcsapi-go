@@ -6,6 +6,7 @@ import (
 	"log"
 	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
+	"obcsapi-go/gr"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
 	"strconv"
@@ -62,23 +63,20 @@ func ObV1GetDailyHandler(c *gin.Context) {
 	if addData != "" { // 有参数
 		addDataInt, err = strconv.Atoi(addData)
 		if err != nil {
-			c.Error(err)
-			c.Status(500)
+			gr.ErrServerError(c, err)
 			return
 		}
 	}
 	var text string
 	if addDataInt <= -366 { // 不允许请求 一年之前的日记
-		c.JSON(400, tools.RJson{Code: 400, Msg: "超出允许范围", Success: false})
+		gr.RJSON(c, nil, 400, 400, "超出允许范围", gr.H{})
 		return
 	} else if addDataInt <= -7 { // 一周之前的 使用缓存
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
 
 	} else { // 一周内 请求并缓存
-		err = skv.PutByFileKey(GetMoreDailyFileKey(addDataInt))
-		if err != nil {
-			c.Error(err)
-			c.Status(500)
+		if err = skv.PutByFileKey(GetMoreDailyFileKey(addDataInt)); err != nil {
+			gr.ErrServerError(c, err)
 			return
 		}
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
@@ -108,20 +106,18 @@ func ObV1GetDailyNoCacheHandler(c *gin.Context) {
 	if addData != "" { // 有参数
 		addDataInt, err = strconv.Atoi(addData)
 		if err != nil {
-			c.Error(err)
-			c.Status(500)
+			gr.ErrServerError(c, err)
 			return
 		}
 	}
 	var text string
 	if addDataInt <= -366 { // 不允许请求 一年之前的日记
-		c.JSON(400, tools.RJson{Code: 400, Msg: "超出允许范围", Success: false})
+		gr.RJSON(c, nil, 400, 400, "超出允许范围", gr.H{})
 		return
 	} else { // 请求并缓存
 		err = skv.PutByFileKey(GetMoreDailyFileKey(addDataInt))
 		if err != nil {
-			c.Error(err)
-			c.Status(500)
+			gr.ErrServerError(c, err)
 			return
 		}
 		text = skv.GetByFileKey(GetMoreDailyFileKey(addDataInt))
@@ -157,7 +153,7 @@ type ObV1ModMdText struct {
 func ObV1PostLineHandler(c *gin.Context) {
 	var modText ObV1ModMdText
 	if c.ShouldBindJSON(&modText) != nil {
-		c.JSON(400, tools.RJson{Code: 400, Msg: "参数错误", Success: false})
+		gr.ErrBindJSONErr(c)
 		return
 	}
 	if modText.DayFileKey == "" {
@@ -167,8 +163,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 	dailyText, err := GetTextObject(fileKey)
 	// ailyText, err := GetMoreDaliyMdText(modText.DayBefore)
 	if err != nil {
-		c.Error(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	if dailyText == "No such file: "+fileKey { // 防止提示语被 append 进入文件
@@ -190,7 +185,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 		if textList[modText.LineNum] == modText.OldContent {
 			textList[modText.LineNum] = modText.Content // 行数已经有内容并校验成功 认定为覆写
 		} else {
-			c.JSON(400, tools.RJson{Code: 400, Msg: "原来数据参数错误", Success: false})
+			gr.RJSON(c, nil, 400, 400, "原来数据错误,校验失败", gr.H{})
 			return
 		}
 	}
@@ -264,5 +259,5 @@ func TextPostHandler(c *gin.Context) {
 		c.Status(500)
 		return
 	}
-	c.String(200, "Success")
+	gr.Success(c)
 }

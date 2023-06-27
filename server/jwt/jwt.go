@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"obcsapi-go/gr"
 	"obcsapi-go/tools"
 	"strings"
 	"time"
@@ -73,7 +74,7 @@ func JWTAuth() gin.HandlerFunc {
 		auth := c.Request.Header.Get("Authorization")
 		if len(auth) == 0 {
 			c.Abort()
-			c.Status(401)
+			gr.RJSON(c, nil, 401, 401, "Auth Error", gr.H{})
 			return
 		}
 		// 校验token，只要出错直接拒绝请求
@@ -82,10 +83,10 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			log.Println("ParseToken Error:", err)
 			if strings.Contains(err.Error(), "expired") {
-				c.JSON(401, tools.RJson{Code: 401, Msg: "Token expired", Success: false})
+				gr.RJSON(c, nil, 401, 401, "Token expired", gr.H{})
 				return
 			}
-			c.Status(401)
+			gr.RJSON(c, nil, 401, 401, "Token Error", gr.H{})
 			return
 		}
 		c.Next()
@@ -105,20 +106,19 @@ func NewInfo(user User) *UserInfo {
 // @Router /login [post]
 func LoginHandler(c *gin.Context) {
 	if tools.NowRunConfig.Basic.DisableLogin {
-		c.JSON(400, tools.RJson{Code: 400, Msg: "已启用禁止登录", Success: false})
+		gr.RJSON(c, nil, 403, 403, "已禁止登录", gr.H{})
 		return
 	}
 	var userVo User
 	if c.ShouldBindJSON(&userVo) != nil {
-		c.JSON(400, tools.RJson{Code: 400, Msg: "参数错误", Success: false})
+		gr.ErrBindJSONErr(c)
 		return
 	}
 	if userVo.UserName == db.UserName && userVo.Password == db.Password {
 		info := NewInfo(*db)
 		tokenString, err := GenerateToken(*info)
 		if err != nil {
-			log.Println(err)
-			c.Status(500)
+			gr.ErrServerError(c, err)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
@@ -128,5 +128,5 @@ func LoginHandler(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(400, tools.RJson{Code: 400, Msg: "登录失败", Success: false})
+	gr.RJSON(c, nil, 400, 400, "登录失败", gr.H{})
 }

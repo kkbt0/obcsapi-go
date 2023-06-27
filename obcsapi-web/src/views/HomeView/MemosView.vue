@@ -11,9 +11,9 @@ const router = useRouter();
 onMounted(() => {
     console.log(`Initiating`)
     ObcsapiTestJwt().then(res => {
-        if (res.status !=200) {
+        if (res.code !=200) {
             router.push("/login");
-            window.$message.error(`${res.status}`);
+            window.$message.error(`${res.code}`);
         }
     }).catch(err => {
         window.$message.error(err);

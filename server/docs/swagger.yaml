@@ -117,7 +117,7 @@ paths:
         schema:
           $ref: '#/definitions/main.SendMailStruct'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - Token: []
@@ -203,7 +203,7 @@ paths:
       - text/plain
       - application/octet-stream
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - JWT: []
@@ -241,7 +241,7 @@ paths:
         schema:
           $ref: '#/definitions/main.WeChatInfoStruct'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - Token: []
@@ -286,7 +286,7 @@ paths:
         schema:
           type: string
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - Token: []
@@ -306,7 +306,7 @@ paths:
         schema:
           $ref: '#/definitions/dao.MemosData'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - Token: []
@@ -331,7 +331,7 @@ paths:
         schema:
           $ref: '#/definitions/dao.MemosData'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       summary: 通用 API 接口 (Memos Flomo Like API)
       tags:
@@ -365,7 +365,7 @@ paths:
         schema:
           $ref: '#/definitions/main.GeneralAllStruct'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - Token: []
@@ -385,7 +385,7 @@ paths:
         schema:
           $ref: '#/definitions/dao.MoodReader'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - AuthorizationToken: []
@@ -423,7 +423,7 @@ paths:
         schema:
           $ref: '#/definitions/dao.UrlStruct'
       produces:
-      - text/plain
+      - application/json
       responses: {}
       security:
       - Token: []

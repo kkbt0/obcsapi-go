@@ -56,6 +56,9 @@ func main() {
 
 	r := gin.Default()
 
+	r.NoMethod(NotFoundHandler)
+	r.NoRoute(NotFoundHandler)
+
 	templ := template.Must(template.New("").ParseFS(files, "templates/*.html")) // 加载模板
 	r.SetHTMLTemplate(templ)
 
@@ -69,17 +72,13 @@ func main() {
 	r.GET("/", IndexHandler)      // index.html vue3 pwa
 	r.Static("/web", "./website") // h5 静态文件
 
-	r.GET("/404", BaseHandler)             // 404
-	r.GET("/time", Greet)                  // 打招呼 测试使用 GET
 	r.GET("/info", InfoHandler)            // Obcsapi info
 	r.Any("/api/wechat", WeChatMpHandlers) // wechat 机器人 用于公众测试号
 
 	apiGroup := r.Group("/api", TokenAuthMiddleware("./token/token2.json")) // default token2
 	{
-		apiGroup.GET("testtoken", Greet)                  // test token
 		apiGroup.POST("wechatmpmsg", WeChatMpInfoHandler) // 公众测试号 模板消息通知
 		apiGroup.POST("sendmail", SendMailHandler)        // 邮件消息通知
-
 	}
 
 	obGroup2 := r.Group("/ob", TokenAuthMiddleware("./token/token2.json")) // default token2
