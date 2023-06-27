@@ -216,12 +216,9 @@ func Url2MdHandler(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
-	c.JSON(200, gr.RJson{
-		Code: 200,
-		Data: gin.H{
-			"file_key": file_key,
-			"title":    title,
-		},
+	gr.RJSON(c, nil, 200, 200, "", gin.H{
+		"file_key": file_key,
+		"title":    title,
 	})
 }
 

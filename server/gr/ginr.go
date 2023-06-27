@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RJson struct {
+type rJson struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 	Data any    `json:"data"`
@@ -26,7 +26,7 @@ func RJSON(c *gin.Context, err error, status_code int, code int, msg string, dat
 	case "data":
 		c.JSON(status_code, data)
 	default:
-		c.JSON(status_code, RJson{
+		c.JSON(status_code, rJson{
 			Code: code,
 			Msg:  msg,
 			Data: data,
