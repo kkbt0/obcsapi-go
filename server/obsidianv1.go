@@ -209,23 +209,21 @@ func ObV1PostLineHandler(c *gin.Context) {
 func ObV1UpdateCacheHandler(c *gin.Context) {
 	key := c.Query("key")
 	if key == "" {
-		c.Status(400)
+		gr.ErrEmpty(c)
 		return
 	}
 	err := skv.PutByFileKey(key)
 	if err != nil {
-		c.Error(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
-	c.Status(200)
+	gr.Success(c)
 }
 
 func LisFileHandler(c *gin.Context) {
 	list, err := dao.ListObject("")
 	if err != nil {
-		log.Println(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	c.JSON(200, list)
@@ -233,10 +231,8 @@ func LisFileHandler(c *gin.Context) {
 
 func TextGetHandler(c *gin.Context) {
 	fileKey := c.Query("fileKey")
-	err := skv.PutByFileKey(fileKey)
-	if err != nil {
-		log.Println(err)
-		c.Status(500)
+	if err := skv.PutByFileKey(fileKey); err != nil {
+		gr.ErrServerError(c, err)
 		return
 	}
 	text := skv.GetByFileKey(fileKey)
@@ -247,16 +243,14 @@ func TextPostHandler(c *gin.Context) {
 	fileKey := c.Query("fileKey")
 	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
-		log.Println(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	bodyString := string(bodyBytes)
 	skv.PutFile(fileKey, bodyString)
 	err = MdTextStore(fileKey, bodyString)
 	if err != nil {
-		c.Error(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	gr.Success(c)

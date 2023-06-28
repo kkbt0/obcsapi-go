@@ -81,19 +81,19 @@ export const ObcsapiUpdateBdGet = async () => {
 }
 
 export const ObcsapiUpdateConfig = async () => {
-  const response = await fetch(host + '/api/v1/updateconfig', {
+  const response = await fetch(host + '/api/v1/updateconfig?field=msg', {
     headers: {
       'Authorization': localStorage.getItem('token') || "",
     }
   });
-  return response.json();
+  return response.text();
 }
 
 
 
 
 export const ObcsapiConfigPost = async (bodyObject: any) => {
-  const response = await fetch(host + '/api/v1/config', {
+  const response = await fetch(host + '/api/v1/config?field=msg', {
     method: 'POST',
     headers: {
       'Authorization': localStorage.getItem('token') || "",

@@ -40,7 +40,7 @@ func CheckFiles() {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			data, _ := json.Marshal(exampleRunconfig())
+			data, _ := json.Marshal(ExampleRunconfig())
 			os.WriteFile("config.run.json", data, 0666)
 		} else {
 			log.Panicln("Error: Stat config.run.json")
@@ -182,7 +182,7 @@ func GenerateMd5() string {
 	return MD5Str
 }
 
-func exampleRunconfig() RunConfig {
+func ExampleRunconfig() RunConfig {
 	var exampleRunconfig RunConfig
 	exampleRunconfig.Basic.DisableLogin = false
 	exampleRunconfig.ObDaily = ObsidianDailyConfig{

@@ -30,8 +30,7 @@ func NotFoundHandler(c *gin.Context) {
 func ImagesHostUplaodHanler(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.Error(err)
-		c.Status(500)
+		gr.ErrServerError(c, err)
 		return
 	}
 	config := tools.NowRunConfig.ImageHosting
@@ -91,16 +90,13 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 		err = c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
 	}
 	if err != nil {
-		c.Status(500)
-		log.Println(err)
+		gr.ErrServerError(c, err)
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"data": gin.H{
-			"url":  rUrl,
-			"url2": rUrl,
-		},
+	gr.RJSON(c, nil, 200, 200, "", gin.H{
+		"url":  rUrl,
+		"url2": rUrl,
 	})
 }
 

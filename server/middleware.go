@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"obcsapi-go/gr"
 	"obcsapi-go/tools"
 	"strings"
 
@@ -137,7 +138,7 @@ func AllowOPTIONS() func(c *gin.Context) {
 func ExperimentalFeatures() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if !viper.GetBool("experimental_features") {
-			c.Status(404)
+			gr.ErrNotFound(c)
 			c.Abort()
 			return
 		}
@@ -153,7 +154,7 @@ func ConfigAllow(configName string, rev bool) func(c *gin.Context) {
 			allow = !allow
 		}
 		if !allow {
-			c.Status(404)
+			gr.ErrNotFound(c)
 			c.Abort()
 			return
 		}

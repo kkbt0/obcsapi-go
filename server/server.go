@@ -124,6 +124,7 @@ func main() {
 		// 运行时 可修改配置 GET/POST
 		api1Group.GET("/config", tools.GetRunConfigHandler)
 		api1Group.POST("/config", ConfigAllow("lock_config", true), tools.PostConfigHandler)
+		api1Group.GET("/config/reset", ConfigAllow("lock_config", true), tools.ResetRunConfigHandler)
 		// 更新 Viper config.yaml
 		api1Group.GET("/updateconfig", ConfigAllow("lock_config", true), UpdateViperHandler)
 		api1Group.GET("/updatebd", UpdateBdAccessTokenHandler) // 更新 BD Access Token

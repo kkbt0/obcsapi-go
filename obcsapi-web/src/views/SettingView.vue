@@ -31,7 +31,7 @@ function reLogin() {
 function saveMention() {
     ObcsapiConfigPost({ "mention": { "tags": mentionList.value } }).then(text => {
         if (text == "Success") {
-            window.$message.success("保存成功")
+            window.$message.success("Success")
             LocalSetting().getFromServerRunConfig()
         }
     })

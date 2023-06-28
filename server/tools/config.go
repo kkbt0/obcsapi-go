@@ -98,6 +98,16 @@ func GetRunConfigHandler(c *gin.Context) {
 	c.JSON(200, NowRunConfig)
 }
 
+func ResetRunConfigHandler(c *gin.Context) {
+	if exampleRunconfig, err := json.Marshal(ExampleRunconfig()); err != nil {
+		gr.ErrServerError(c, err)
+	} else {
+		os.WriteFile("config.run.json", exampleRunconfig, 0666)
+		ReloadRunConfig()
+		gr.Success(c)
+	}
+}
+
 func UpdateConfig(new RunConfig) error {
 	var config RunConfig = NowRunConfig
 	config = new // 覆盖一部分
@@ -131,7 +141,7 @@ func PostConfigHandler(c *gin.Context) {
 }
 
 func ReloadRunConfig() error {
-	log.Println("Reload Run Config")
+	Debug("Reload Run Config")
 	configByte, err := os.ReadFile("./config.run.json")
 	if err != nil {
 		log.Println(err)

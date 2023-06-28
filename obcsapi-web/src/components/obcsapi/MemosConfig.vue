@@ -344,7 +344,7 @@ function getConfiguration() {
 
 function handlerSubmit() {
     ObcsapiConfigPost(formData.value).then(res => {
-        window.$message.success("保存" + res)
+        window.$message.success(res)
         getConfiguration()
     }).catch(e => {
         window.$message.error(e)
@@ -362,7 +362,7 @@ function sendMail() {
 function obcsapiUpdateConfig() {
     // update  config.yaml
     ObcsapiUpdateConfig().then(res => {
-        window.$message.info(JSON.stringify(res))
+        window.$message.info(res)
     }).catch(e => {
         window.$message.info(e)
     })
@@ -392,7 +392,7 @@ function upDateBdOcrAccessToken() {
         <vue-form v-model="formData" :schema="schema" @submit="handlerSubmit" />
         <n-button @click="sendMail" quaternary>测试邮件</n-button>
         <n-button @click="upDateBdOcrAccessToken" quaternary>更新BD OCR</n-button>
+        <n-button @click="obcsapiUpdateConfig" quaternary>更新config.yaml</n-button>
     </n-scrollbar>
     <n-button @click="handlerSubmit" quaternary>保存</n-button>
-    <n-button @click="obcsapiUpdateConfig" quaternary>更新config.yaml</n-button>
 </template>
