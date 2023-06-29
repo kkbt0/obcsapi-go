@@ -13,9 +13,9 @@ const props = defineProps<{
 
 let darkTheme = true;
 
-if (localStorage.getItem("theme-mode") == "dark-mode") {
+if (LocalSetting().localSetting.Theme == "dark-mode") {
     document.documentElement.setAttribute("theme-mode", "dark-mode");
-} else if (localStorage.getItem("theme-mode") == "light-mode") {
+} else if (LocalSetting().localSetting.Theme == "light-mode") {
     document.documentElement.setAttribute("theme-mode", "light-mode");
     darkTheme = false;
 } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -37,7 +37,7 @@ watch(() => props.fileKey, (newVal) => {
 
 function EditorFontSize() {
     let el = document.getElementById("editor")
-    el?.style.setProperty('--theme-font-size', LocalSetting().frontSize);
+    el?.style.setProperty('--theme-font-size', LocalSetting().localSetting.FrontSize);
 }
 
 function EditorInit() {

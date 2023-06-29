@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import { ObcsapiConfigGet } from "@/api/obcsapi"
 
 class LocalSettingsClass {
+    Theme: string = ""
+    FrontSize: string = "14px"
     LoadMemos: number = 20
     UseCacheFirst: boolean = false
     UseCacheFileNum: number = 5
@@ -12,7 +14,6 @@ class LocalSettingsClass {
 
 export const LocalSetting = defineStore('setting', () => {
     const webDesc = "v20230621-1730 for server_v4.2.5";
-    const frontSize = ref("14px");
     const mention: Ref<Array<{ label: string, value: string }>> = ref([]);
     const recentEditList: Ref<string[]> = ref([]);
     const allFileKeyList: Ref<string[]> = ref([]);
@@ -42,7 +43,6 @@ export const LocalSetting = defineStore('setting', () => {
         })
     }
 
-    frontSize.value = JSON.parse(localStorage.getItem("theme") || "{}").frontSize
 
     function lastInputPush(text: string) {
         clearTimeout(timer);
@@ -59,7 +59,7 @@ export const LocalSetting = defineStore('setting', () => {
 
 
     return {
-        mention, frontSize, recentEditList,getFromServerRunConfig, webDesc,
+        mention, recentEditList,getFromServerRunConfig, webDesc,
         allFileKeyList, localSetting,
         lastInput, lastInputPush,
         delMemosListPush, delMemosList

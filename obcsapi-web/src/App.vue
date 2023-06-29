@@ -21,8 +21,8 @@ export default defineComponent({
       isDarkTheme: darkTheme,
       overridesStyle: {
         common: {
-          fontSize: setting.frontSize,
-          fontSizeMedium: setting.frontSize
+          fontSize: setting.localSetting.FrontSize,
+          fontSizeMedium: setting.localSetting.FrontSize
         }
       }
     });
@@ -30,9 +30,9 @@ export default defineComponent({
 
     onMounted(() => {
       // 默认适配 暗色组件
-      if (localStorage.getItem("theme-mode") == "dark-mode") {
+      if (setting.localSetting.Theme == "dark-mode") {
         document.documentElement.setAttribute("theme-mode", "dark-mode");
-      } else if (localStorage.getItem("theme-mode") == "light-mode") {
+      } else if (setting.localSetting.Theme == "light-mode") {
         document.documentElement.setAttribute("theme-mode", "light-mode");
         theme.value.isDarkTheme = null;
       } else if (window.matchMedia('(prefers-color-scheme: light)').matches){
@@ -41,7 +41,7 @@ export default defineComponent({
 
       console.log("%cObcsapi"," text-shadow: 0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);font-size:5em")
       console.log("Doc  https://kkbt.gitee.io/obcsapi-go/#/md/go-version")
-      console.log(LocalSetting().webDesc)
+      console.log(setting.webDesc)
     })
     return {
       theme,

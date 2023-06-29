@@ -13,13 +13,14 @@ const frontSize = ref(14);
 const mentionList: Ref<Array<string>> = ref([]);
 const updateFileKey = ref("");
 
-frontSize.value = parseInt(setting.frontSize);
+frontSize.value = parseInt(LocalSetting().localSetting.FrontSize);
 
 function clearCache() {
     localStorage.removeItem("mainMdList")
     localStorage.removeItem("mainMdListIndex")
     localStorage.removeItem("delMemosList")
     localStorage.removeItem("AllFileKeyList")
+    localStorage.removeItem("lastInput")
     window.$message.info("Clearing")
 }
 function reLogin() {
@@ -41,8 +42,8 @@ const themeMode = ref("跟随系统");
 
 function saveSetting() {
     localStorage.setItem("theme", JSON.stringify({ frontSize: `${frontSize.value}px` }))
-    setting.frontSize = `${frontSize.value}px`;
-    localStorage.setItem("theme-mode", themeMode.value.toString());
+    LocalSetting().localSetting.FrontSize = `${frontSize.value}px`;
+    LocalSetting().localSetting.Theme = themeMode.value;
     localStorage.setItem("LocalSetting", JSON.stringify(LocalSetting().localSetting));
     location.reload();
 }
@@ -50,7 +51,7 @@ function saveSetting() {
 const themeModeOptions = [{ label: "跟随系统", value: "" }, { label: "暗色模式", value: "dark-mode" }, { label: "浅色模式", value: "light-mode" }]
 
 onMounted(() => {
-    themeMode.value = localStorage.getItem("theme-mode") || "跟随系统";
+    themeMode.value = LocalSetting().localSetting.Theme || "跟随系统";
     getMention(); // 初始化这个组件的列表
 })
 
