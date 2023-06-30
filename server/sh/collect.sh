@@ -19,7 +19,8 @@ input=`bash sh/lastinput.sh`
 # 提取最后从第四位开始的内容 去除 I: 
 # 如果想，可以从输入中提取更多参数，或者利用 Bash 对字符串进行处理
 # content=${input:3}
-content=$(echo "${input:3}" | jq -Rs '.')
+# text: I: #收藏 https:/xxx.com/index.html
+content=$(echo "${input:7}" | jq -Rs '.')
 
 # 构造请求体的 JSON 字符串
 data="{\"content\": $content, \"mod\": \"cover\", \"file_key\": \"$file_key\"}"
