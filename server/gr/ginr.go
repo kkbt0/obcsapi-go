@@ -57,3 +57,7 @@ func ErrAuth(c *gin.Context) {
 func ErrNotFound(c *gin.Context) {
 	RJSON(c, nil, 404, 404, "Not Found", H{})
 }
+
+func TooManyRequests(c *gin.Context) {
+	RJSON(c, nil, 429, 429, "Too many request", H{})
+}

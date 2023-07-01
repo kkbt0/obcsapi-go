@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"obcsapi-go/gr"
+	"obcsapi-go/models"
 	"os"
 	"time"
 
@@ -79,18 +80,22 @@ type S3CompatibleConfig struct {
 type BasicConfig struct {
 	DisableLogin bool `json:"disable_login"`
 }
+type OAuth2UserInfoConfig struct {
+	GiteeUserInfo models.GiteeUserInfo `json:"gitee_user_info"`
+}
 
 type RunConfig struct {
-	Basic        BasicConfig         `json:"basic"`
-	ObDaily      ObsidianDailyConfig `json:"ob_daily_config"`
-	WeChatMp     WeChatMpConfig      `json:"wechat_mp"`
-	Webdav       WebDavConfig        `json:"webdav"`
-	Mail         MailSmtpConfig      `json:"mail"`
-	ImageHosting ImageHostingConfig  `json:"image_hosting"`
-	BdOcr        BdOcrConfig         `json:"bd_ocr"`
-	Reminder     ReminderConfig      `json:"reminder"`
-	Mention      MentionConfig       `json:"mention"`
-	S3Compatible S3CompatibleConfig  `json:"s3_compatible"`
+	Basic          BasicConfig          `json:"basic"`
+	OAuth2UserInfo OAuth2UserInfoConfig `json:"oauth2userinfo"`
+	ObDaily        ObsidianDailyConfig  `json:"ob_daily_config"`
+	WeChatMp       WeChatMpConfig       `json:"wechat_mp"`
+	Webdav         WebDavConfig         `json:"webdav"`
+	Mail           MailSmtpConfig       `json:"mail"`
+	ImageHosting   ImageHostingConfig   `json:"image_hosting"`
+	BdOcr          BdOcrConfig          `json:"bd_ocr"`
+	Reminder       ReminderConfig       `json:"reminder"`
+	Mention        MentionConfig        `json:"mention"`
+	S3Compatible   S3CompatibleConfig   `json:"s3_compatible"`
 }
 
 func GetRunConfigHandler(c *gin.Context) {

@@ -97,6 +97,15 @@ func NewInfo(user User) *UserInfo {
 	return &UserInfo{Id: user.Id, UserName: user.UserName}
 }
 
+func GetTokenString() (string, error) {
+	info := NewInfo(*db)
+	tokenString, err := GenerateToken(*info)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+}
+
 // @Summary 前端登录
 // @Description 前端登录
 // @Tags 前端
@@ -115,8 +124,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	if userVo.UserName == db.UserName && userVo.Password == db.Password {
-		info := NewInfo(*db)
-		tokenString, err := GenerateToken(*info)
+		tokenString, err := GetTokenString()
 		if err != nil {
 			gr.ErrServerError(c, err)
 			return

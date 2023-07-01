@@ -10,6 +10,7 @@ import (
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
 	"obcsapi-go/docs"
 	"obcsapi-go/jwt"
+	"obcsapi-go/oidc"
 	"obcsapi-go/talk"
 	"obcsapi-go/tools"
 	"os"
@@ -29,7 +30,7 @@ var files embed.FS
 
 var limiter = rate.NewLimiter(0.00001, 1)     // 限制 token 发送到 email (0.01 ,1) 意思 100 秒，允许 1 次。用于 LimitMiddleware
 var limitPublicPage = rate.NewLimiter(0.1, 1) // 公开文档限制
-var loginLimter = rate.NewLimiter(0.1, 3)     // 登录速率限制
+var loginLimter = rate.NewLimiter(0.1, 5)     // 登录速率限制
 
 // @title Obcsapi
 // @version v4.2.5 版本
@@ -98,6 +99,10 @@ func main() {
 	r.GET("/public/*fileName", ObsidianPublicFiles) // Obsidian Public Files GET
 
 	r.POST("login", LimitLoginMiddleware(), jwt.LoginHandler)
+
+	r.GET("/auth/oauth2-set", oidc.InitiateOAuthFlowAndSetState)
+	r.GET("/auth/oauth2-login", oidc.InitiateOAuthFlow)
+	r.GET("/auth/oauth2-callback", oidc.HandleCallback)
 
 	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB

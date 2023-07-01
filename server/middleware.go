@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"obcsapi-go/gr"
 	"obcsapi-go/tools"
 	"strings"
@@ -15,7 +14,7 @@ import (
 func LimitMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if !limiter.Allow() {
-			http.Error(c.Writer, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			gr.TooManyRequests(c)
 			c.Abort()
 			return
 		}
@@ -26,7 +25,7 @@ func LimitMiddleware() func(c *gin.Context) {
 func LimitLoginMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		if !loginLimter.Allow() {
-			http.Error(c.Writer, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			gr.TooManyRequests(c)
 			c.Abort()
 			return
 		}
