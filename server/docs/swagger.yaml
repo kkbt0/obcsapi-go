@@ -1,4 +1,13 @@
 definitions:
+  auth.User:
+    properties:
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   dao.MemosData:
     properties:
       content:
@@ -25,15 +34,6 @@ definitions:
   dao.UrlStruct:
     properties:
       url:
-        type: string
-    type: object
-  jwt.User:
-    properties:
-      id:
-        type: integer
-      password:
-        type: string
-      username:
         type: string
     type: object
   main.GeneralAllStruct:
@@ -265,7 +265,7 @@ paths:
         name: json
         required: true
         schema:
-          $ref: '#/definitions/jwt.User'
+          $ref: '#/definitions/auth.User'
       produces:
       - application/json
       responses: {}

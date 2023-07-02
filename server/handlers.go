@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"obcsapi-go/auth"
 	"obcsapi-go/dao"
 	"obcsapi-go/gr"
-	"obcsapi-go/jwt"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
 	"path"
@@ -202,8 +202,8 @@ func WebDavServeAuth(c *gin.Context) bool {
 // @Produce json
 // @Router /api/v1/sayHello [get]
 func JwtHello(c *gin.Context) {
-	auth := c.Request.Header.Get("Authorization")
-	claims, _ := jwt.ParseToken(auth)
+	authToken := c.Request.Header.Get("Authorization")
+	claims, _ := auth.ParseToken(authToken)
 	log.Println(claims)
 	gr.RJSON(c, nil, 200, 200, "hello", gr.H{})
 }

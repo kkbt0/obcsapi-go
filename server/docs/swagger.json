@@ -272,7 +272,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jwt.User"
+                            "$ref": "#/definitions/auth.User"
                         }
                     }
                 ],
@@ -530,6 +530,20 @@
         }
     },
     "definitions": {
+        "auth.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "dao.MemosData": {
             "type": "object",
             "properties": {
@@ -570,20 +584,6 @@
             "type": "object",
             "properties": {
                 "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "jwt.User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

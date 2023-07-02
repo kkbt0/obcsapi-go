@@ -281,7 +281,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jwt.User"
+                            "$ref": "#/definitions/auth.User"
                         }
                     }
                 ],
@@ -539,6 +539,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "auth.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "dao.MemosData": {
             "type": "object",
             "properties": {
@@ -579,20 +593,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "jwt.User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

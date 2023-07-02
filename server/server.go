@@ -7,10 +7,9 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"obcsapi-go/auth"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
 	"obcsapi-go/docs"
-	"obcsapi-go/jwt"
-	"obcsapi-go/oidc"
 	"obcsapi-go/talk"
 	"obcsapi-go/tools"
 	"os"
@@ -98,11 +97,15 @@ func main() {
 
 	r.GET("/public/*fileName", ObsidianPublicFiles) // Obsidian Public Files GET
 
-	r.POST("login", LimitLoginMiddleware(), jwt.LoginHandler)
+	r.POST("login", LimitLoginMiddleware(), auth.LoginHandler)
 
-	r.GET("/auth/oauth2-set", oidc.InitiateOAuthFlowAndSetState)
-	r.GET("/auth/oauth2-login", oidc.InitiateOAuthFlow)
-	r.GET("/auth/oauth2-callback", oidc.HandleCallback)
+	authGroup := r.Group("/auth", LimitLoginMiddleware())
+	{
+		authGroup.GET("/oauth2-set", auth.JWTAuth(), auth.InitiateOAuthFlowAndSetState)
+		authGroup.GET("/oauth2-login", auth.InitiateOAuthFlow)
+		authGroup.POST("/oauth2-login-bycode", auth.LoginByCodeHandler)
+		authGroup.GET("/oauth2-callback", auth.HandleCallback)
+	}
 
 	// 为 multipart forms 设置较低的内存限制 (默认是 32 MiB)
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB
@@ -118,7 +121,7 @@ func main() {
 	))
 
 	r.Use(AllowOPTIONS())
-	api1Group := r.Group("/api/v1", jwt.JWTAuth())
+	api1Group := r.Group("/api/v1", auth.JWTAuth())
 	{
 		api1Group.GET("/sayHello", JwtHello)
 		api1Group.GET("/daily", ObV1GetDailyHandler)                // 使用一周前有缓存的 daily
