@@ -16,8 +16,8 @@ export default defineComponent({
 
   setup() {
     const setting = LocalSetting();
-    
-    const theme:any = ref({
+
+    const theme: any = ref({
       isDarkTheme: darkTheme,
       overridesStyle: {
         common: {
@@ -35,11 +35,10 @@ export default defineComponent({
       } else if (setting.localSetting.Theme == "light-mode") {
         document.documentElement.setAttribute("theme-mode", "light-mode");
         theme.value.isDarkTheme = null;
-      } else if (window.matchMedia('(prefers-color-scheme: light)').matches){
+      } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
         theme.value.isDarkTheme = null;
       }
-
-      console.log("%cObcsapi"," text-shadow: 0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);font-size:5em")
+      console.log("%cObcsapi", " text-shadow: 0 1px 0 #ccc,0 2px 0 #c9c9c9,0 3px 0 #bbb,0 4px 0 #b9b9b9,0 5px 0 #aaa,0 6px 1px rgba(0,0,0,.1),0 0 5px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.3),0 3px 5px rgba(0,0,0,.2),0 5px 10px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.2),0 20px 20px rgba(0,0,0,.15);font-size:5em")
       console.log("Doc  https://kkbt.gitee.io/obcsapi-go/#/md/go-version")
       console.log(setting.webDesc)
     })
@@ -63,14 +62,13 @@ export default defineComponent({
         <RouterLink to="/edit">📃</RouterLink>
         <RouterLink to="/talk">>_</RouterLink>
         <RouterLink to="/setting">⚙️</RouterLink>
-        <!-- <a @click="switchTheme">🌞</a> -->
-        <!-- <RouterLink to="/login">Login</RouterLink>
-        <RouterLink to="/about">About</RouterLink> -->
+        <!-- <RouterLink to="/login">Login</RouterLink> -->
       </nav>
     </div>
   </header>
   <!-- Main-->
-  <n-config-provider :theme="theme.isDarkTheme" :locale="zhCN" :date-locale="dateZhCN" :theme-overrides="theme.overridesStyle">
+  <n-config-provider :theme="theme.isDarkTheme" :locale="zhCN" :date-locale="dateZhCN"
+    :theme-overrides="theme.overridesStyle">
     <!-- Info Components -->
     <n-message-provider>
       <usemessageComponents />

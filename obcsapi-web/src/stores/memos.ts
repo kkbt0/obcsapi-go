@@ -57,6 +57,7 @@ export const memosData = defineStore('memos', () => {
         if (LocalSetting().localSetting.UseCacheFirst==true) {
             console.log("UseCache")
             memosIndexList.value = JSON.parse(localStorage.getItem("mainMdListIndex")||"[]").slice(0,LocalSetting().localSetting.UseCacheFileNum);
+            memosIndexList.value = memosIndexList.value.filter(n => n); // 清除 null 元素
         }
     }
 

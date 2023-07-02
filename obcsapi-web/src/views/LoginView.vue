@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { NFormItem, NInput, NButton } from "naive-ui";
+import { NFormItem, NInput, NButton, NButtonGroup } from "naive-ui";
 import { ObcsapiLogin, ResetServerHost } from "@/api/obcsapi";
 
 const formValue = ref({ "host": "http://localhost:8900", "username": "", "password": "" });
@@ -19,7 +19,9 @@ function Login() {
     if (data.code == 200 || data.code == 201) {
       localStorage.setItem("token", data.token)
       window.$message.success("登录成功")
-      router.push("/")
+      router.push("/").then(() => {
+        location.reload();
+      })
     } else {
       window.$message.error("登录失败" + JSON.stringify(data))
     }
@@ -30,6 +32,12 @@ function Login() {
   })
 }
 
+function LoginByOAuth2() {
+  localStorage.setItem("host", formValue.value.host);
+  ResetServerHost();
+  let url = (localStorage.getItem("host") || "http://localhost:8900") + "/auth/oauth2-login"
+  window.location.href = url;
+}
 
 </script>
 <template>
@@ -42,5 +50,8 @@ function Login() {
   <n-form-item label="密码">
     <n-input v-model:value="formValue.password" type="password" @keydown.enter.prevent />
   </n-form-item>
-  <n-button @click="Login">登录</n-button>
+  <n-button-group>
+    <n-button @click="Login">登录</n-button>
+    <n-button @click="LoginByOAuth2">Gitee 登录</n-button>
+  </n-button-group>
 </template>

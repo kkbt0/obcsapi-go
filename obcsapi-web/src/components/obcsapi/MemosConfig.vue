@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import VueForm from "@lljj/vue3-form-naive"
-import { ObcsapiConfigGet, ObcsapiConfigPost, ObcsapiServerInfo } from "@/api/obcsapi"
+import { ObcsapiConfigGet, ObcsapiConfigPost, ObcsapiServerInfo, ObcsapiSetOAuth2 } from "@/api/obcsapi"
 import { NScrollbar } from "naive-ui"
 import { ObcsapiTestMail, ObcsapiUpdateBdGet, ObcsapiUpdateConfig } from "@/api/obcsapi";
 
@@ -15,7 +15,7 @@ const schema = ref({
             type: "object",
             properties: {
                 disable_login: {
-                    title: "禁用登录",
+                    title: "禁用账户密码登录",
                     type: "boolean",
                     description: "禁用登录，已经下发的 token 可以继续使用。",
                     'ui:options': {
@@ -322,7 +322,33 @@ const schema = ref({
                 }
             },
             "ui:hidden": true,
-        }
+        },
+        oauth2userinfo: {
+            title: "第三方登录设置",
+            type: "object",
+            properties: {
+                gitee_user_info: {
+                    title: "Gitee 账户",
+                    description: "该项目关联后自动生成",
+                    type: "object",
+                    properties: {
+                        is_active: {
+                            type: "boolean",
+                            title: "激活"
+                        },
+                        id: {
+                            type: "number",
+                        },
+                        login: {
+                            type: "string",
+                        },
+                        name: {
+                            type: "string",
+                        }
+                    }
+                }
+            }
+        },
     }
 });
 const info = ref();
@@ -377,6 +403,14 @@ function upDateBdOcrAccessToken() {
     })
 }
 
+function setOAuth2() {
+    ObcsapiSetOAuth2().then(url => {
+        window.location.href = url;
+    }).catch(e => {
+        console.log(e);
+    });
+}
+
 </script>
 <template>
     <h1 @click="showInfo = !showInfo"><a>Server Setting</a></h1>
@@ -393,6 +427,7 @@ function upDateBdOcrAccessToken() {
         <n-button @click="sendMail" quaternary>测试邮件</n-button>
         <n-button @click="upDateBdOcrAccessToken" quaternary>更新BD OCR</n-button>
         <n-button @click="obcsapiUpdateConfig" quaternary>更新config.yaml</n-button>
+        <n-button @click="setOAuth2" quaternary>关联 Gitee</n-button>
     </n-scrollbar>
     <n-button @click="handlerSubmit" quaternary>保存</n-button>
 </template>

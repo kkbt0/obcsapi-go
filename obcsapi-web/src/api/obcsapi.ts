@@ -192,3 +192,25 @@ export const ObcsapiSerchKvCache = async (key: string) => {
   });
   return response;
 }
+
+export const ObcsapiSetOAuth2 = async () => {
+  const response = await fetch(host + '/auth/oauth2-set', {
+    method: 'GET',
+    headers: {
+      'Authorization': localStorage.getItem('token') || "",
+      'Content-Type': 'application/json'
+    },
+  });
+  return response.text();
+}
+
+export const ObcsapiLoginByCode = async (code:string) => {
+  const response = await fetch(host + '/auth/oauth2-login-bycode', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ "code": code })
+  });
+  return response.json();
+}
