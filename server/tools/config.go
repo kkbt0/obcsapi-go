@@ -81,7 +81,7 @@ type BasicConfig struct {
 	DisableLogin bool `json:"disable_login"`
 }
 type OAuth2UserInfoConfig struct {
-	GiteeUserInfo models.GiteeUserInfo `json:"gitee_user_info"`
+	GiteeUserInfo models.GiteeUserInfoConfig `json:"gitee_user_info"`
 }
 
 type RunConfig struct {

@@ -15,10 +15,15 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"golang.org/x/net/webdav"
 )
 
 func IndexHandler(c *gin.Context) {
+	if viper.GetString("web_url_full") != "" {
+		c.Redirect(307, viper.GetString("web_url_full"))
+		return
+	}
 	c.Redirect(http.StatusMovedPermanently, "/web/")
 }
 

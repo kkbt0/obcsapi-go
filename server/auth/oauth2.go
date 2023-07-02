@@ -78,7 +78,12 @@ func HandleCallback(c *gin.Context) {
 	}
 	// 请求注册授权信息 设置信息
 	if strings.HasPrefix(c.Query("state"), "set_") {
-		tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo = giteeUserInfo
+		tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo = models.GiteeUserInfoConfig{
+			Id:       giteeUserInfo.Id,
+			Login:    giteeUserInfo.Login,
+			Name:     giteeUserInfo.Name,
+			IsActive: true,
+		}
 		if err = tools.UpdateConfig(tools.NowRunConfig); err != nil {
 			gr.ErrServerError(c, err)
 			return
@@ -87,9 +92,13 @@ func HandleCallback(c *gin.Context) {
 		return
 	}
 	// 登录
-	if giteeUserInfo == tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo {
+	if tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo.IsActive &&
+		giteeUserInfo.Login == tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo.Login &&
+		giteeUserInfo.Name == tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo.Name &&
+		giteeUserInfo.Id == tools.NowRunConfig.OAuth2UserInfo.GiteeUserInfo.Id {
 		// 前端带 一次性 授权码 的 URL
 		authorizationCode, _ = GenerateAuthorizationCode(time.Now().Add(30 * time.Second))
+		tools.Debug(authorizationCode)
 		c.Redirect(302, viper.GetString("web_url_full")+"?code="+authorizationCode.Code)
 		return
 	}
