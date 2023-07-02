@@ -496,6 +496,87 @@
                 "responses": {}
             }
         },
+        "/ob/today": {
+            "get": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Today Daily Get 今日日志获取 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "Today Daily Get 今日日志获取",
+                "responses": {}
+            },
+            "put": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Today Daily Put 完全覆盖内容 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "Today Daily Put 今日日志覆写",
+                "parameters": [
+                    {
+                        "description": "完全覆盖 内容",
+                        "name": "內容",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Today Daily Post 新增内容，末尾添加 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "Today Daily Post 今日日志新增",
+                "parameters": [
+                    {
+                        "description": "新增内容，末尾添加",
+                        "name": "內容",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/ob/url": {
             "post": {
                 "security": [

@@ -410,6 +410,60 @@ paths:
       summary: 简悦 WebHook 保存文章
       tags:
       - Ob
+  /ob/today:
+    get:
+      consumes:
+      - text/plain
+      description: Today Daily Get 今日日志获取 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为
+        昨天的日志
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: Today Daily Get 今日日志获取
+      tags:
+      - Ob
+    post:
+      consumes:
+      - text/plain
+      description: Today Daily Post 新增内容，末尾添加 注意：每天凌晨 00:00 - 03:59  判断为 today daily
+        为 昨天的日志
+      parameters:
+      - description: 新增内容，末尾添加
+        in: body
+        name: 內容
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: Today Daily Post 今日日志新增
+      tags:
+      - Ob
+    put:
+      consumes:
+      - text/plain
+      description: Today Daily Put 完全覆盖内容 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为
+        昨天的日志
+      parameters:
+      - description: 完全覆盖 内容
+        in: body
+        name: 內容
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses: {}
+      security:
+      - Token: []
+      summary: Today Daily Put 今日日志覆写
+      tags:
+      - Ob
   /ob/url:
     post:
       consumes:

@@ -91,6 +91,10 @@ func main() {
 		obGroup2.POST("generalall", GeneralPostAllHandler) // Obsidian Token2 POST 通用接口 全部文件都可以
 		obGroup2.GET("generalall", GeneralGetAllHandler)   // Obsidian Token2 POST 通用接口 全部文件都可以
 
+		obGroup2.GET("today", ObTodayGetHandler)
+		obGroup2.PUT("today", ObTodayPutHandler)
+		obGroup2.POST("today", ObTodayPostHandler)
+
 	}
 	r.POST("/ob/general/*paramtoken", SpecialTokenMiddleware("./token/token2.json"), GeneralHeader2) // Token2 flomo like api
 	r.POST("/ob/moonreader", StandardTokenAuthMiddleware("./token/token2.json"), MoodReaderHandler)  // Obsidian POST 静读天下 api 此 API 使用 Authorization 头验证

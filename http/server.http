@@ -73,3 +73,16 @@ Token: {{token2}}
 Content-Type: application/json
 
 {"subject":"主题","content":"以下是测试内容部分"}
+### Today Daily
+GET {{host}}/ob/today
+Token: {{token2}}
+###
+POST {{host}}/ob/today
+Token: {{token2}}
+
+xxx
+###
+PUT {{host}}/ob/today
+Token: {{token2}}
+
+A Complete New File

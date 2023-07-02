@@ -7,8 +7,10 @@ import (
 	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
 	"obcsapi-go/gr"
+	"obcsapi-go/skv"
 	"obcsapi-go/tools"
 	"strings"
+	"time"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/gin-gonic/gin"
@@ -292,4 +294,73 @@ func GeneralGetAllHandler(c *gin.Context) {
 		return
 	}
 	c.String(200, string(text))
+}
+
+// @Summary Today Daily Get 今日日志获取
+// @Description Today Daily Get 今日日志获取 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
+// @Tags Ob
+// @Security Token
+// @Accept plain
+// @Produce plain
+// @Router /ob/today [get]
+func ObTodayGetHandler(c *gin.Context) {
+	if mdText, err := GetTextObject(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
+		gr.ErrServerError(c, err)
+	} else {
+		c.String(200, mdText)
+	}
+}
+
+// @Summary Today Daily Put 今日日志覆写
+// @Description Today Daily Put 完全覆盖内容 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
+// @Tags Ob
+// @Security Token
+// @Accept plain
+// @Produce plain
+// @Param 內容 body string true "完全覆盖 内容"
+// @Router /ob/today [put]
+func ObTodayPutHandler(c *gin.Context) {
+	fileKey := tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())
+	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+	skv.PutFile(fileKey, string(bodyBytes))
+	if err = MdTextStore(fileKey, string(bodyBytes)); err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+	gr.Success(c)
+}
+
+// @Summary Today Daily Post 今日日志新增
+// @Description Today Daily Post 新增内容，末尾添加 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
+// @Tags Ob
+// @Security Token
+// @Accept plain
+// @Produce plain
+// @Param 內容 body string true "新增内容，末尾添加"
+// @Router /ob/today [post]
+func ObTodayPostHandler(c *gin.Context) {
+	fileKey := tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())
+	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+	if err = TextAppend(fileKey, string(bodyBytes)); err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+	gr.Success(c)
+}
+
+// 每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
+func ObTodayAddDateNum() int {
+	hour := time.Now().Hour()
+	if hour >= 0 && hour <= 3 {
+		return -1
+	}
+	return 0
 }
