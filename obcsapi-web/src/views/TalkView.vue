@@ -4,6 +4,7 @@ import { NButton, NScrollbar, NMention } from 'naive-ui';
 import { ObcsapiTalk } from "@/api/obcsapi";
 import { TalkStore } from "@/stores/talk";
 import { LocalSetting } from "@/stores/setting"
+import CommandMessage from "@/components/obcsapi/CommandMessage.vue"
 
 import marked from "marked";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
@@ -23,7 +24,7 @@ function sendMessage() {
   messages.push("I: " + newMessage.value);
   ObcsapiTalk(newMessage.value).then(text => {
     showUpload.value = false;
-    messages.push("O: " + text);
+    messages.push(text);
     scrollToBottom()
   }).catch(e => {
     console.log(e);
@@ -73,7 +74,8 @@ function markdown(text: string) :string {
     <n-scrollbar style="max-height: 75vh" ref="scrollbarRef">
       <div class="chat-messages" ref="contentRef">
         <div v-for="(message, index) in messages.slice().reverse()" :key="index">
-          <div v-if="message.substring(0, 2) == 'I:'" class="message1" v-html="markdown(message)"></div>
+          <CommandMessage v-if="message.substring(0, 2) != 'I:'" :inText="message"/>
+          <!-- <div v-if="message.substring(0, 2) == 'I:'" class="message1" v-html="markdown(message)"></div> -->
           <div v-else class="message2" v-html="markdown(message)"></div>
         </div>
       </div>
