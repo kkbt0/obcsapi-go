@@ -12,6 +12,7 @@ import (
 	"obcsapi-go/docs"
 	"obcsapi-go/talk"
 	"obcsapi-go/tools"
+	"obcsapi-go/wechat"
 	"os"
 
 	_ "obcsapi-go/docs"
@@ -72,8 +73,9 @@ func main() {
 	r.GET("/", IndexHandler)      // index.html vue3 pwa
 	r.Static("/web", "./website") // h5 静态文件
 
-	r.GET("/info", InfoHandler)            // Obcsapi info
-	r.Any("/api/wechat", WeChatMpHandlers) // wechat 机器人 用于公众测试号
+	r.GET("/info", InfoHandler)                          // Obcsapi info
+	r.Any("/api/wechat", WeChatMpHandlers)               // wechat 机器人 用于公众测试号
+	r.GET("/api/workwechat", wechat.WorkWechatVerifyURL) // 企业微信自建应用
 
 	apiGroup := r.Group("/api", TokenAuthMiddleware("./token/token2.json")) // default token2
 	{

@@ -19,3 +19,4 @@ server/mykv.db
 server/config.run.json
 server/ob4.2.tar.gz
 server/pktoken
+server/server.exe
