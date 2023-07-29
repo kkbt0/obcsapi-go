@@ -57,7 +57,9 @@ wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.D
 # work wechat 企业微信自建应用
 work_wechat_token: xxxxxxxxxxxxxx
 work_wechat_receiverid: xxxxxxxxxxxxxx # sCorpID
+work_wechat_corpid: xxxxxxxxxxxxxx
 work_wechat_encoding_aeskey: xxxxxxxxxxxxxx
+work_wechat_user_id: xxx
 
 # 任务提醒
 cron: "1/60 * * * * ?" # 每分钟检查一次 
