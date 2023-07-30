@@ -14,9 +14,9 @@ import (
 
 // 每日邮件
 func DailyEmailReminder() error {
-	login_address := "https://note.ftls.xyz/web/"
+	login_address := viper.GetString("web_url_full")
 	var ansList []string
-	ansList = append(ansList, "默认笔记前端链接")
+	ansList = append(ansList, "笔记前端链接: ")
 	ansList = append(ansList, fmt.Sprintf("<a href=\"%s\">%s</a>", login_address, login_address))
 	ansList = append(ansList, "<h3>每日提醒</h3>\n")
 
