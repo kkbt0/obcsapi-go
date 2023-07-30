@@ -13,7 +13,7 @@ class LocalSettingsClass {
 }
 
 export const LocalSetting = defineStore('setting', () => {
-    const webDesc = "v20230705-1830 for server_v4.2.6";
+    const webDesc = "v20230730-1313 for server_v4.2.6";
     const mention: Ref<Array<{ label: string, value: string }>> = ref([]);
     const recentEditList: Ref<string[]> = ref([]);
     const allFileKeyList: Ref<string[]> = ref([]);

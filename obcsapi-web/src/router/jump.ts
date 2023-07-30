@@ -35,6 +35,7 @@ export const SayHello = () => {
             window.$message.error(`${res.code}`);
         }
     }).catch(err => {
-        window.$message.error(err);
+        window.$message.error("请求错误 如需登录->打开齿轮->注销");
+        console.log(err);
     })
 }
