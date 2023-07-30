@@ -5,6 +5,7 @@ cd /app/data
 mkdir /app/data/log
 mkdir /app/data/webdav
 mkdir /app/data/webdav/images
+mkdir /app/data/cert/
 cp -R /app/static/ /app/data/
 rm -rf /app/data/website/
 cp -R /app/website/ /app/data/

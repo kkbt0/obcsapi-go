@@ -2,7 +2,7 @@
 cd server
 go mod tidy 
 go mod vendor
-version="4.2.6"
+version="4.2.7"
 docker build -t kkbt/obcsapi:v$version .
 docker build -t kkbt/obcsapi:latest ..
 # docker buildx build -t kkbt/obcsapi:latest --platform=linux/arm,linux/arm64,linux/amd64 .

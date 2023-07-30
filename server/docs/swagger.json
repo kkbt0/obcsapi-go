@@ -6,7 +6,7 @@
         "contact": {
             "url": "https://gitee.com/kkbt/obcsapi-go"
         },
-        "version": "v4.2.6 版本"
+        "version": "v4.2.7 版本"
     },
     "paths": {
         "/api/sendmail": {
