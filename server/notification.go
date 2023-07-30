@@ -1,73 +1,16 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
 	"obcsapi-go/dao"
 	"obcsapi-go/tools"
+	"obcsapi-go/wechat"
 	"strings"
 	"time"
+
+	"github.com/spf13/viper"
 )
-
-func WeChatTemplateMesseng(text string) error {
-	accessToken, err := mp.AccessToken.Fresh()
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	url := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken
-	content := WeChatTemplateMessengDataVCPart{Value: text, Color: "#173177"}
-	dataPart := WeChatTemplateMessengDataPart{Content: content}
-	mainPart := WeChatTemplateMessengMainPart{
-		Touser:     tools.ConfigGetString("wechat_openid"),
-		TemplateId: tools.ConfigGetString("wechat_template_id"),
-		TopColor:   "#FF0000",
-		Data:       dataPart,
-	}
-	jsonBytes, err := json.Marshal(mainPart)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBytes))
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	log.Println("Send Wechat Template Message:", string(body))
-	return nil
-}
-
-type WeChatTemplateMessengMainPart struct {
-	Touser     string                        `json:"touser"`
-	TemplateId string                        `json:"template_id"`
-	TopColor   string                        `json:"topcolor"`
-	Data       WeChatTemplateMessengDataPart `json:"data"`
-}
-type WeChatTemplateMessengDataPart struct {
-	Content WeChatTemplateMessengDataVCPart `json:"content"`
-}
-type WeChatTemplateMessengDataVCPart struct {
-	Value string `json:"value"`
-	Color string `json:"color"`
-}
 
 // 每日邮件
 func DailyEmailReminder() error {
@@ -137,7 +80,10 @@ func EveryMinReminder() error {
 
 	if len(ansList) != 0 { // 如果列表不空发送消息
 		log.Println("Wechat Reminder", len(ansList))
-		err = WeChatTemplateMesseng(strings.Join(ansList, "\n"))
+		err = wechat.WeChatTemplateMesseng(strings.Join(ansList, "\n"))
+		if viper.GetBool("work_wechat_reminder") {
+			err = wechat.WorkWechatSendText(strings.Join(ansList, "\n"))
+		}
 		// 邮件提醒
 		var emailAns []string
 

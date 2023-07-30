@@ -1,4 +1,4 @@
-package main
+package wechat
 
 import (
 	"bufio"
@@ -14,19 +14,19 @@ import (
 	"github.com/sidbusy/weixinmp"
 )
 
-var mp = weixinmp.New(tools.ConfigGetString("wechat_token"), tools.ConfigGetString("wechat_appid"), tools.ConfigGetString("wechat_secret"))
+var Mp = weixinmp.New(tools.ConfigGetString("wechat_token"), tools.ConfigGetString("wechat_appid"), tools.ConfigGetString("wechat_secret"))
 
 var WeChatMode = 1 // default 0 = 对话/指令模式 ; 1 = 输入模式
 
 func WeChatMpHandlers(c *gin.Context) {
 	log.Println("WeChat MP Run")
 	openid := tools.ConfigGetString("wechat_openid") // OpenID
-	if !mp.Request.IsValid(c.Writer, c.Request) {
+	if !Mp.Request.IsValid(c.Writer, c.Request) {
 		return
 	}
-	if mp.Request.FromUserName != openid {
-		mp.ReplyTextMsg(c.Writer, "你好陌生人")
-		log.Println("陌生人:", mp.Request.FromUserName)
+	if Mp.Request.FromUserName != openid {
+		Mp.ReplyTextMsg(c.Writer, "你好陌生人")
+		log.Println("陌生人:", Mp.Request.FromUserName)
 		return
 	}
 	r_str := tools.NowRunConfig.WeChatMp.ReturnStr
@@ -34,26 +34,26 @@ func WeChatMpHandlers(c *gin.Context) {
 		r_str = "📩 已保存"
 	}
 	var err error
-	switch mp.Request.MsgType {
+	switch Mp.Request.MsgType {
 	case weixinmp.MsgTypeText: // 文字消息
-		r_str, err = WeChatTextAndVoice(mp.Request.Content)
+		r_str, err = WeChatTextAndVoice(Mp.Request.Content)
 	case weixinmp.MsgTypeImage: // 图片消息
-		fileby, _ := PicDownloader(mp.Request.PicUrl)
+		fileby, _ := PicDownloader(Mp.Request.PicUrl)
 		file_key := fmt.Sprintf("%s%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("20060102150405"))
 		ObjectStore(file_key, fileby)
 		// 前端会监测 ![https://..](..) 将 http:// 放到 后面 ![..](https://..)
 		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
 		err = DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
 	case weixinmp.MsgTypeVoice: // 语言消息
-		if mp.Request.Recognition != "" {
-			r_str, err = WeChatTextAndVoice(mp.Request.Recognition)
+		if Mp.Request.Recognition != "" {
+			r_str, err = WeChatTextAndVoice(Mp.Request.Recognition)
 		} else {
 			r_str = "没有识别到文字"
 		}
 	case weixinmp.MsgTypeLocation: // 位置消息
-		err = DailyTextAppendMemos(fmt.Sprintf("位置信息: 位置 %s <br>经纬度( %f , %f )", mp.Request.Label, mp.Request.LocationX, mp.Request.LocationY))
+		err = DailyTextAppendMemos(fmt.Sprintf("位置信息: 位置 %s <br>经纬度( %f , %f )", Mp.Request.Label, Mp.Request.LocationX, Mp.Request.LocationY))
 	case weixinmp.MsgTypeLink: // 链接消息
-		err = DailyTextAppendMemos(fmt.Sprintf("[%s](%s)<br>%s...", mp.Request.Title, mp.Request.Url, mp.Request.Description))
+		err = DailyTextAppendMemos(fmt.Sprintf("[%s](%s)<br>%s...", Mp.Request.Title, Mp.Request.Url, Mp.Request.Description))
 	case weixinmp.MsgTypeVideo:
 		r_str = "不支持的视频消息"
 	default:
@@ -63,7 +63,7 @@ func WeChatMpHandlers(c *gin.Context) {
 		log.Println(err)
 		r_str = "Error"
 	}
-	mp.ReplyTextMsg(c.Writer, r_str)
+	Mp.ReplyTextMsg(c.Writer, r_str)
 }
 
 func WeChatTextAndVoice(text string) (string, error) {

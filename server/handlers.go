@@ -10,6 +10,7 @@ import (
 	"obcsapi-go/gr"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
+	"obcsapi-go/wechat"
 	"path"
 	"strings"
 	"time"
@@ -267,7 +268,32 @@ func WeChatMpInfoHandler(c *gin.Context) {
 		gr.ErrEmpty(c)
 		return
 	}
-	err := WeChatTemplateMesseng(weChatInfoStruct.Content)
+	err := wechat.WeChatTemplateMesseng(weChatInfoStruct.Content)
+	if err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+	gr.Success(c)
+}
+
+// @Summary 企业微信通知
+// @Tags 通知
+// @Security Token
+// @Accept json
+// @Produce json
+// @Param json body WeChatInfoStruct true "WeChatInfoStruct"
+// @Router /api/workwechatmsg [post]
+func WorkWeChatMpInfoHandler(c *gin.Context) {
+	var weChatInfoStruct WeChatInfoStruct
+	if c.ShouldBindJSON(&weChatInfoStruct) != nil {
+		gr.ErrBindJSONErr(c)
+		return
+	}
+	if weChatInfoStruct.Content == "" {
+		gr.ErrEmpty(c)
+		return
+	}
+	err := wechat.WorkWechatSendText(weChatInfoStruct.Content)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return

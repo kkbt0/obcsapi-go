@@ -73,16 +73,17 @@ func main() {
 	r.GET("/", IndexHandler)      // index.html vue3 pwa
 	r.Static("/web", "./website") // h5 静态文件
 
-	r.GET("/info", InfoHandler)            // Obcsapi info
-	r.Any("/api/wechat", WeChatMpHandlers) // wechat 机器人 用于公众测试号
+	r.GET("/info", InfoHandler)                   // Obcsapi info
+	r.Any("/api/wechat", wechat.WeChatMpHandlers) // wechat 机器人 用于公众测试号
 
 	r.GET("/api/workwechat", wechat.WorkWechatVerifyURL)   // 企业微信自建应用验证
 	r.POST("/api/workwechat", wechat.WorkWechatMsgHandler) // 企业微信自建应用消息回复
 
 	apiGroup := r.Group("/api", TokenAuthMiddleware("./token/token2.json")) // default token2
 	{
-		apiGroup.POST("wechatmpmsg", WeChatMpInfoHandler) // 公众测试号 模板消息通知
-		apiGroup.POST("sendmail", SendMailHandler)        // 邮件消息通知
+		apiGroup.POST("wechatmpmsg", WeChatMpInfoHandler)       // 公众测试号 模板消息通知
+		apiGroup.POST("sendmail", SendMailHandler)              // 邮件消息通知
+		apiGroup.POST("workwechatmsg", WorkWeChatMpInfoHandler) // 企业微信通知
 	}
 
 	obGroup2 := r.Group("/ob", TokenAuthMiddleware("./token/token2.json")) // default token2

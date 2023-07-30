@@ -248,6 +248,25 @@ paths:
       summary: 微信通知
       tags:
       - 通知
+  /api/workwechatmsg:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: WeChatInfoStruct
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/main.WeChatInfoStruct'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - Token: []
+      summary: 企业微信通知
+      tags:
+      - 通知
   /info:
     get:
       produces:

@@ -101,6 +101,7 @@ func GetReminderFromString(text string) (string, error) {
 	if strings.Contains(text, "提醒我") {
 		var segmenter = timefinder.New("./static/jieba_dict.txt,./static/" + tools.NowRunConfig.Reminder.ReminderDicionary)
 		extract := segmenter.TimeExtract(text)
+		tools.Debug("提取时间:", extract)
 		if len(extract) != 0 {
 			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+text)
 			if err != nil {

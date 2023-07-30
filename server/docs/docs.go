@@ -252,6 +252,37 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/workwechatmsg": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知"
+                ],
+                "summary": "企业微信通知",
+                "parameters": [
+                    {
+                        "description": "WeChatInfoStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.WeChatInfoStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/info": {
             "get": {
                 "produces": [
