@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"obcsapi-go/app"
 	"obcsapi-go/auth"
 	_ "obcsapi-go/dao" // init 检查数据模式 是 S3， CouchDb ..
 	"obcsapi-go/docs"
@@ -88,8 +89,9 @@ func main() {
 
 	obGroup2 := r.Group("/ob", TokenAuthMiddleware("./token/token2.json")) // default token2
 	{
-		obGroup2.POST("fv", fvHandler)          // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
-		obGroup2.POST("sr/webhook", SRWebHook)  // Obsidian Token2 POST 简悦 Webhook 使用
+		obGroup2.POST("fv", app.FvHandler)         // Obsidian Token2 POST 安卓 FV 悬浮球 快捷存储 文字，图片
+		obGroup2.POST("sr/webhook", app.SRWebHook) // Obsidian Token2 POST 简悦 Webhook 使用
+
 		obGroup2.POST("general", GeneralHeader) // Obsidian Token2 POST 通用接口 今日日记
 		obGroup2.POST("url", Url2MdHandler)     // Obsidian Token2 POST 页面转 md 存储 效果很一般 不如简悦
 
@@ -101,8 +103,8 @@ func main() {
 		obGroup2.POST("today", ObTodayPostHandler)
 
 	}
-	r.POST("/ob/general/*paramtoken", SpecialTokenMiddleware("./token/token2.json"), GeneralHeader2) // Token2 flomo like api
-	r.POST("/ob/moonreader", StandardTokenAuthMiddleware("./token/token2.json"), MoodReaderHandler)  // Obsidian POST 静读天下 api 此 API 使用 Authorization 头验证
+	r.POST("/ob/general/*paramtoken", SpecialTokenMiddleware("./token/token2.json"), GeneralHeader2)    // Token2 flomo like api
+	r.POST("/ob/moonreader", StandardTokenAuthMiddleware("./token/token2.json"), app.MoodReaderHandler) // Obsidian POST 静读天下 api 此 API 使用 Authorization 头验证
 
 	r.GET("/public/*fileName", ObsidianPublicFiles) // Obsidian Public Files GET
 

@@ -3,15 +3,6 @@ package dao
 type MemosData struct {
 	Content string `json:"content"`
 }
-type MoodReader struct {
-	Highlights []MoodReaderHighlights `json:"highlights"`
-}
-type MoodReaderHighlights struct {
-	Title  string `json:"title"`
-	Text   string `json:"text"`
-	Author string `json:"author"`
-	Note   string `json:"note"`
-}
 
 type UrlStruct struct {
 	Url string `json:"url"`
