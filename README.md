@@ -41,6 +41,8 @@
 
 ## 展示
 
+### PWA Web 应用
+
 ![](docs/images/Snipaste_2023-05-09_21-21-34.png)
 
 ![](docs/images/Snipaste_2023-05-09_21-22-36.png)
@@ -48,6 +50,14 @@
 ![](docs/images/Snipaste_2023-05-09_21-26-04.png)
 
 ![](docs/images/Snipaste_2023-05-09_21-26-13.png)
+
+### Tauri 桌面端应用 
+
+[Tauri 可以构建跨平台的快速、安全、前端隔离应用](https://tauri.app/zh-cn/)。图片为 桌面端应用  - Windows - 虽然大概直接用 Obsidian 更方便一些。
+
+![](docs/images/Snipaste_2023-08-01_12-57-50-tauri-windows.png)
+
+## 其他
 
 python 老版本 https://gitee.com/kkbt/obsidian-csapi 
 发展历程: [obsidian-使用指南](https://www.ftls.xyz/series/obsidian-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/)
