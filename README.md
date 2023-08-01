@@ -57,6 +57,8 @@
 
 ![](docs/images/Snipaste_2023-08-01_12-57-50-tauri-windows.png)
 
+可从 [https://gitee.com/kkbt/obcsapi-go/releases](https://gitee.com/kkbt/obcsapi-go/releases) 下载
+
 ## 其他
 
 python 老版本 https://gitee.com/kkbt/obsidian-csapi 

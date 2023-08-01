@@ -1,6 +1,6 @@
 {
   "build": {
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run build-tauri",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:5173/web/",
     "distDir": "../dist"
@@ -55,10 +55,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 800,
         "resizable": true,
         "title": "Note",
-        "width": 800
+        "width": 450
       }
     ]
   }
