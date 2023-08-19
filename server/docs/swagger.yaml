@@ -1,4 +1,37 @@
 definitions:
+  app.MoodReader:
+    properties:
+      highlights:
+        items:
+          $ref: '#/definitions/app.MoodReaderHighlights'
+        type: array
+    type: object
+  app.MoodReaderHighlights:
+    properties:
+      author:
+        type: string
+      note:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+    type: object
+  app.SimpReadWebHookStruct:
+    properties:
+      content:
+        type: string
+      desc:
+        type: string
+      note:
+        type: string
+      tags:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
   auth.User:
     properties:
       id:
@@ -11,24 +44,6 @@ definitions:
   dao.MemosData:
     properties:
       content:
-        type: string
-    type: object
-  dao.MoodReader:
-    properties:
-      highlights:
-        items:
-          $ref: '#/definitions/dao.MoodReaderHighlights'
-        type: array
-    type: object
-  dao.MoodReaderHighlights:
-    properties:
-      author:
-        type: string
-      note:
-        type: string
-      text:
-        type: string
-      title:
         type: string
     type: object
   dao.UrlStruct:
@@ -65,21 +80,6 @@ definitions:
       content:
         type: string
       subject:
-        type: string
-    type: object
-  main.SimpReadWebHookStruct:
-    properties:
-      content:
-        type: string
-      desc:
-        type: string
-      note:
-        type: string
-      tags:
-        type: string
-      title:
-        type: string
-      url:
         type: string
     type: object
   main.WeChatInfoStruct:
@@ -402,7 +402,7 @@ paths:
         name: 划线和标注
         required: true
         schema:
-          $ref: '#/definitions/dao.MoodReader'
+          $ref: '#/definitions/app.MoodReader'
       produces:
       - application/json
       responses: {}
@@ -422,7 +422,7 @@ paths:
         name: json
         required: true
         schema:
-          $ref: '#/definitions/main.SimpReadWebHookStruct'
+          $ref: '#/definitions/app.SimpReadWebHookStruct'
       responses: {}
       security:
       - Token: []
