@@ -500,7 +500,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dao.MoodReader"
+                            "$ref": "#/definitions/app.MoodReader"
                         }
                     }
                 ],
@@ -529,7 +529,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.SimpReadWebHookStruct"
+                            "$ref": "#/definitions/app.SimpReadWebHookStruct"
                         }
                     }
                 ],
@@ -651,6 +651,57 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "app.MoodReader": {
+            "type": "object",
+            "properties": {
+                "highlights": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.MoodReaderHighlights"
+                    }
+                }
+            }
+        },
+        "app.MoodReaderHighlights": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.SimpReadWebHookStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "auth.User": {
             "type": "object",
             "properties": {
@@ -669,34 +720,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "content": {
-                    "type": "string"
-                }
-            }
-        },
-        "dao.MoodReader": {
-            "type": "object",
-            "properties": {
-                "highlights": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dao.MoodReaderHighlights"
-                    }
-                }
-            }
-        },
-        "dao.MoodReaderHighlights": {
-            "type": "object",
-            "properties": {
-                "author": {
-                    "type": "string"
-                },
-                "note": {
-                    "type": "string"
-                },
-                "text": {
-                    "type": "string"
-                },
-                "title": {
                     "type": "string"
                 }
             }
@@ -752,29 +775,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "subject": {
-                    "type": "string"
-                }
-            }
-        },
-        "main.SimpReadWebHookStruct": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "desc": {
-                    "type": "string"
-                },
-                "note": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "url": {
                     "type": "string"
                 }
             }

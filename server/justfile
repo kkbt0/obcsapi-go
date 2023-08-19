@@ -1,0 +1,6 @@
+run:
+    go run .
+init:
+    swag init -g server.go
+build:
+    bash build.sh
