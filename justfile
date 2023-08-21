@@ -12,3 +12,5 @@ build:
     bash step2.sh
     just server/build
     echo "Now push the Docker image to DockerHub"
+update:
+    cd obcsapi-web && npm-check -u 
