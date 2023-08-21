@@ -12,5 +12,7 @@ build:
     bash step2.sh
     just server/build
     echo "Now push the Docker image to DockerHub"
-update:
+update-web:
     cd obcsapi-web && npm-check -u 
+update-server:
+    cd server && go get -u && go mod tidy && go mod vendor
