@@ -47,7 +47,7 @@ const schema = ref({
                 ob_daily_attachment_dir_under_daily: {
                     type: "boolean",
                     title: "日记附件文件夹前缀",
-                    description: "日记附件文件夹是否会在日记文件夹之下"
+                    description: "日记附件文件夹放在根目录下"
                 },
                 ob_daily_attachment_dir: {
                     type: "string",
