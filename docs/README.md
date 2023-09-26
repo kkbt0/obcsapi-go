@@ -74,7 +74,7 @@ Docker [https://hub.docker.com/r/kkbt/obcsapi](https://hub.docker.com/r/kkbt/obc
 [3] 支持文字，图像，语音（转文字存储）等
 [4] 类似 ReadWise API 增加接口
 [5] 本地服务 LocalStorage 本地存储，开启 Webdav 服务为 Remotely Save 提供同步。同时 WebDav 服务可连接 RAIDrive (Windows) ， Mix (安卓) 等进行文件管理。
-[6] Go 版本支持 Web 网页，S3 支持 Obsidian 库内的图片链接（需要基于库的路径）。而 CouchDb,Local 未支持
+[6] Go 版本支持 Web 网页，S3 支持 Obsidian 库内的图片链接（需要基于库的路径或相对路径）。CouchDb,Local 也支持。
 
 ---
 
