@@ -5,8 +5,13 @@
 // 前端传入字符串
 console.log(inputText)
 
+// 转为 json
 inputJson = JSON.parse(inputText)
-console.log(inputJson.a)
+console.log(inputJson.text1)
+console.log(inputJson.text2)
 
 // 返回的字符串
-result = "Hello" + "World" + inputText
+result = "输入的字符串: " + inputText + "\n返回: \ntext1: " + inputJson.text1 + "\ntext2: " + inputJson.text2
+
+// 增加到今日
+obcsapi.daily_append(result)

@@ -59,6 +59,7 @@ export default defineComponent({
       <HelloWorld msg="Weclome!" @click="" />
       <nav>
         <RouterLink to="/">🏠️</RouterLink>
+        <RouterLink to="/form">form</RouterLink>
         <RouterLink to="/edit">📃</RouterLink>
         <RouterLink to="/talk">>_</RouterLink>
         <RouterLink to="/setting">⚙️</RouterLink>

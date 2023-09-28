@@ -214,3 +214,15 @@ export const ObcsapiLoginByCode = async (code:string) => {
   });
   return response.json();
 }
+
+export const ObcsapiFormPost = async (jsonObj: any) => {
+  const response = await fetch(host + '/api/v1/form', {
+    method: 'POST',
+    headers: {
+      'Authorization': localStorage.getItem('token') || "",
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(jsonObj)
+  })
+  return response;
+}

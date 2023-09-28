@@ -33,6 +33,12 @@ const router = createRouter({
       name: 'search',
       component: () => import('../views/SearchView.vue')
     },
+    {
+      path: '/form',
+      name: 'form',
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/FormView.vue')
+    }
   ]
 })
 

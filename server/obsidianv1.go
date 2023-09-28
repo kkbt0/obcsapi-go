@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
@@ -241,7 +241,7 @@ func TextGetHandler(c *gin.Context) {
 
 func TextPostHandler(c *gin.Context) {
 	fileKey := c.Query("fileKey")
-	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	bodyBytes, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return

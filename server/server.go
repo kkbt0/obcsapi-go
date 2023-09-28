@@ -150,6 +150,7 @@ func main() {
 
 		api1Group.GET("/mailtest", MailTesterHandler) // 邮件测试
 		api1Group.POST("/talk", talk.TalkHandler)     // 对话 API
+		api1Group.POST("/form", FormPostHandler)      // 表单 API
 		api1Group.GET("/mention", GetMentionHandler)  // 提示词
 		api1Group.GET("/random", RandomMemosHandler)  // 随机 Memos
 		// 实验性质
