@@ -3,11 +3,9 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"obcsapi-go/auth"
-	"obcsapi-go/command"
 	"obcsapi-go/dao"
 	"obcsapi-go/gr"
 	"obcsapi-go/skv"
@@ -406,18 +404,18 @@ func KvSerchHandler(c *gin.Context) {
 	c.JSON(200, result)
 }
 
-func FormPostHandler(c *gin.Context) {
-	bodyBytes, err := io.ReadAll(c.Request.Body)
-	if err != nil {
-		gr.ErrServerError(c, err)
-		return
-	}
-	bodyString := string(bodyBytes)
-	tools.Debug(bodyString)
-	result, err := command.RunJsByFile("script/demo.js", bodyString)
-	if err != nil {
-		gr.ErrServerError(c, err)
-		return
-	}
-	c.String(200, result)
-}
+// func FormPostHandler(c *gin.Context) {
+// 	bodyBytes, err := io.ReadAll(c.Request.Body)
+// 	if err != nil {
+// 		gr.ErrServerError(c, err)
+// 		return
+// 	}
+// 	bodyString := string(bodyBytes)
+// 	tools.Debug(bodyString)
+// 	result, err := command.RunJsByFile("script/demo.js", bodyString)
+// 	if err != nil {
+// 		gr.ErrServerError(c, err)
+// 		return
+// 	}
+// 	c.String(200, result)
+// }
