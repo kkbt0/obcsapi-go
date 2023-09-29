@@ -67,7 +67,7 @@ function markdown(text: string) :string {
     </div>
     <n-space justify="space-between">
       <n-button quaternary type="info" @click="showUpload = !showUpload">📌</n-button>
-      <n-button quaternary type="info" @click="addTags">🏷️</n-button>
+      <n-button quaternary type="info" @click="addTags">🔖</n-button>
       <n-button quaternary type="info" @click="sendMessage">🚀</n-button>
     </n-space>
     <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />

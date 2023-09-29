@@ -119,6 +119,7 @@ function getRecentList(): TreeOption {
 function CalClicks(infileKey: string) {
     console.log("Load:",infileKey+".md");
     fileKey.value = infileKey+".md";
+    showMode.value = 0;
 }
 
 function goSearchPage() {

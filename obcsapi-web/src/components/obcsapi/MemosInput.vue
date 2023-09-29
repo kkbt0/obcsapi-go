@@ -48,7 +48,7 @@ function addTags() {
       :autosize="{ minRows: 3 }" :options="LocalSetting().mention" :prefix="['#']" ref="myMentionRef" />
     <n-space justify="space-between">
       <n-button quaternary type="info" @click="showUpload = !showUpload">📌</n-button>
-      <n-button quaternary type="info" @click="addTags">🏷️</n-button>
+      <n-button quaternary type="info" @click="addTags">🔖</n-button>
       <n-button quaternary type="primary" @click="sendMemos">🚀</n-button>
     </n-space>
     <MemosUpload v-if="showUpload" @upload-callback="imgUrlDeal" />
