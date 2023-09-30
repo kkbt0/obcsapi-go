@@ -23,6 +23,9 @@ O: Command bash sh/example.sh
 I: 其他注意
 O: 执行命令可能会执行很长时间，造成网络响应超时。
 
+I: testLua
+O: Lua script/hello.lua
+
 
 I: #收藏
 O: Command bash sh/collect.sh

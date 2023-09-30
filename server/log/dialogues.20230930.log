@@ -1,0 +1,29 @@
+I: hello
+O: 必定可以匹配的到的。可以用于兜底，亦可以接入一个其他对话服务
+I: test1
+O: 执行命令时出错：[Lua ERROR] Error executing file: open scipt/hello.lua: no such file or directory
+I: test1
+O: Lua script/hello.lua
+I: test1
+O: Lua script/hello.lua
+I: test1
+O: Lua script/hello.lua
+I: test1
+O: Hello,World!
+I: testLua
+O: Hello,World!
+I: testLua
+O: 执行命令时出错：[Lua ERROR] Error executing file: script/hello.lua:5: cannot perform concat operation between string and nil
+stack traceback:
+	script/hello.lua:5: in main chunk
+	[G]: ?
+I: testLua
+O: Hello,World!
+Echo:testLua
+I: testLua wwaweaSD
+
+DDSad
+O: Hello,World!
+Echo: testLua wwaweaSD
+
+DDSad

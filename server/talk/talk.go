@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"obcsapi-go/command"
 	. "obcsapi-go/dao"
 	"obcsapi-go/tools"
 	"os"
@@ -66,7 +67,7 @@ func GetResponse(input string) string {
 		for _, trigger := range dialogue.Triggers {
 			if strings.Contains(input, trigger) {
 				response := dialogue.Responses[randInt(0, len(dialogue.Responses))] // 随机
-				if strings.HasPrefix(response, "Command ") {
+				if strings.HasPrefix(response, "Command ") {                        // Bash 运行
 					cmd := strings.TrimPrefix(response, "Command ")
 					output, err := exec.Command("bash", "-c", cmd).Output()
 					if err != nil {
@@ -76,6 +77,16 @@ func GetResponse(input string) string {
 						return "命令已执行，无输出"
 					}
 					return string(output)
+				} else if strings.HasPrefix(response, "Lua ") { // Lua 运行
+					scriptFilePath := strings.TrimPrefix(response, "Lua ")
+					output, err := command.LuaRunner(scriptFilePath, input)
+					if err != nil {
+						return fmt.Sprintf("执行命令时出错：%v", err)
+					}
+					if len(output) == 0 {
+						return "命令已执行，无输出"
+					}
+					return output
 				}
 				return response
 			}

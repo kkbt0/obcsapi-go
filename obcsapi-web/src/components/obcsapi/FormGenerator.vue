@@ -17,13 +17,13 @@ const result = ref("");
 selectOptionsInit();
 
 function handlerSubmit() {
-    console.log(formData.value)
     ObcsapiFormPost(formData.value)
         .then((response) => response.text())
         .then((data) => {
-            console.log(data)
             result.value = data;
-            window.$message.info(data);
+            formData.value = {};
+        }).catch(err => {
+            window.$message.error(`${err}`);
         });
 }
 function handlerCancel() {

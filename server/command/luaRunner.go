@@ -3,6 +3,7 @@ package command
 import (
 	"flag"
 	"fmt"
+	"obcsapi-go/tools"
 	"os"
 
 	libs "github.com/vadv/gopher-lua-libs"
@@ -36,8 +37,7 @@ func LuaRunner(scriptFilePath string, inputText string) (string, error) {
 		return "", fmt.Errorf("[Lua ERROR]: Target file was not given")
 	}
 	result := luaVm.Get(-1) // get the value at the top of the stack
-	fmt.Println(result.String())
+	tools.Debug("[Lua Runner Result]", result.String())
 
-	// 清理 flag
 	return result.String(), nil
 }
