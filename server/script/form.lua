@@ -1,4 +1,4 @@
---- 用于处理 前端生成的表单
+--- 用于处理 前端生成的表单 通用处理方法 会添加到日志中
 --- @param app_input string 前端输入的内容，是一个字符串，内容是 json
 -- @return string Lua 拼接字符串，最终给前端显示
 
@@ -27,7 +27,7 @@ ret = "后端返回: 前端输入的内容是 "..app_input -- Lua 拼接字符�
 ret = ret.."\n解析 JSON 最终转为字符串结果:\n"..table_str
 --- 将结果保存到 memos
 
-local err1 = app.DailyTextAppend(app_input)
+local err1 = app.DailyTextAppendMemos(app_input)
 if err1 then
     error(err1)
 end

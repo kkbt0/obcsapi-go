@@ -13,6 +13,40 @@ const frontSize = ref(14);
 const mentionList: Ref<Array<string>> = ref([]);
 const updateFileKey = ref("");
 
+const JSONSchemaOptions:any = ref([
+    {
+        title: 'Demo',
+        json_schema: `{
+    "type": "object",
+    "labelWidth": 120,
+    "displayType": "row",
+    "properties": {
+        "text1": {
+            "title": "单行1 text1",
+            "type": "string",
+            "props": {}
+        },
+        "text2": {
+            "title": "单行2 text1",
+            "type": "string",
+            "props": {}
+        }
+    }
+}`
+    }
+]);
+
+if(setting.formJSONSchemaOptions.length > 0){
+    JSONSchemaOptions.value = setting.formJSONSchemaOptions;
+}
+function createNewJSONSchemaOption() {
+    return {
+        title: 'new_title',
+        json_schema: ''
+    }
+}
+
+
 frontSize.value = parseInt(LocalSetting().localSetting.FrontSize);
 
 function clearCache() {
@@ -29,8 +63,17 @@ function reLogin() {
     router.push("/login")
 }
 
-function saveMention() {
+function saveMentionTags() {
     ObcsapiConfigPost({ "mention": { "tags": mentionList.value } }).then(text => {
+        if (text == "Success") {
+            window.$message.success("Success")
+            LocalSetting().getFromServerRunConfig()
+        }
+    })
+}
+
+function saveMentionJSONSchemaOption() {
+    ObcsapiConfigPost({ "mention": { "from_options": JSONSchemaOptions.value } }).then(text => {
         if (text == "Success") {
             window.$message.success("Success")
             LocalSetting().getFromServerRunConfig()
@@ -122,7 +165,7 @@ function updateServerCache() {
                     </n-collapse-item>
                 </n-collapse>
                 <div>Web {{ LocalSetting().webDesc }}</div>
-                
+
                 <n-space>
                     <n-button @click="saveSetting" type="info" quaternary>保存设置</n-button>
                     <n-button @click="clearCache" type="info" quaternary>清除缓存</n-button>
@@ -141,10 +184,24 @@ function updateServerCache() {
 
                 <n-dynamic-input v-model:value="mentionList" placeholder="请输入提示词" :min="0" />
                 <n-space justify="end">
-                    <n-button @click="saveMention" type="info" quaternary>保存提示词</n-button>
+                    <n-button @click="saveMentionTags" type="info" quaternary>保存提示词</n-button>
                 </n-space>
             </n-space>
-
+            <n-space vertical>
+                <a>表单可选列表</a>
+                <n-dynamic-input v-model:value="JSONSchemaOptions" preset="pair" key-placeholder="标题 title"
+                    value-placeholder="JSONSchema" :on-create="createNewJSONSchemaOption">
+                    <template #default="{ value }">
+                        <div style="display: flex; align-items: center; width: 100%">
+                            <n-input v-model:value="value.title" type="text" style="margin-right: 12px; width: 160px" />
+                            <n-input v-model:value="value.json_schema" type="text" />
+                        </div>  
+                    </template>
+                </n-dynamic-input>
+                <n-space justify="end">
+                    <n-button @click="saveMentionJSONSchemaOption" type="info" quaternary>保存</n-button>
+                </n-space>
+            </n-space>
         </n-tab-pane>
     </n-tabs>
 </template>

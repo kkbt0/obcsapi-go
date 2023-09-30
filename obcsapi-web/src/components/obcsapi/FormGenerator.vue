@@ -1,30 +1,21 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, watch, type Ref } from "vue"
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiFormPost } from "@/api/obcsapi";
+import { LocalSetting } from "@/stores/setting"
+
 // https://1.xrender.fun/generator
 // https://form.lljj.me/v3/#/demo?type=Simple&ui=VueNaiveForm
 
+const mentionList: Ref<Array<any>> = ref([]);
 const formData = ref();
-const formJsonShemeText = ref("");
-const formJsonSheme = ref({
-    "type": "object",
-    "labelWidth": 120,
-    "displayType": "row",
-    "properties": {
-        "text1": {
-            "title": "单行1 text1",
-            "type": "string",
-            "props": {}
-        },
-        "text2": {
-            "title": "单行2 text1",
-            "type": "string",
-            "props": {}
-        }
-    }
-})
+const formJsonShemeText: Ref<string> = ref(`{}`);
+const formJsonSheme:Ref<any> = ref();
+
 const result = ref("");
+
+selectOptionsInit();
+
 function handlerSubmit() {
     console.log(formData.value)
     ObcsapiFormPost(formData.value)
@@ -38,20 +29,39 @@ function handlerSubmit() {
 function handlerCancel() {
     console.log("cancel")
 }
-function updateFormJsonSheme() {
-    try {
-        formJsonSheme.value = JSON.parse(formJsonShemeText.value)
-    } catch (error) {
-        window.$message.error(`${error}`)
+
+function selectOptionsInit() {
+    let options = [];
+    let rawOptions = LocalSetting().formJSONSchemaOptions;
+    for (let i = 0; i < rawOptions.length; i++) {
+        options.push({
+            label: rawOptions[i].title,
+            value: rawOptions[i].json_schema
+        })
     }
+    mentionList.value = options;
+    if(mentionList.value.length > 0){
+        formJsonShemeText.value = mentionList.value[0].value;
+    }
+    formJsonSheme.value = JSON.parse(formJsonShemeText.value);
 }
 
+watch(formJsonShemeText, () => {
+    console.log(formJsonShemeText.value)
+    console.log(JSON.stringify(formJsonSheme.value))
+    formJsonSheme.value = JSON.parse(formJsonShemeText.value);
+    console.log(JSON.stringify(formJsonSheme.value))
+    // bug
+})
+ 
 </script>
 <template>
-    <n-input v-model:value="formJsonShemeText" type="textarea" placeholder="JsonSheme" />
-    <n-button @click="updateFormJsonSheme">updateFormJsonSheme</n-button>
-    <vue-form v-model="formData" :schema="formJsonSheme" @cancel="handlerCancel" @submit="handlerSubmit" />
-    <div v-text="result" style="white-space: pre-wrap;"></div>
+    <n-space vertical>
+        {{  formJsonShemeText }}
+        <n-select v-model:value="formJsonShemeText" :options="mentionList" />
+        <vue-form v-model="formData" :schema="formJsonSheme" @cancel="handlerCancel" @submit="handlerSubmit" />
+        <div v-text="result" style="white-space: pre-wrap;"></div>
+    </n-space>
 </template>
 
 <style scoped></style>

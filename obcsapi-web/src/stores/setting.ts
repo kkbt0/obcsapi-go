@@ -19,6 +19,7 @@ export const LocalSetting = defineStore('setting', () => {
     const allFileKeyList: Ref<string[]> = ref([]);
     const lastInput: Ref<string> = ref("");
     const delMemosList: Ref<string[]> = ref([]);
+    const formJSONSchemaOptions: Ref<any> = ref([]);
     let timer: string | number | NodeJS.Timeout | undefined = undefined;
     const localSetting: Ref<LocalSettingsClass> = ref(JSON.parse(localStorage.getItem('LocalSetting') || '{}'));
     recentEditList.value = JSON.parse(localStorage.getItem('recentEditList') || '["test.md"]');
@@ -32,11 +33,15 @@ export const LocalSetting = defineStore('setting', () => {
 
     function getFromServerRunConfig() {
         ObcsapiConfigGet().then((config: any) => {
+            console.log(config)
             if (config.mention.tags != null) {
                 mention.value = []
                 config.mention.tags.forEach((val: string) => {
                     mention.value.push({ label: val, value: val });
                 })
+            }
+            if (config.mention.from_options != null) {
+                formJSONSchemaOptions.value = config.mention.from_options;
             }
             localSetting.value.CalObDailyFir = config.ob_daily_config.ob_daily_dir;
             localSetting.value.CalObDaily = config.ob_daily_config.ob_daily;
@@ -62,6 +67,6 @@ export const LocalSetting = defineStore('setting', () => {
         mention, recentEditList,getFromServerRunConfig, webDesc,
         allFileKeyList, localSetting,
         lastInput, lastInputPush,
-        delMemosListPush, delMemosList
+        delMemosListPush, delMemosList,formJSONSchemaOptions
     }
 })

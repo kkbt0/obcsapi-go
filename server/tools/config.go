@@ -66,7 +66,8 @@ type ReminderConfig struct {
 }
 
 type MentionConfig struct {
-	Tags []string `json:"tags"`
+	Tags        []string                   `json:"tags"`
+	FromOptions []FormJSONSchemaInfoConfig `json:"from_options"`
 }
 type S3CompatibleConfig struct {
 	EndPoint  string `json:"end_point"`
@@ -82,6 +83,11 @@ type BasicConfig struct {
 }
 type OAuth2UserInfoConfig struct {
 	GiteeUserInfo models.GiteeUserInfoConfig `json:"gitee_user_info"`
+}
+
+type FormJSONSchemaInfoConfig struct {
+	Title      string `json:"title"`
+	JSONSchema string `json:"json_schema"`
 }
 
 type RunConfig struct {
