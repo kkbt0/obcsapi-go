@@ -13,28 +13,7 @@ const frontSize = ref(14);
 const mentionList: Ref<Array<string>> = ref([]);
 const updateFileKey = ref("");
 
-const JSONSchemaOptions:any = ref([
-    {
-        title: 'Demo',
-        json_schema: `{
-    "type": "object",
-    "labelWidth": 120,
-    "displayType": "row",
-    "properties": {
-        "text1": {
-            "title": "单行1 text1",
-            "type": "string",
-            "props": {}
-        },
-        "text2": {
-            "title": "单行2 text1",
-            "type": "string",
-            "props": {}
-        }
-    }
-}`
-    }
-]);
+const JSONSchemaOptions:any = ref();
 
 if(setting.formJSONSchemaOptions.length > 0){
     JSONSchemaOptions.value = setting.formJSONSchemaOptions;
