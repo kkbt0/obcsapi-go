@@ -22,6 +22,11 @@ end
 --     error(err3) -- 打印错误信息并终止
 -- end
 
+--- 引入自定义 lua 模块写法
+local base = require("script/base")
+local ans = base.add(2,3)
+---
+
 result = "This is a lua result to obcsapi-web , 输入的内容是 "..app_input -- Lua 拼接字符串
 
 return result
