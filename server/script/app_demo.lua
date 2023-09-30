@@ -1,3 +1,6 @@
+--- app 为 obcsapi 模块
+--- 本示例为 使用 app 调用 obcsapi 的添加到 memos 的示例
+
 local app = require("app") -- 导入 obcsapi 模块
 local test = require("test")
 
@@ -23,8 +26,8 @@ end
 -- end
 
 --- 引入自定义 lua 模块写法
-local base = require("script/base")
-local ans = base.add(2,3)
+local utils = require("script/utils")
+local ans = utils.add(2,3)
 ---
 
 result = "This is a lua result to obcsapi-web , 输入的内容是 "..app_input -- Lua 拼接字符串

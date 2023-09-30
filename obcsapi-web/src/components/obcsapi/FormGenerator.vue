@@ -51,7 +51,7 @@ function updateFormJsonSheme() {
     <n-input v-model:value="formJsonShemeText" type="textarea" placeholder="JsonSheme" />
     <n-button @click="updateFormJsonSheme">updateFormJsonSheme</n-button>
     <vue-form v-model="formData" :schema="formJsonSheme" @cancel="handlerCancel" @submit="handlerSubmit" />
-    <div>{{ result }}</div>
+    <div v-text="result" style="white-space: pre-wrap;"></div>
 </template>
 
 <style scoped></style>
