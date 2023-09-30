@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"mime/multipart"
@@ -38,7 +37,7 @@ func main() {
 		log.Panicln(err)
 	}
 	// 初始化配置文件
-	configByte, err := ioutil.ReadFile(path.Join(runPath, "obcsapi-picgo.ini"))
+	configByte, err := os.ReadFile(path.Join(runPath, "obcsapi-picgo.ini"))
 	if err != nil {
 		log.Println("配置文件读取失败，生成配置文件，初始化完成")
 		file, _ := os.Create(path.Join(runPath, "obcsapi-picgo.ini"))
@@ -98,7 +97,7 @@ func main() {
 				}
 			} else {
 				fileName := path.Base(filepath.ToSlash(os.Args[i])) // windows path 风格转 unix 然后获取文件名
-				file, err := ioutil.ReadFile(os.Args[i])
+				file, err := os.ReadFile(os.Args[i])
 				if err != nil {
 					log.Println("Read File Err,Skip This One", err)
 				} else {
@@ -126,8 +125,6 @@ func GetFromWindowsClipboard() {
 
 func PostObcsapiImageHost(fileName string, file []byte) string {
 	// 随机名字
-
-	// byte,err:=ioutil.ReadFile("redis_file.zip")
 
 	body := &bytes.Buffer{}
 	//创建一个multipart类型的写文件
