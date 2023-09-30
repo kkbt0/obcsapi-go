@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"obcsapi-go/dao"
 	. "obcsapi-go/dao"
 	"obcsapi-go/gr"
@@ -221,7 +221,7 @@ func ObTodayGetHandler(c *gin.Context) {
 // @Router /ob/today [put]
 func ObTodayPutHandler(c *gin.Context) {
 	fileKey := tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())
-	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	bodyBytes, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return
@@ -244,7 +244,7 @@ func ObTodayPutHandler(c *gin.Context) {
 // @Router /ob/today [post]
 func ObTodayPostHandler(c *gin.Context) {
 	fileKey := tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())
-	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	bodyBytes, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return

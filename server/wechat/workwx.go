@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"obcsapi-go/dao"
@@ -59,7 +59,7 @@ type WorkWechatXMLResponse struct {
 }
 
 func WorkWechatMsgHandler(c *gin.Context) {
-	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	bodyBytes, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return
@@ -171,7 +171,7 @@ func WorkWechatdSendMessage(message Message, twice bool) error {
 	defer resp.Body.Close()
 
 	// 更新 access_token
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

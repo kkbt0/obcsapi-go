@@ -3,7 +3,7 @@ package wechat
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"obcsapi-go/tools"
@@ -42,7 +42,7 @@ func WeChatTemplateMesseng(text string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
 		return err

@@ -3,7 +3,7 @@ package wechat
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -25,7 +25,7 @@ func FetchNewAccessToken() (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
@@ -34,7 +34,7 @@ func FetchNewAccessToken() (string, error) {
 		return "", err
 	}
 
-	if err := ioutil.WriteFile("workwechat_access_token.txt", []byte(tokenResp.AccessToken), 0644); err != nil {
+	if err := os.WriteFile("workwechat_access_token.txt", []byte(tokenResp.AccessToken), 0644); err != nil {
 		return "", err
 	}
 
@@ -43,7 +43,7 @@ func FetchNewAccessToken() (string, error) {
 
 func readAccessTokenFromFile() (string, error) {
 	// Read access token from the local file
-	token, err := ioutil.ReadFile("workwechat_access_token.txt")
+	token, err := os.ReadFile("workwechat_access_token.txt")
 	if err != nil {
 		return "", err
 	}

@@ -2,7 +2,6 @@ package dao
 
 import (
 	"bufio"
-	"io/ioutil"
 	"log"
 	"obcsapi-go/tools"
 	"os"
@@ -18,7 +17,7 @@ func LocalStorageGetTextObject(webDavPath string, text_file_key string) (string,
 	} else if err != nil {
 		return "", err
 	}
-	buf, err := ioutil.ReadFile(webDavPath + text_file_key)
+	buf, err := os.ReadFile(webDavPath + text_file_key)
 	if err != nil {
 		return "", err
 	}
@@ -32,7 +31,7 @@ func LocalStorageGetObject(webDavPath string, text_file_key string) ([]byte, err
 	} else if err != nil {
 		return nil, err
 	}
-	buf, err := ioutil.ReadFile(webDavPath + text_file_key)
+	buf, err := os.ReadFile(webDavPath + text_file_key)
 	if err != nil {
 		return nil, err
 	}

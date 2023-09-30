@@ -2,7 +2,7 @@ package apps
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"obcsapi-go/dao"
 	"obcsapi-go/gr"
 	"obcsapi-go/tools"
@@ -20,12 +20,12 @@ import (
 // @Router /ob/fv [post]
 func FvHandler(c *gin.Context) {
 	if c.GetHeader("Content-Type") == "text/plain" {
-		content, _ := ioutil.ReadAll(c.Request.Body)
+		content, _ := io.ReadAll(c.Request.Body)
 		dao.DailyTextAppendMemos(string(content))
 		gr.Success(c)
 		return
 	} else if c.GetHeader("Content-Type") == "application/octet-stream" {
-		content, _ := ioutil.ReadAll(c.Request.Body)
+		content, _ := io.ReadAll(c.Request.Body)
 		file_key := fmt.Sprintf("%s%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("20060102150405"))
 		dao.ObjectStore(file_key, content)
 		dao.DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))

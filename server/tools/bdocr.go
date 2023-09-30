@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -40,7 +40,7 @@ func BdGeneralBasicOcr(image []byte) ([]WordResult, error) {
 		return []WordResult{}, err
 	}
 	defer res.Body.Close()
-	content, err := ioutil.ReadAll(res.Body)
+	content, err := io.ReadAll(res.Body)
 	if err != nil {
 		return []WordResult{}, err
 	}
@@ -72,7 +72,7 @@ func BdGetAccessToken(apiKey string, apiSecret string) (AccessToken, error) {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return accessToken, err
 	}
