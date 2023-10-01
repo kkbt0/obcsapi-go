@@ -47,10 +47,10 @@ func MoodReaderHandler(c *gin.Context) {
 	append_text := fmt.Sprintf("文: %s\n批: %s\n于: %s\n\n---\n", text, note, tools.TimeFmt("2006-01-02 15:04"))
 	exist, _ := dao.CheckObject(file_key)
 	if exist {
-		err = dao.TextAppend(file_key, append_text)
+		err = dao.AppendText(file_key, append_text)
 	} else {
 		yaml := fmt.Sprintf("---\ntitle: %s\nauthor: %s\n---\n书名: %s\n作者: %s\n简介: \n评价: \n\n---\n", title, author, title, author)
-		err = dao.TextAppend(file_key, yaml+append_text)
+		err = dao.AppendText(file_key, yaml+append_text)
 	}
 	if err != nil {
 		gr.ErrServerError(c, err)

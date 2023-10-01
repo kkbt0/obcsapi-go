@@ -160,7 +160,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 		modText.DayFileKey = tools.NowRunConfig.DailyDateKeyMore(0)
 	}
 	fileKey := tools.NowRunConfig.DailyDir() + modText.DayFileKey + ".md"
-	dailyText, err := GetTextObject(fileKey)
+	dailyText, err := GetFileText(fileKey)
 	// ailyText, err := GetMoreDaliyMdText(modText.DayBefore)
 	if err != nil {
 		gr.ErrServerError(c, err)
@@ -174,7 +174,7 @@ func ObV1PostLineHandler(c *gin.Context) {
 		if len(modText.Content) > 30 && strings.HasPrefix(modText.Content, "zk ") { // zk 判读
 			modText.Content = modText.Content[3:]
 			fileKey := tools.NowRunConfig.DailyAttachmentDir() + tools.TimeFmt("20060102150405.md")
-			err := MdTextStore(fileKey, modText.Content)
+			err := CoverStoreTextFile(fileKey, modText.Content)
 			if err != nil {
 				log.Println(err)
 			}
@@ -190,8 +190,8 @@ func ObV1PostLineHandler(c *gin.Context) {
 		}
 	}
 	newText := strings.Join(textList, "\n")
-	MdTextStore(fileKey, newText) // 存入数据源
-	skv.PutFile(fileKey, newText) // 存入缓存
+	CoverStoreTextFile(fileKey, newText) // 存入数据源
+	skv.PutFile(fileKey, newText)        // 存入缓存
 	md_show_text := MarkdownSpilter(MdShowText(fileKey, newText))
 	c.JSON(200, ObDailyV1{
 		MdText:     MarkdownSpilter(newText),
@@ -248,7 +248,7 @@ func TextPostHandler(c *gin.Context) {
 	}
 	bodyString := string(bodyBytes)
 	skv.PutFile(fileKey, bodyString)
-	err = MdTextStore(fileKey, bodyString)
+	err = CoverStoreTextFile(fileKey, bodyString)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return

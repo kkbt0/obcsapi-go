@@ -9,7 +9,7 @@ import (
 	"github.com/studio-b12/gowebdav"
 )
 
-func WebDavGetTextObject(webDavClient *gowebdav.Client, prePath string, fileKey string) (string, error) {
+func WebDavGetFileText(webDavClient *gowebdav.Client, prePath string, fileKey string) (string, error) {
 	bytes, err := WebDavGetObject(webDavClient, prePath, fileKey)
 	// TODO: 统一 404 ""
 	if err != nil {
@@ -37,7 +37,7 @@ func WebDavObjectStorage(webDavClient *gowebdav.Client, prePath string, file_key
 	return webDavClient.Write(prePath+file_key, file_bytes, 0644)
 }
 
-func WebDavTextAppend(webDavClient *gowebdav.Client, prePath string, file_key string, text string) error {
+func WebDavAppendText(webDavClient *gowebdav.Client, prePath string, file_key string, text string) error {
 	exits, err := WebDavCheckObject(webDavClient, prePath, file_key)
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func WebDavTextAppend(webDavClient *gowebdav.Client, prePath string, file_key st
 		return WebDavObjectStorage(webDavClient, prePath, file_key, []byte(text))
 	} else {
 		oldText := ""
-		oldText, err = WebDavGetTextObject(webDavClient, prePath, file_key)
+		oldText, err = WebDavGetFileText(webDavClient, prePath, file_key)
 		fmt.Println(oldText)
 		if err != nil {
 			return err
@@ -55,19 +55,19 @@ func WebDavTextAppend(webDavClient *gowebdav.Client, prePath string, file_key st
 	}
 }
 
-func WebDavDailyTextAppend(webDavClient *gowebdav.Client, prePath string, text string) error {
-	return WebDavTextAppend(webDavClient, prePath, GetDailyFileKey(), text)
+func WebDavAppendDailyText(webDavClient *gowebdav.Client, prePath string, text string) error {
+	return WebDavAppendText(webDavClient, prePath, GetDailyFileKey(), text)
 }
 
 func WebDavGetTodayDaily(webDavClient *gowebdav.Client, prePath string) string {
-	ans, _ := WebDavGetTextObject(webDavClient, prePath, GetDailyFileKey())
+	ans, _ := WebDavGetFileText(webDavClient, prePath, GetDailyFileKey())
 	return ans
 }
 
 func WebDavGet3DaysList(webDavClient *gowebdav.Client, prePath string) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := WebDavGetTextObject(webDavClient, prePath, tools.NowRunConfig.DailyFileKeyMore(i-2))
+		day, err := WebDavGetFileText(webDavClient, prePath, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			log.Println(err)
 		}
@@ -77,7 +77,7 @@ func WebDavGet3DaysList(webDavClient *gowebdav.Client, prePath string) [3]string
 }
 
 func WebDavGetMoreDaliyMdText(webDavClient *gowebdav.Client, prePath string, addDateDay int) (string, error) {
-	day, err := WebDavGetTextObject(webDavClient, prePath, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
+	day, err := WebDavGetFileText(webDavClient, prePath, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
 	if err != nil {
 		log.Println(err)
 		return "", err

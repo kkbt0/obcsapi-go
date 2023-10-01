@@ -40,7 +40,7 @@ func SRWebHook(c *gin.Context) {
 	yaml := fmt.Sprintf("---\ntitle: %s\nsctime: %s\n---\n", simpReadJson.Title, serverTime)
 	fileStr := fmt.Sprintf("%s[[简悦WebHook生成]]\n生成时间: %s\n原文: %s\n标题: %s\n描述: %s\n标签: %s\n内容: \n%s", yaml, serverTime, simpReadJson.Url, simpReadJson.Title, simpReadJson.Description, simpReadJson.Tags, simpReadJson.Content)
 	fileKey := fmt.Sprintf("%sSimpRead/%s %s.md", tools.NowRunConfig.OtherDataDir(), serverTime, tools.ReplaceUnAllowedChars(simpReadJson.Title))
-	if err = dao.MdTextStore(fileKey, fileStr); err != nil {
+	if err = dao.CoverStoreTextFile(fileKey, fileStr); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}

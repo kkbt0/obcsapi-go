@@ -9,12 +9,12 @@ import (
 )
 
 var appExports = map[string]lua.LGFunction{
-	"DailyTextAppend":      DailyTextAppend,      // 日志新增文本
-	"DailyTextAppendMemos": DailyTextAppendMemos, // 日志新增 memos
-	"TextAppend":           TextAppend,           // 指定文件添加文本
-	"GetTextObject":        GetTextObject,        // 获取指定文件内容，返回字符串
-	"MdTextStore":          MdTextStore,          // 覆盖指定位置文件 纯文本使用
-	"TodayGet":             TodayGet,             // 获取今日日记 md 文件字符串 // 每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
+	"AppendDailyText":    AppendDailyText,    // 日志新增文本
+	"AppendDailyMemos":   AppendDailyMemos,   // 日志新增 memos
+	"AppendText":         AppendText,         // 指定文件添加文本
+	"GetFileText":        GetFileText,        // 获取指定文件内容，返回字符串
+	"CoverStoreTextFile": CoverStoreTextFile, // 覆盖指定位置文件 纯文本使用
+	"GetTodayDaily":      GetTodayDaily,      // 获取今日日记 md 文件字符串 // 每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
 }
 
 func LuaModuleAppLoader(L *lua.LState) int {
@@ -26,9 +26,9 @@ func LuaModuleAppLoader(L *lua.LState) int {
 	return 1
 }
 
-func DailyTextAppend(L *lua.LState) int {
+func AppendDailyText(L *lua.LState) int {
 	text := L.ToString(1) // 读取参数
-	err := dao.DailyTextAppend(text)
+	err := dao.AppendDailyText(text)
 	if err != nil {
 		L.Push(lua.LString(err.Error()))
 		return 1
@@ -36,9 +36,9 @@ func DailyTextAppend(L *lua.LState) int {
 	return 0
 }
 
-func DailyTextAppendMemos(L *lua.LState) int {
+func AppendDailyMemos(L *lua.LState) int {
 	text := L.ToString(1) // 读取参数
-	err := dao.DailyTextAppendMemos(text)
+	err := dao.AppendDailyMemos(text)
 	if err != nil {
 		L.Push(lua.LString(err.Error()))
 		return 1
@@ -46,10 +46,10 @@ func DailyTextAppendMemos(L *lua.LState) int {
 	return 0
 }
 
-func TextAppend(L *lua.LState) int {
+func AppendText(L *lua.LState) int {
 	file_key := L.ToString(1)
 	text := L.ToString(2)
-	err := dao.TextAppend(file_key, text)
+	err := dao.AppendText(file_key, text)
 	if err != nil {
 		L.Push(lua.LString(err.Error()))
 		return 1
@@ -57,9 +57,9 @@ func TextAppend(L *lua.LState) int {
 	return 0
 }
 
-func GetTextObject(L *lua.LState) int {
+func GetFileText(L *lua.LState) int {
 	text_file_key := L.ToString(1) // 读取参数
-	text, err := dao.GetTextObject(text_file_key)
+	text, err := dao.GetFileText(text_file_key)
 	if err != nil {
 		L.Push(lua.LNil)
 		L.Push(lua.LString(err.Error()))
@@ -69,10 +69,10 @@ func GetTextObject(L *lua.LState) int {
 	return 1
 }
 
-func MdTextStore(L *lua.LState) int {
+func CoverStoreTextFile(L *lua.LState) int {
 	file_key := L.ToString(1)
 	text := L.ToString(2)
-	err := dao.MdTextStore(file_key, text)
+	err := dao.CoverStoreTextFile(file_key, text)
 	if err != nil {
 		L.Push(lua.LString(err.Error()))
 		return 1
@@ -80,8 +80,8 @@ func MdTextStore(L *lua.LState) int {
 	return 0
 }
 
-func TodayGet(L *lua.LState) int {
-	mdText, err := dao.GetTextObject(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum()))
+func GetTodayDaily(L *lua.LState) int {
+	mdText, err := dao.GetFileText(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum()))
 	if err != nil {
 		L.Push(lua.LNil)
 		L.Push(lua.LString(err.Error()))

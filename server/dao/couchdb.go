@@ -24,7 +24,7 @@ func CouchDbGetLeftData(db *kivik.DB, left_id string) (string, error) {
 }
 
 // 根据文件 key 获取所有 子节点，然后拼接返回 不可对图片类使用
-func CouchDbGetTextObject(db *kivik.DB, text_file_key string) (string, error) {
+func CouchDbGetFileText(db *kivik.DB, text_file_key string) (string, error) {
 	var fileNodeDoc FileDoc
 	err := db.Get(context.TODO(), text_file_key).ScanDoc(&fileNodeDoc)
 	if err != nil {
@@ -197,7 +197,7 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 	return nil
 }
 
-func CouchDbTextAppend(db *kivik.DB, file_key string, text string) error {
+func CouchDbAppendText(db *kivik.DB, file_key string, text string) error {
 	now := time.Now().UnixMilli()
 	leftId := fmt.Sprintf("h:%d", now)
 	tools.Debug(leftId)
@@ -269,19 +269,19 @@ func CouchDbTextAppend(db *kivik.DB, file_key string, text string) error {
 	return fmt.Errorf("没有预料的的情况")
 }
 
-func CouchDbDailyTextAppend(db *kivik.DB, text string) error {
-	return CouchDbTextAppend(db, GetDailyFileKey(), text)
+func CouchDbAppendDailyText(db *kivik.DB, text string) error {
+	return CouchDbAppendText(db, GetDailyFileKey(), text)
 }
 
 func CouchDbGetTodayDaily(db *kivik.DB) string {
-	ans, _ := CouchDbGetTextObject(couchDb, GetDailyFileKey())
+	ans, _ := CouchDbGetFileText(couchDb, GetDailyFileKey())
 	return ans
 }
 
 func CouchDbGet3DaysList(db *kivik.DB) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := CouchDbGetTextObject(db, tools.NowRunConfig.DailyFileKeyMore(i-2))
+		day, err := CouchDbGetFileText(db, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			log.Println(err)
 		}
@@ -291,7 +291,7 @@ func CouchDbGet3DaysList(db *kivik.DB) [3]string {
 }
 
 func CouchDbGetMoreDaliyMdText(db *kivik.DB, addDateDay int) (string, error) {
-	day, err := CouchDbGetTextObject(db, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
+	day, err := CouchDbGetFileText(db, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
 	if err != nil {
 		log.Println(err)
 		return "", err

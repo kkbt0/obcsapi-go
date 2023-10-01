@@ -76,7 +76,7 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 			}
 			inMdText := fmt.Sprintf("%s%s", config.BaseURL, strings.Join(filePath, ""))
 			inMdText += fmt.Sprintf("\n%s\n\n---\n", strings.Join(textList, "\n"))
-			dao.TextAppend(tools.NowRunConfig.OtherDataDir()+"OcrData/bdocr-"+tools.TimeFmt("200601")+".md", inMdText)
+			dao.AppendText(tools.NowRunConfig.OtherDataDir()+"OcrData/bdocr-"+tools.TimeFmt("200601")+".md", inMdText)
 			tools.Debug(ans)
 		default:
 			log.Println("UnSupported file type: ", typeName)
@@ -90,7 +90,7 @@ func ImagesHostUplaodHanler(c *gin.Context) {
 	case "local":
 		err = c.SaveUploadedFile(file, "./webdav/images/"+strings.Join(filePath, ""))
 	case "obsidian":
-		err = dao.ObjectStore(strings.Join(filePath, ""), buffer)
+		err = dao.StoreObject(strings.Join(filePath, ""), buffer)
 		rUrl = strings.Join(filePath, "")
 	case "s3":
 		rUrl, err = tools.S3FileStore("images/"+strings.Join(filePath, ""), buffer)

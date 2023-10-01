@@ -21,14 +21,14 @@ import (
 func FvHandler(c *gin.Context) {
 	if c.GetHeader("Content-Type") == "text/plain" {
 		content, _ := io.ReadAll(c.Request.Body)
-		dao.DailyTextAppendMemos(string(content))
+		dao.AppendDailyMemos(string(content))
 		gr.Success(c)
 		return
 	} else if c.GetHeader("Content-Type") == "application/octet-stream" {
 		content, _ := io.ReadAll(c.Request.Body)
 		file_key := fmt.Sprintf("%s%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("20060102150405"))
-		dao.ObjectStore(file_key, content)
-		dao.DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
+		dao.StoreObject(file_key, content)
+		dao.AppendDailyMemos(fmt.Sprintf("![](%s)", file_key))
 		gr.Success(c)
 		return
 	}

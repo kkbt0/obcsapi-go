@@ -114,19 +114,19 @@ func GetReminderFromString(text string) (string, error) {
 		extract := segmenter.TimeExtract(text)
 		tools.Debug("提取时间:", extract)
 		if len(extract) != 0 {
-			err = TextAppend("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+text)
+			err = AppendText("提醒任务.md", "\n"+extract[0].Format("20060102 1504 ")+text)
 			if err != nil {
 				log.Println(err)
 			}
-			err = TextAppend(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+text+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
+			err = AppendText(tools.NowRunConfig.DailyFileKeyTime(extract[0]), "\n- [ ] "+text+" ⏳ "+extract[0].Format("2006-01-02 15:04"))
 			r_str = "已添加至提醒任务:" + extract[0].Format("20060102 1504")
 		} else {
-			err = DailyTextAppendMemos(text)
+			err = AppendDailyMemos(text)
 			r_str = "监测到提醒任务，未能提取时间。已保存"
 		}
 
 	} else {
-		err = DailyTextAppendMemos(text) //
+		err = AppendDailyMemos(text) //
 	}
 	return r_str, err
 }

@@ -87,18 +87,18 @@ func GetMoreDailyFileKey(addDateDay int) string {
 }
 
 // 获取指定位置文件 并读取为 Str
-func GetTextObject(text_file_key string) (string, error) {
+func GetFileText(text_file_key string) (string, error) {
 	switch dataSource {
 	case S3:
-		return S3GetTextObject(sess, text_file_key)
+		return S3GetFileText(sess, text_file_key)
 	case CouchDb:
-		return CouchDbGetTextObject(couchDb, text_file_key)
+		return CouchDbGetFileText(couchDb, text_file_key)
 	case LocalStorage:
-		return LocalStorageGetTextObject(webDavDirPath, text_file_key)
+		return LocalStorageGetFileText(webDavDirPath, text_file_key)
 	case WebDav:
-		return WebDavGetTextObject(webDavClient, webDavPrePath, text_file_key)
+		return WebDavGetFileText(webDavClient, webDavPrePath, text_file_key)
 	}
-	return "", fmt.Errorf("err GetTextObject Data Source: Unknown")
+	return "", fmt.Errorf("err GetFileText Data Source: Unknown")
 }
 
 // 获取指定位置文件 can nil , nil means no such object
@@ -113,7 +113,7 @@ func GetObject(fileKey string) ([]byte, error) {
 	case WebDav:
 		return WebDavGetObject(webDavClient, webDavPrePath, fileKey)
 	}
-	return nil, fmt.Errorf("err GetTextObject Data Source: Unknown")
+	return nil, fmt.Errorf("err GetFileText Data Source: Unknown")
 }
 
 func CheckObject(file_key string) (bool, error) {
@@ -136,15 +136,15 @@ func CheckObject(file_key string) (bool, error) {
 	return false, fmt.Errorf("err CheckObject Data Source: Unknown")
 }
 
-// 覆盖指定位置文件 二进制使用 不可和 TextAppend 混用
-func ObjectStore(file_key string, file_bytes []byte) error {
+// 覆盖指定位置文件 二进制使用 不可和 AppendText 混用
+func StoreObject(file_key string, file_bytes []byte) error {
 	switch dataSource {
 	case S3:
-		return S3ObjectStore(sess, file_key, file_bytes)
+		return S3StoreObject(sess, file_key, file_bytes)
 	case CouchDb:
 		return CouchDbFileStorage(couchDb, file_key, file_bytes)
 	case LocalStorage:
-		return LocalStorageObjectStore(webDavDirPath, file_key, file_bytes)
+		return LocalStorageStoreObject(webDavDirPath, file_key, file_bytes)
 	case WebDav:
 		return WebDavObjectStorage(webDavClient, webDavPrePath, file_key, file_bytes)
 	}
@@ -152,14 +152,14 @@ func ObjectStore(file_key string, file_bytes []byte) error {
 }
 
 // 覆盖指定位置文件 纯文本使用
-func MdTextStore(file_key string, text string) error {
+func CoverStoreTextFile(file_key string, text string) error {
 	switch dataSource {
 	case S3:
-		return S3ObjectStore(sess, file_key, []byte(text))
+		return S3StoreObject(sess, file_key, []byte(text))
 	case CouchDb:
 		return CouchDbMdFiletorage(couchDb, file_key, text)
 	case LocalStorage:
-		return LocalStorageObjectStore(webDavDirPath, file_key, []byte(text))
+		return LocalStorageStoreObject(webDavDirPath, file_key, []byte(text))
 	case WebDav:
 		return WebDavObjectStorage(webDavClient, webDavPrePath, file_key, []byte(text))
 	}
@@ -167,46 +167,46 @@ func MdTextStore(file_key string, text string) error {
 }
 
 // 指定位置文件 文本增加内容
-func TextAppend(file_key string, text string) error {
+func AppendText(file_key string, text string) error {
 	switch dataSource {
 	case S3:
-		return S3TextAppend(sess, file_key, text)
+		return S3AppendText(sess, file_key, text)
 	case CouchDb:
-		return CouchDbTextAppend(couchDb, file_key, text)
+		return CouchDbAppendText(couchDb, file_key, text)
 	case LocalStorage:
-		return LocalStorageTextAppend(webDavDirPath, file_key, text)
+		return LocalStorageAppendText(webDavDirPath, file_key, text)
 	case WebDav:
-		return WebDavTextAppend(webDavClient, webDavPrePath, file_key, text)
+		return WebDavAppendText(webDavClient, webDavPrePath, file_key, text)
 	}
-	return fmt.Errorf("err TextAppend Data Source: Unknown")
+	return fmt.Errorf("err AppendText Data Source: Unknown")
 }
 
 // 为今日日记 增加文本
-func DailyTextAppend(text string) error {
+func AppendDailyText(text string) error {
 	switch dataSource {
 	case S3:
-		return S3DailyTextAppend(sess, text)
+		return S3AppendDailyText(sess, text)
 	case CouchDb:
-		return CouchDbDailyTextAppend(couchDb, text)
+		return CouchDbAppendDailyText(couchDb, text)
 	case LocalStorage:
-		return LocalStorageDailyTextAppend(webDavDirPath, text)
+		return LocalStorageAppendDailyText(webDavDirPath, text)
 	case WebDav:
-		return WebDavDailyTextAppend(webDavClient, webDavPrePath, text)
+		return WebDavAppendDailyText(webDavClient, webDavPrePath, text)
 	}
-	return fmt.Errorf("err DailyTextAppend Data Source: Unknown")
+	return fmt.Errorf("err AppendDailyText Data Source: Unknown")
 }
 
 // 为今日日记 增加一行 Memos 格式内容
-func DailyTextAppendMemos(text string) error {
+func AppendDailyMemos(text string) error {
 	// zk 判断
 	if len(text) > 30 && strings.HasPrefix(text, "zk ") {
 		text = text[3:]
 		fileKey := tools.NowRunConfig.DailyAttachmentDir() + tools.TimeFmt("20060102150405.md")
-		err := MdTextStore(fileKey, text)
+		err := CoverStoreTextFile(fileKey, text)
 		if err != nil {
 			return err
 		}
-		return DailyTextAppendMemos(fmt.Sprintf("![[%s]]", fileKey))
+		return AppendDailyMemos(fmt.Sprintf("![[%s]]", fileKey))
 	}
 
 	var todo = "todo"
@@ -215,7 +215,7 @@ func DailyTextAppendMemos(text string) error {
 	} else {
 		text = fmt.Sprintf("\n- %s %s", tools.TimeFmt("15:04"), text)
 	}
-	return DailyTextAppend(text)
+	return AppendDailyText(text)
 }
 
 // 获取今日日记 废弃
@@ -338,9 +338,9 @@ func MdShowTextDailyZk(fromFileKey string, text string) string {
 			fileKey = GetAbsoluteFileKey(fromFileKey, fileKey)
 		}
 		if strings.HasPrefix(fileKey, tools.NowRunConfig.DailyAttachmentDir()) && strings.HasSuffix(fileKey, ".md") {
-			ans, err = GetTextObject(fileKey)
+			ans, err = GetFileText(fileKey)
 		} else if strings.HasSuffix(fileKey, ".md") && tools.ConfigGetString("allow_wiki_link_all") == "true" {
-			ans, err = GetTextObject(fileKey)
+			ans, err = GetFileText(fileKey)
 		}
 		if err != nil {
 			ans = "Found Error: " + err.Error()

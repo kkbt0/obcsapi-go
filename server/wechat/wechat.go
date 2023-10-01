@@ -40,10 +40,10 @@ func WeChatMpHandlers(c *gin.Context) {
 	case weixinmp.MsgTypeImage: // 图片消息
 		fileby, _ := PicDownloader(Mp.Request.PicUrl)
 		file_key := fmt.Sprintf("%s%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("20060102150405"))
-		ObjectStore(file_key, fileby)
+		StoreObject(file_key, fileby)
 		// 前端会监测 ![https://..](..) 将 http:// 放到 后面 ![..](https://..)
 		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
-		err = DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
+		err = AppendDailyMemos(fmt.Sprintf("![](%s)", file_key))
 	case weixinmp.MsgTypeVoice: // 语言消息
 		if Mp.Request.Recognition != "" {
 			r_str, err = WeChatTextAndVoice(Mp.Request.Recognition)
@@ -51,9 +51,9 @@ func WeChatMpHandlers(c *gin.Context) {
 			r_str = "没有识别到文字"
 		}
 	case weixinmp.MsgTypeLocation: // 位置消息
-		err = DailyTextAppendMemos(fmt.Sprintf("位置信息: 位置 %s <br>经纬度( %f , %f )", Mp.Request.Label, Mp.Request.LocationX, Mp.Request.LocationY))
+		err = AppendDailyMemos(fmt.Sprintf("位置信息: 位置 %s <br>经纬度( %f , %f )", Mp.Request.Label, Mp.Request.LocationX, Mp.Request.LocationY))
 	case weixinmp.MsgTypeLink: // 链接消息
-		err = DailyTextAppendMemos(fmt.Sprintf("[%s](%s)<br>%s...", Mp.Request.Title, Mp.Request.Url, Mp.Request.Description))
+		err = AppendDailyMemos(fmt.Sprintf("[%s](%s)<br>%s...", Mp.Request.Title, Mp.Request.Url, Mp.Request.Description))
 	case weixinmp.MsgTypeVideo:
 		r_str = "不支持的视频消息"
 	default:

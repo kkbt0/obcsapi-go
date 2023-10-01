@@ -117,12 +117,12 @@ func WorkWechatMsg2Obsidian(msg MsgData) (string, error) {
 	case "image":
 		fileby, _ := dao.PicDownloader(msg.PicUrl.Value)
 		file_key := fmt.Sprintf("%s%s.jpg", tools.NowRunConfig.DailyAttachmentDir(), tools.TimeFmt("20060102150405"))
-		dao.ObjectStore(file_key, fileby)
+		dao.StoreObject(file_key, fileby)
 		// 前端会监测 ![https://..](..) 将 http:// 放到 后面 ![..](https://..)
 		// append_memos_in_daily(client, fmt.Sprintf("![%s](%s)", mp.Request.PicUrl, file_key))
-		err = dao.DailyTextAppendMemos(fmt.Sprintf("![](%s)", file_key))
+		err = dao.AppendDailyMemos(fmt.Sprintf("![](%s)", file_key))
 	case "link":
-		err = dao.DailyTextAppendMemos(fmt.Sprintf("[%s](%s)<br>%s...", msg.Title.Value, msg.Url.Value, msg.Description.Value))
+		err = dao.AppendDailyMemos(fmt.Sprintf("[%s](%s)<br>%s...", msg.Title.Value, msg.Url.Value, msg.Description.Value))
 	default:
 		r_str = "不支持的消息类型: " + msg.MsgType.Value
 	}

@@ -98,7 +98,7 @@ func main() {
 		obGroup2.POST("generalall", GeneralPostAllHandler) // Obsidian Token2 POST 通用接口 全部文件都可以
 		obGroup2.GET("generalall", GeneralGetAllHandler)   // Obsidian Token2 POST 通用接口 全部文件都可以
 
-		obGroup2.GET("today", ObTodayGetHandler)
+		obGroup2.GET("today", ObGetTodayDailyHandler)
 		obGroup2.PUT("today", ObTodayPutHandler)
 		obGroup2.POST("today", ObTodayPostHandler)
 

@@ -21,7 +21,7 @@ func DailyEmailReminder() error {
 	ansList = append(ansList, "<h3>每日提醒</h3>\n")
 
 	// 获取 今天 昨天 前天的日记 和 每日提醒.md 的未完成任务
-	md1, err := dao.GetTextObject("每日提醒.md")
+	md1, err := dao.GetFileText("每日提醒.md")
 	if err != nil {
 		log.Println(err)
 	} else {
@@ -57,7 +57,7 @@ func DailyEmailReminder() error {
 
 // 每分钟查询 发送到微信提醒 or Mail
 func EveryMinReminder() error {
-	md0, err := dao.GetTextObject("提醒任务.md")
+	md0, err := dao.GetFileText("提醒任务.md")
 	if err != nil {
 		return err
 	}
@@ -112,10 +112,10 @@ func EveryMinReminder() error {
 		return err
 	}
 
-	err = dao.TextAppend(tools.NowRunConfig.OtherDataDir()+"WeChatSended/"+tools.TimeFmt("200601")+".md", "\n"+strings.Join(ansList, "\n"))
+	err = dao.AppendText(tools.NowRunConfig.OtherDataDir()+"WeChatSended/"+tools.TimeFmt("200601")+".md", "\n"+strings.Join(ansList, "\n"))
 	if err != nil {
 		return err
 	}
-	err = dao.MdTextStore("提醒任务.md", strings.Join(otherList, "\n"))
+	err = dao.CoverStoreTextFile("提醒任务.md", strings.Join(otherList, "\n"))
 	return err
 }

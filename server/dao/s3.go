@@ -27,7 +27,7 @@ func NewS3Session() (*session.Session, error) {
 }
 
 // get text used
-func S3GetTextObject(sess *session.Session, text_file_key string) (string, error) {
+func S3GetFileText(sess *session.Session, text_file_key string) (string, error) {
 	tem, err := S3GetObject(sess, text_file_key)
 	if tem == nil {
 		return "No such file: " + text_file_key, nil
@@ -64,7 +64,7 @@ func S3GetObject(sess *session.Session, file_key string) ([]byte, error) {
 }
 
 // 直接上传存储,覆盖
-func S3ObjectStore(sess *session.Session, file_key string, file_bytes []byte) error {
+func S3StoreObject(sess *session.Session, file_key string, file_bytes []byte) error {
 	file, err := os.Create("tem.txt")
 	if err != nil {
 		return err
@@ -90,12 +90,12 @@ func S3ObjectStore(sess *session.Session, file_key string, file_bytes []byte) er
 	}
 	return nil
 }
-func S3TextAppend(sess *session.Session, file_key string, text string) error {
+func S3AppendText(sess *session.Session, file_key string, text string) error {
 	try_get_file, err := S3GetObject(sess, file_key)
 	if try_get_file == nil && err != nil {
-		err = S3ObjectStore(sess, file_key, []byte(text))
+		err = S3StoreObject(sess, file_key, []byte(text))
 	} else {
-		err = S3ObjectStore(sess, file_key, []byte(string(try_get_file)+text))
+		err = S3StoreObject(sess, file_key, []byte(string(try_get_file)+text))
 	}
 	if err != nil {
 		fmt.Println(err)
@@ -104,12 +104,12 @@ func S3TextAppend(sess *session.Session, file_key string, text string) error {
 	return nil
 }
 
-func S3DailyTextAppend(sess *session.Session, text string) error {
-	return S3TextAppend(sess, GetDailyFileKey(), text)
+func S3AppendDailyText(sess *session.Session, text string) error {
+	return S3AppendText(sess, GetDailyFileKey(), text)
 }
 
 func S3GetTodayDaily(sess *session.Session) string {
-	tem, err := S3GetTextObject(sess, GetDailyFileKey())
+	tem, err := S3GetFileText(sess, GetDailyFileKey())
 	if err != nil {
 		log.Println(err)
 		return "Have Error!"
@@ -120,7 +120,7 @@ func S3GetTodayDaily(sess *session.Session) string {
 func S3Get3DaysList(sess *session.Session) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := S3GetTextObject(sess, tools.NowRunConfig.DailyFileKeyMore(i-2))
+		day, err := S3GetFileText(sess, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			log.Println(err)
 		}
@@ -130,7 +130,7 @@ func S3Get3DaysList(sess *session.Session) [3]string {
 }
 
 func S3GetMoreDaliyMdText(sess *session.Session, addDateDay int) (string, error) {
-	day, err := S3GetTextObject(sess, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
+	day, err := S3GetFileText(sess, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
 	if err != nil {
 		log.Println(err)
 		return "", err

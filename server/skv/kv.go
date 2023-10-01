@@ -67,7 +67,7 @@ func GetByFileKey(filekey string) string {
 	result = string(tem)
 
 	if result == "" { // nothing
-		text, err := dao.GetTextObject(filekey)
+		text, err := dao.GetFileText(filekey)
 		if err != nil {
 			log.Println(err)
 		}
@@ -87,7 +87,7 @@ func PutByFileKey(filekey string) error {
 	if err != nil {
 		log.Println(err)
 	}
-	text, err := dao.GetTextObject(filekey)
+	text, err := dao.GetFileText(filekey)
 	if err != nil {
 		log.Println(err)
 	}

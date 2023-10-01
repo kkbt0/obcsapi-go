@@ -10,7 +10,7 @@ import (
 )
 
 // TODO: No such file 早晚得改 暂时将就着用吧
-func LocalStorageGetTextObject(webDavPath string, text_file_key string) (string, error) {
+func LocalStorageGetFileText(webDavPath string, text_file_key string) (string, error) {
 	_, err := os.Stat(webDavPath + text_file_key)
 	if err != nil && os.IsNotExist(err) {
 		return "No such file: " + text_file_key, nil
@@ -50,7 +50,7 @@ func LocalStorageCheckObject(webDavPath string, file_key string) (bool, error) {
 
 }
 
-func LocalStorageObjectStore(webDavPath string, file_key string, file_bytes []byte) error {
+func LocalStorageStoreObject(webDavPath string, file_key string, file_bytes []byte) error {
 	err := createFile(filepath.Dir(webDavPath + file_key)) // 递归创建文件夹
 	if err != nil {
 		return err
@@ -68,7 +68,7 @@ func LocalStorageObjectStore(webDavPath string, file_key string, file_bytes []by
 	return nil
 }
 
-func LocalStorageTextAppend(webDavPath string, file_key string, text string) error {
+func LocalStorageAppendText(webDavPath string, file_key string, text string) error {
 	exist, err := LocalStorageCheckObject(webDavPath, file_key)
 	if err != nil {
 		return err
@@ -90,23 +90,23 @@ func LocalStorageTextAppend(webDavPath string, file_key string, text string) err
 		}
 		return nil
 	} else {
-		return LocalStorageObjectStore(webDavPath, file_key, []byte(text))
+		return LocalStorageStoreObject(webDavPath, file_key, []byte(text))
 	}
 }
 
-func LocalStorageDailyTextAppend(webDavPath string, text string) error {
-	return LocalStorageTextAppend(webDavPath, GetDailyFileKey(), text)
+func LocalStorageAppendDailyText(webDavPath string, text string) error {
+	return LocalStorageAppendText(webDavPath, GetDailyFileKey(), text)
 }
 
 func LocalStorageGetTodayDaily(webDavPath string) string {
-	ans, _ := LocalStorageGetTextObject(webDavPath, GetDailyFileKey())
+	ans, _ := LocalStorageGetFileText(webDavPath, GetDailyFileKey())
 	return ans
 }
 
 func LocalStorageGet3DaysList(webDavPath string) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := LocalStorageGetTextObject(webDavPath, tools.NowRunConfig.DailyFileKeyMore(i-2))
+		day, err := LocalStorageGetFileText(webDavPath, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			log.Println(err)
 		}
@@ -116,7 +116,7 @@ func LocalStorageGet3DaysList(webDavPath string) [3]string {
 }
 
 func LocalStorageGetMoreDaliyMdText(webDavPath string, addDateDay int) (string, error) {
-	day, err := LocalStorageGetTextObject(webDavPath, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
+	day, err := LocalStorageGetFileText(webDavPath, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
 	if err != nil {
 		log.Println(err)
 		return "", err

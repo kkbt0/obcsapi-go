@@ -27,7 +27,7 @@ ret = "后端返回: 前端输入的内容是 "..app_input -- Lua 拼接字符�
 ret = ret.."\n解析 JSON 最终转为字符串结果:\n"..table_str
 --- 将结果保存到 memos
 
-local err1 = app.DailyTextAppendMemos(table_str)
+local err1 = app.AppendDailyMemos(table_str)
 if err1 then
     error(err1)
 end

@@ -33,7 +33,7 @@ func GeneralHeader(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = DailyTextAppendMemos(memosData.Content); err != nil {
+	if err = AppendDailyMemos(memosData.Content); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -73,7 +73,7 @@ func GeneralHeader2(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = DailyTextAppendMemos(memosData.Content); err != nil {
+	if err = AppendDailyMemos(memosData.Content); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -114,7 +114,7 @@ func Url2MdHandler(c *gin.Context) {
 	serverTime := tools.TimeFmt("200601021504")
 	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n", urlStruct.Url, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), serverTime)
 	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", tools.NowRunConfig.OtherDataDir(), serverTime, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)))
-	if err = MdTextStore(file_key, yaml+markdown); err != nil {
+	if err = CoverStoreTextFile(file_key, yaml+markdown); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -164,9 +164,9 @@ func GeneralPostAllHandler(c *gin.Context) {
 	}
 	var err error
 	if mod == "cover" {
-		err = MdTextStore(fileKey, generalJson.Content)
+		err = CoverStoreTextFile(fileKey, generalJson.Content)
 	} else {
-		err = TextAppend(fileKey, generalJson.Content)
+		err = AppendText(fileKey, generalJson.Content)
 	}
 	if err != nil {
 		gr.ErrServerError(c, err)
@@ -188,7 +188,7 @@ func GeneralGetAllHandler(c *gin.Context) {
 		return
 	}
 	filekey := c.Query("filekey")
-	text, err := dao.GetTextObject(filekey)
+	text, err := dao.GetFileText(filekey)
 	if err != nil {
 		gr.ErrServerError(c, err)
 		return
@@ -203,8 +203,8 @@ func GeneralGetAllHandler(c *gin.Context) {
 // @Accept plain
 // @Produce plain
 // @Router /ob/today [get]
-func ObTodayGetHandler(c *gin.Context) {
-	if mdText, err := GetTextObject(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
+func ObGetTodayDailyHandler(c *gin.Context) {
+	if mdText, err := GetFileText(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
 		gr.ErrServerError(c, err)
 	} else {
 		c.String(200, mdText)
@@ -227,7 +227,7 @@ func ObTodayPutHandler(c *gin.Context) {
 		return
 	}
 	skv.PutFile(fileKey, string(bodyBytes))
-	if err = MdTextStore(fileKey, string(bodyBytes)); err != nil {
+	if err = CoverStoreTextFile(fileKey, string(bodyBytes)); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -249,7 +249,7 @@ func ObTodayPostHandler(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = TextAppend(fileKey, string(bodyBytes)); err != nil {
+	if err = AppendText(fileKey, string(bodyBytes)); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}

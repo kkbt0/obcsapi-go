@@ -6,14 +6,14 @@ local test = require("test")
 
 print(app_input) -- 从前端传来的参数
 -- 带有异常处理的 obcsapi app 调用
-print("DailyTextAppend")
-local err1 = app.DailyTextAppend(app_input)
+print("AppendDailyText")
+local err1 = app.AppendDailyText(app_input)
 if err1 then
     error(err1)
 end
 
-print("DailyTextAppendMemos")
-local err2 = app.DailyTextAppendMemos(app_input)
+print("AppendDailyMemos")
+local err2 = app.AppendDailyMemos(app_input)
 if err2 then
     error(err2)
 end
