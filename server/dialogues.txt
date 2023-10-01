@@ -25,6 +25,8 @@ O: 执行命令可能会执行很长时间，造成网络响应超时。
 
 I: testLua
 O: Lua script/hello.lua
+I: #temp
+O: Lua script/temp.lua
 
 
 I: #收藏
