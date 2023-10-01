@@ -1,0 +1,87 @@
+name: obcsapi-go # 项目名称
+version: v4.2.7 # 项目版本
+description: by kkbt # 描述
+host: 0.0.0.0 
+port: 8900
+# server_cert_path: cert/server.pem
+# server_key_path: cert/server-key.pem
+# 后端地址 
+backend_url: localhost:8900
+# 如果部署在二级目录，需求填写这个，否则 Swagger 错误，不使用无需关注
+# backend_base_path: /obcsapi
+# http(s):// + backend_url + backend_base_path
+backend_url_full: http://localhost:8900
+# 前端网站
+web_url_full: https://note.ftls.xyz/web/
+
+
+# 前端登录账户密码 有效时间 720h
+user: kkbt 
+password: password
+kvdb: mykv.db
+
+# Swagger 调试
+swagger: true
+# debug 模式
+debug: false
+
+# S3 -> 1 ; CouchDb -> 2 ; Local -> 3 ; WebDav -> 4
+data_source: 3
+
+# CouchDb 配置
+couchdb_url: http://admin:password@localhost:5984/
+couchdb_db_name: note
+
+# S3 配置
+access_key: xxxxxxxxxxxxxx
+secret_key: xxxxxxxxxxxxxx
+end_point: https://cos.ap-beijing.myqcloud.com
+region: ap-beijing
+bucket: obsidion-xxxxxxxxxxxxxx
+s3_wiki_link_use_presign: true
+
+# WeDav 配置
+web_dav_url: https://dav.jianguoyun.com/dav/
+web_dav_dir: note/
+web_dav_username: xxxxxxx@qq.com
+web_dav_password: xxxxxxxxxxxxxxxx
+# 如果部署在二级目录，需求填写这个，否则 Swagger 错误，不使用无需关注
+# base_path: /obcsapi
+
+# wechat 测试号/公众号
+wechat_token: xxxxxxxxxxxxxx # 微信公众平台的Token
+wechat_appid: xxxxxxxxxxxxxx # 微信公众平台的AppID
+wechat_secret: xxxxxxxxxxxxxx # 微信公众平台的AppSecret
+wechat_openid: xxxxxxxxxxxxxx # OpenID 关注测试号后获取的
+wechat_template_id: xxxxxxxxxxxxxx # 微信模板消息 ID 需要有 {{content.DATA}}
+# work wechat 企业微信自建应用
+work_wechat_receiverid: xxxxxxxxxxxxxx # 企业ID
+work_wechat_corpid: xxxxxxxxxxxxxx #企业ID
+work_wechat_agentid: 1000001 # 自建应用 AgentId
+work_wechat_corpsecret: xxxxxxxxxxxxxx # 自建应用 Secret
+work_wechat_token: xxxxxxxxxxxxxx # 自建应用 API接收消息 Token
+work_wechat_encoding_aeskey: xxxxxxxxxxxxxx # 自建应用 API接收消息 EncodingAESKey
+work_wechat_user_id: xxxxxxxxxxxxxx # 用户 ID
+work_wechat_reminder: true # 是否开启提醒
+
+# 任务提醒
+cron: "1/60 * * * * ?" # 每分钟检查一次 
+
+# 安全权限设置 
+# 锁定配置文件 (config.yaml config.run.json )，不允许运行时更新修改
+lock_config: false
+# 允许 general all 接口修改全文件，并对外提供服务
+allow_general_all_post: true
+# 允许 general all 接口获取全文件，并对外提供服务
+allow_general_all_get: false
+# 允许 ![[]] 替换获取全文件，并对前端登录用户提供服务
+allow_wiki_link_all: true
+### Token Settings 自定义路径使用的 Token ，不知道路径可打开 debug 
+/ob/general: token/token2.json
+# 实验特性： 前端编辑器
+experimental_features: true
+
+# OAuth 2.0
+# Gitee 头像-设置-数据管理-第三方应用-创建应用 具体配置见文档
+oauth2_gitee_ClientID: xxxxxxx
+oauth2_gitee_ClientSecret: xxxxxxx

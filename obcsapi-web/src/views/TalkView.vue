@@ -60,7 +60,7 @@ function markdown(text: string) :string {
 
 <template>
   <div>
-    <div>Talk</div>
+    <h3>指令模式</h3>
     <div class="chat-input">
       <n-mention type="textarea" :autosize="{ minRows: 2 }" :options="LocalSetting().mention" v-model:value="newMessage"
         placeholder=":~$" :prefix="['#']" ref="talkInputRef"/>

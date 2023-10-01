@@ -1,0 +1,141 @@
+I: #temp x
+O: nil
+I: #temp xx
+O: 执行命令时出错：[Lua ERROR] Error executing file: script/temp.lua line:29(column:16) near 'json_str':   parse error
+
+I: #temp x
+O: {
+    "code": 200,
+    "data": {
+        "type": "message-tbb",
+        "command": "#temp 鹅鹅鹅是谁写的",
+        "parts": [
+            {
+                "type": "md",
+                "text": "\"obcsapiv4-json\"是由未知的作者编写的。\n"
+            },
+            {
+                "type": "button",
+                "text": "Resend",
+                "command": "@web-resend"
+            },
+            {
+                "type": "button",
+                "text": "Save",
+                "command": "@web-save-memos"
+            }
+        ]
+    }
+}
+
+I: #temp 鹅鹅鹅是谁写的
+O: {
+    "code": 200,
+    "data": {
+        "type": "message-tbb",
+        "command": "#temp 鹅鹅鹅是谁写的",
+        "parts": [
+            {
+                "type": "md",
+                "text": "\"obcsapiv4-json\"是由未知的作者编写的。\n"
+            },
+            {
+                "type": "button",
+                "text": "Resend",
+                "command": "@web-resend"
+            },
+            {
+                "type": "button",
+                "text": "Save",
+                "command": "@web-save-memos"
+            }
+        ]
+    }
+}
+
+I: #temp 鹅鹅鹅是谁写的
+O: {
+    "code": 200,
+    "data": {
+        "type": "message-tbb",
+        "command": "#temp 鹅鹅鹅是谁写的",
+        "parts": [
+            {
+                "type": "md",
+                "text": "\"obcsapiv4-json\"是由未知的作者编写的。\n"
+            },
+            {
+                "type": "button",
+                "text": "Resend",
+                "command": "@web-resend"
+            },
+            {
+                "type": "button",
+                "text": "Save",
+                "command": "@web-save-memos"
+            }
+        ]
+    }
+}
+
+I: #temp 鹅鹅鹅是谁写的
+O: {
+    "code": 200,
+    "data": {
+        "type": "message-tbb",
+        "command": "#temp 鹅鹅鹅是谁写的",
+        "parts": [
+            {
+                "type": "md",
+                "text": "\"obcsapiv4-json\"是由未知的作者编写的。\n"
+            },
+            {
+                "type": "button",
+                "text": "Resend",
+                "command": "@web-resend"
+            },
+            {
+                "type": "button",
+                "text": "Save",
+                "command": "@web-save-memos"
+            }
+        ]
+    }
+}
+
+I: ---runlua
+print("xxx")
+O: 执行命令时出错：[Lua ERROR] Error executing file: script/dangerous.lua:4: bad argument #1 to load (function expected, got string)
+stack traceback:
+	[G]: in function 'load'
+	script/dangerous.lua:4: in main chunk
+	[G]: ?
+I: ---runlua
+print("xxx")
+O: 执行命令时出错：[Lua ERROR] Error executing file: script/dangerous.lua:4: bad argument #1 to load (function expected, got nil)
+stack traceback:
+	[G]: in function 'load'
+	script/dangerous.lua:4: in main chunk
+	[G]: ?
+I: ---runlua
+print("xxx")
+O: 执行命令时出错：[Lua ERROR] Error executing file: script/dangerous.lua:4: bad argument #1 to load (function expected, got string)
+stack traceback:
+	[G]: in function 'load'
+	script/dangerous.lua:4: in main chunk
+	[G]: ?
+I: ---runlua
+print("xxx")
+O: nil
+I: ---runlua
+print("xxx")
+ruturn "非常危险"
+O: 执行命令时出错：[Lua ERROR] Error executing file: <string>:3: attempt to call a non-function object
+stack traceback:
+	<string>:3: in function 'func1'
+	script/dangerous.lua:5: in main chunk
+	[G]: ?
+I: ---runlua
+print("xxx")
+return "非常危险"
+O: 非常危险
