@@ -6,8 +6,9 @@ mkdir /app/data/log
 mkdir /app/data/webdav
 mkdir /app/data/webdav/images
 mkdir /app/data/cert/
-cp -R /app/static/ /app/data/
 rm -rf /app/data/website/
 cp -R /app/website/ /app/data/
-cp -r /app/sh/ /app/data/
+cp -R /app/static/ /app/data/
+cp -R /app/sh/ /app/data/
+cp -R /app/script/ /app/data/
 /app/server
