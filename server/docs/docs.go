@@ -500,7 +500,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/app.MoodReader"
+                            "$ref": "#/definitions/apps.MoodReader"
                         }
                     }
                 ],
@@ -529,7 +529,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/app.SimpReadWebHookStruct"
+                            "$ref": "#/definitions/apps.SimpReadWebHookStruct"
                         }
                     }
                 ],
@@ -651,18 +651,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "app.MoodReader": {
+        "apps.MoodReader": {
             "type": "object",
             "properties": {
                 "highlights": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/app.MoodReaderHighlights"
+                        "$ref": "#/definitions/apps.MoodReaderHighlights"
                     }
                 }
             }
         },
-        "app.MoodReaderHighlights": {
+        "apps.MoodReaderHighlights": {
             "type": "object",
             "properties": {
                 "author": {
@@ -679,7 +679,7 @@ const docTemplate = `{
                 }
             }
         },
-        "app.SimpReadWebHookStruct": {
+        "apps.SimpReadWebHookStruct": {
             "type": "object",
             "properties": {
                 "content": {
@@ -820,7 +820,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "v4.2.7 版本",
+	Version:          "v4.2.8 版本",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},

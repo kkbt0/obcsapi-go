@@ -1,12 +1,12 @@
 definitions:
-  app.MoodReader:
+  apps.MoodReader:
     properties:
       highlights:
         items:
-          $ref: '#/definitions/app.MoodReaderHighlights'
+          $ref: '#/definitions/apps.MoodReaderHighlights'
         type: array
     type: object
-  app.MoodReaderHighlights:
+  apps.MoodReaderHighlights:
     properties:
       author:
         type: string
@@ -17,7 +17,7 @@ definitions:
       title:
         type: string
     type: object
-  app.SimpReadWebHookStruct:
+  apps.SimpReadWebHookStruct:
     properties:
       content:
         type: string
@@ -103,7 +103,7 @@ info:
     https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client
     可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件
   title: Obcsapi
-  version: v4.2.7 版本
+  version: v4.2.8 版本
 paths:
   /api/sendmail:
     post:
@@ -402,7 +402,7 @@ paths:
         name: 划线和标注
         required: true
         schema:
-          $ref: '#/definitions/app.MoodReader'
+          $ref: '#/definitions/apps.MoodReader'
       produces:
       - application/json
       responses: {}
@@ -422,7 +422,7 @@ paths:
         name: json
         required: true
         schema:
-          $ref: '#/definitions/app.SimpReadWebHookStruct'
+          $ref: '#/definitions/apps.SimpReadWebHookStruct'
       responses: {}
       security:
       - Token: []
