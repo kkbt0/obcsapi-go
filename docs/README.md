@@ -49,6 +49,7 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 | 前端                                     | ×                | √              |
 | 对话/指令模式                            | ×                | √              |
 | 自定义运行脚本                           | ×                | √              |
+| JSONSchema 表单                          | ×                | √              |
 | Docker                                   | <=3              | >=4            |
 
 Docker 3.0 之前的是 python 版本，之后的是 Go 版本。
