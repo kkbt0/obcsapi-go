@@ -27,6 +27,8 @@ I: testLua
 O: Lua script/hello.lua
 I: #temp
 O: Lua script/temp.lua
+I: ---runlua
+O: Lua script/dangerous.lua
 
 
 I: #收藏
