@@ -1,4 +1,4 @@
-FROM golang:1.18 as builder
+FROM golang:1.21.1 as builder
 LABEL maintainer="恐咖兵糖<0@ftls.xyz>"
 
 ENV GO111MODULE=on 
