@@ -1,0 +1,9 @@
+@host = http://localhost:8900/api/runner
+@token1 = 8IuEzCmgZyNg5Wu1UPVUt32GuDMXPi0q
+###
+POST {{host}}/demo?x=1&token=100
+Authorization: demo-auth
+Token: {{token1}}
+Content-Type: application/application/json
+
+{"a":"a str"}
