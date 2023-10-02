@@ -160,6 +160,8 @@ func main() {
 		api1Group.POST("/text", ConfigAllow("experimental_features", false), TextPostHandler)
 		api1Group.POST("/search", ConfigAllow("experimental_features", false), KvSerchHandler)
 	}
+	// Command Runner
+	r.Any("/api/runner/*path", TokenAuthMiddleware("./token/token99.json"), CommandHandler)
 
 	r.GET("/ob/file", ObFileHanlder) // 需要带验证参数
 

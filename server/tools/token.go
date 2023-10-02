@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -92,7 +93,7 @@ func VerifyToken(rightToken Token, inToken string) bool {
 	return inToken == rightToken.TokenString && rightToken.IsLiving()
 }
 
-//tokenFilePath Token文件位置 并且自动更新
+// tokenFilePath Token文件位置 并且自动更新
 func VerifyTokenByFilePath(tokenFilePath string, inToken string) bool {
 	rightToken, err := GetToken(tokenFilePath)
 	if err != nil {
@@ -118,6 +119,11 @@ func VerifyTokenByFilePath(tokenFilePath string, inToken string) bool {
 // 判断 requestURI 为空 则使用 defaultTokenFilePath
 func RequestURIDefineOrDefalutTokenFilePath(requestURI string, defaultTokenFilePath string) string {
 	Debug("RequestURI: ", requestURI)
+	// ?xxx=xxx
+	index := strings.Index(requestURI, "?")
+	if index != -1 {
+		requestURI = requestURI[:index]
+	}
 	tokenFilePath := ConfigGetString(requestURI)
 	if tokenFilePath == "" {
 		Debug("config.yaml does not define which token to use")

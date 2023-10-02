@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -421,4 +422,81 @@ func FormPostHandler(c *gin.Context) {
 		return
 	}
 	c.String(200, result)
+}
+
+// 传入相关参数给 Lua 脚本使用
+
+type Request struct {
+	Headers            map[string]string `json:"headers"`
+	Params             map[string]string `json:"params"`
+	Request            RequestData       `json:"request"`
+	ResponseStatusCode int               `json:"responseStatusCode"`
+	ProcessingTimeMs   int64             `json:"processingTimeMs"`
+	ClientIP           string            `json:"clientIP"`
+	RequestPath        string            `json:"requestPath"`
+	Timestamp          int64             `json:"timestamp"`
+}
+
+type RequestData struct {
+	Method string `json:"method"`
+	Body   string `json:"body"`
+}
+
+// 将请求数据传入 Lua 脚本 然后根据配置找到要执行的 Lua 脚本 最后返回结果
+func CommandHandler(c *gin.Context) {
+	// 处理请求数据
+	headers := make(map[string]string)
+	for key, value := range c.Request.Header {
+		headers[key] = value[0]
+	}
+
+	params := make(map[string]string)
+	for key, value := range c.Request.URL.Query() {
+		params[key] = value[0]
+	}
+
+	requestBody, _ := c.GetRawData()
+	requestBodyString := string(requestBody)
+
+	currentTime := time.Now()
+
+	data := Request{
+		Headers: headers,
+		Params:  params,
+		Request: RequestData{
+			Method: c.Request.Method,
+			Body:   requestBodyString,
+		},
+		ResponseStatusCode: http.StatusOK, // Set the response status code accordingly
+		ProcessingTimeMs:   time.Since(currentTime).Milliseconds(),
+		ClientIP:           c.ClientIP(),
+		RequestPath:        c.Request.URL.Path,
+		Timestamp:          currentTime.Unix(),
+	}
+
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+
+	// 执行脚本
+	requestURI := c.Request.URL.Path
+	index := strings.Index(requestURI, "?")
+	if index != -1 {
+		requestURI = requestURI[:index]
+	}
+	scriptPath := viper.GetString(requestURI + "_script")
+	result, err := command.LuaRunner(scriptPath, string(jsonData))
+	if err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+	// 返回 Lua 脚本执行结果
+	if strings.HasPrefix(result, "{") {
+		c.JSON(200, result)
+	} else {
+		c.String(200, result)
+	}
+	// c.Data(http.StatusOK, "application/json", jsonData)
 }
