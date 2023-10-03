@@ -3,6 +3,7 @@ import { ref, watch, type Ref } from "vue"
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiFormPost } from "@/api/obcsapi";
 import { LocalSetting } from "@/stores/setting"
+import marked from "marked";
 
 // https://1.xrender.fun/generator
 // https://form.lljj.me/v3/#/demo?type=Simple&ui=VueNaiveForm
@@ -46,6 +47,12 @@ function selectOptionsInit() {
     formJsonSheme.value = JSON.parse(formJsonShemeText.value);
 }
 
+function markdown(text: string) :string {
+  return marked(text || '', {
+        breaks: true
+    })
+}
+
 watch(formJsonShemeText, () => {
     formJsonSheme.value = JSON.parse(formJsonShemeText.value);
 })
@@ -56,7 +63,7 @@ watch(formJsonShemeText, () => {
         <h3>表单</h3>
         <n-select v-model:value="formJsonShemeText" :options="mentionList" />
         <vue-form v-model="formData" :schema="formJsonSheme" @cancel="handlerCancel" @submit="handlerSubmit" />
-        <div v-text="result" style="white-space: pre-wrap;"></div>
+        <div v-text="markdown(result)" style="white-space: pre-wrap;"></div>
     </n-space>
 </template>
 
