@@ -63,7 +63,7 @@ watch(formJsonShemeText, () => {
         <h3>表单</h3>
         <n-select v-model:value="formJsonShemeText" :options="mentionList" />
         <vue-form v-model="formData" :schema="formJsonSheme" @cancel="handlerCancel" @submit="handlerSubmit" />
-        <div v-text="markdown(result)" style="white-space: pre-wrap;"></div>
+        <div v-html="markdown(result)" style="white-space: pre-wrap;"></div>
     </n-space>
 </template>
 
