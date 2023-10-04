@@ -75,7 +75,7 @@ const schema = ref({
                     type: "string",
                     title: "返回字符串",
                     'ui:options': {
-                        placeholder: "📩 已保存，\u003ca href='https://note.ftls.xyz/web/'\u003e点击查看今日笔记\u003c/a\u003e",
+                        placeholder: "📩 已保存，\u003ca href='https://kkbt.gitee.io/web/'\u003e点击查看今日笔记\u003c/a\u003e",
                     }
                 }
             }

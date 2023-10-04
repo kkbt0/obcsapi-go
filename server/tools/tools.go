@@ -101,7 +101,7 @@ func TimeFmt(fmt string) string {
 	return time.Now().In(cstZone).Format(fmt)
 }
 
-//  obsidian 文件名非法字符 * " \ / < > : | ? 链接失效 # ^ [ ] | 替换为 _
+// obsidian 文件名非法字符 * " \ / < > : | ? 链接失效 # ^ [ ] | 替换为 _
 func ReplaceUnAllowedChars(s string) string {
 	unAllowedChars := "*\"\\/<>:|?#^[]|"
 	for _, c := range unAllowedChars {
@@ -139,7 +139,7 @@ func RandomString(n int) string {
 	return hex.EncodeToString(b)[0:n]
 }
 
-//jwt secret + 日期 进行 MD5  保证来自服务器签发
+// jwt secret + 日期 进行 MD5  保证来自服务器签发
 func ObFileAccessToken() string {
 	md5Str := md5.New()
 	md5Str.Write([]byte(YamlConfigMd5 + TimeFmt("2006-01-02")))
@@ -192,7 +192,7 @@ func ExampleRunconfig() RunConfig {
 		ObDailyAttachmentDirUnderDailyDir: true,
 		ObOtherDataDir:                    "其他/",
 	}
-	exampleRunconfig.WeChatMp.ReturnStr = "📩 已保存，<a href='https://note.ftls.xyz/web/'>点击查看今日笔记</a>"
+	exampleRunconfig.WeChatMp.ReturnStr = "📩 已保存，<a href='https://kkbt.gitee.io/web/'>点击查看今日笔记</a>"
 	exampleRunconfig.Webdav = WebDavConfig{
 		Server:     false,
 		Username:   "testuser",

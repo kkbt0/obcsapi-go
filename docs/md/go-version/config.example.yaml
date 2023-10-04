@@ -12,7 +12,7 @@ backend_url: localhost:8900
 # http(s):// + backend_url + backend_base_path
 backend_url_full: http://localhost:8900
 # 前端网站
-web_url_full: https://note.ftls.xyz/web/
+web_url_full: https://kkbt.gitee.io/web/
 
 
 # 前端登录账户密码 有效时间 720h
