@@ -3,7 +3,7 @@ import { ref, watch, type Ref } from "vue"
 import VueForm from "@lljj/vue3-form-naive"
 import { ObcsapiFormPost } from "@/api/obcsapi";
 import { LocalSetting } from "@/stores/setting"
-import marked from "marked";
+import { Marked } from '@ts-stack/markdown';
 
 // https://1.xrender.fun/generator
 // https://form.lljj.me/v3/#/demo?type=Simple&ui=VueNaiveForm
@@ -48,9 +48,8 @@ function selectOptionsInit() {
 }
 
 function markdown(text: string) :string {
-  return marked(text || '', {
-        breaks: true
-    })
+    Marked.setOptions({ breaks: true});
+    return Marked.parse(text)
 }
 
 watch(formJsonShemeText, () => {

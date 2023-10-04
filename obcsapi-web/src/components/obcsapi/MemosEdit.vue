@@ -3,7 +3,7 @@ import { NThing, NSpace, NButton, NImage, NCheckbox, NImageGroup, NDropdown, NSc
 import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { ref, onUpdated, onMounted, watch } from "vue";
 import { memosData } from "@/stores/memos";
-import marked from "marked";
+import { Marked, Renderer } from '@ts-stack/markdown';
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 import { LocalSetting } from "@/stores/setting"
 
@@ -107,14 +107,15 @@ function markdown(md: string) {
     md = md.replace(tasksRegex, '')
     nowMd = md;
 
-    let renderMd = new marked.Renderer();
-    renderMd.text = function (text: string) {
-        return text.replace(/(#[^#\s]+)/g, '<a>$1</a>');
-    };
-    return marked(nowMd || '', {
-        breaks: true,
-        renderer: renderMd
-    })
+
+    class MyRenderer extends Renderer {
+        override text(text: string): string {
+            return text.replace(/(#[^#\s]+)/g, '<a>$1</a>');
+        }
+    }
+    Marked.setOptions({ breaks: true , renderer: new MyRenderer});
+    
+    return Marked.parse(nowMd);
 }
 
 function handleCheckedChange(taskIndex: number) {

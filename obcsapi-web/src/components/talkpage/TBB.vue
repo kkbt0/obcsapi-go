@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import marked from "marked";
+import { Marked } from '@ts-stack/markdown';
 
 const emit = defineEmits(["web-command"]);
 
@@ -21,9 +21,8 @@ function ClickHandler(command: string) {
 }
 
 function markdown(text: string) :string {
-  return marked(text || '', {
-        breaks: true
-  })
+  Marked.setOptions({ breaks: true});
+  return Marked.parse(text)
 }
 
 </script>

@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import marked from "marked";
+import { Marked } from '@ts-stack/markdown';
 
 defineProps<{
     mdText: string, // dayKey
 }>();
 
 function markdown(text: string) :string {
-  return marked(text || '', {
-        breaks: true
-  })
+  Marked.setOptions({ breaks: true});
+  return Marked.parse(text)
 }
 </script>
 

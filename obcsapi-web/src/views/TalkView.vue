@@ -6,7 +6,7 @@ import { TalkStore } from "@/stores/talk";
 import { LocalSetting } from "@/stores/setting"
 import CommandMessage from "@/components/obcsapi/CommandMessage.vue"
 
-import marked from "marked";
+import { Marked } from '@ts-stack/markdown';
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 
 const messages = TalkStore().messages;
@@ -51,9 +51,8 @@ function imgUrlDeal(text: string) {
 }
 
 function markdown(text: string) :string {
-  return marked(text || '', {
-        breaks: true
-    })
+  Marked.setOptions({ breaks: true});
+  return Marked.parse(text);
 }
 
 </script>
