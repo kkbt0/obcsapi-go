@@ -52,7 +52,7 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 | 图床  和 CLI上传工具                     | ×                | √              |
 | 公开文档功能                             | ×                | √              |
 | 邮件/微信任务提醒                        | ×                | √              |
-| 前端                                     | ×                | √              |
+| 前端                                     | √                 | √              |
 | 对话/指令模式                            | ×                | √              |
 | 自定义运行脚本                           | ×                | √              |
 | JSONSchema 表单                          | ×                | √              |
