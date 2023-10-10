@@ -1,7 +1,35 @@
 # Obsidian 云存储的后端 API Golang 版本
 
+Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save messages to the Obsidian library with the help of the Obsidian plugin Remotely-Save plugin, or Self-hosted LiveSync (ex:Obsidian-livesync) plugin CouchDb mode.Or a text editor that supports local folders. peculiarity
 
-基于 Obsidian 云存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。
+- Add Memos / Short Answer Editor on the front end, support instruction mode, have dark theme, and be a PWA app
+- WeChat MP to Obsidian
+- Support for SimpRead Webook to crop web articles
+- Support FooView hoverball text picture sharing and saving
+- MoonReader highlights
+- Universal HTTP API
+- Extend functionality with Lua & Bash . Users can process any request
+- WebDAV Server
+- A simple graph bed with a command line upload tool. <sup>1</sup>
+- SCF or Dokcer deployment
+
+基于 Obsidian S3 存储， CouchDb ，本地存储和WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。或者支持本地文件夹的文本编辑器。特点
+
+- 前端添加 Memos / 简答编辑 ， 支持指令模式，有黑暗主题 ，是 PWA 应用
+- 微信测试号 微信到 Obsidian
+- 支持简悦 SimpRead Webook 裁剪网页文章
+- 支持 fv悬浮球文字图片分享保存
+- 静读天下 MoonReader 高亮标注 仿 ReadWise API
+- 通用 http api
+- 使用 Lua & Bash 拓展功能。用户可以处理任何请求
+- WebDAV 服务
+- 一个简易图床，附带命令行上传工具。<sup>1</sup>
+- 云函数 或者 Dokcer 部署
+
+
+更多功能说明见文档: [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
+
+---
 
 文档 Docs : [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
 如果你不使用 Obsidian ，也可以借助坚果云，或者 WebDav 进行文件同步，配合其他文本编辑器使用。
@@ -12,31 +40,6 @@
 
 ![](docs/images/canvas_2_show.svg)
 
-基于 Obsidian 云存储的后端 API ,保存到 S3 存储的 Obsidian 库。支持列表
-
-可开启 Webdav 服务，进行本地存储和文件管理
-一个简易前端（后有图）
-微信测试号 微信到Obsidian  
-支持简悦 SimpRead Webook  
-支持 fv悬浮球文字图片分享保存  
-静读天下 MoonReader 高亮标注 仿 ReadWise API  
-通用 http api  
-基于 Obsidian S3 存储， CouchDb ，本地存储和WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式，保存消息到 Obsidian 库。特点
-
-- 前端添加 Memos / 简答编辑 ， 支持指令模式，有黑暗主题 ，是 PWA 应用
-- 微信测试号 微信到 Obsidian
-- 支持简悦 SimpRead Webook 裁剪网页文章
-- 支持 fv悬浮球文字图片分享保存
-- 静读天下 MoonReader 高亮标注 仿 ReadWise API
-- 通用 http api ， 有 Swagger 配合调试
-- 可提供 WebDAV 服务
-- 一个简易图床，附带命令行上传工具
-- 自定义指令机器人，可执行脚本和命令。可接入其他服务
-- 云函数 或者 Dokcer 部署
-- 开放 API ， 可自行配合其他软件使用。如 Quicker 
-
-
-更多功能说明见文档: [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
 
 
 ## 展示
