@@ -22,8 +22,8 @@ var oauth2Config = &oauth2.Config{
 	ClientSecret: viper.GetString("oauth2_gitee_ClientSecret"),
 	Scopes:       []string{"user_info"}, // Adjust the scopes based on your requirements
 	Endpoint: oauth2.Endpoint{
-		AuthURL:   "https://api.gitee.com/oauth/authorize",
-		TokenURL:  "https://api.gitee.com/oauth/token",
+		AuthURL:   "https://gitee.com/oauth/authorize",
+		TokenURL:  "https://gitee.com/oauth/token",
 		AuthStyle: 0,
 	},
 	RedirectURL: viper.GetString("backend_url_full") + "/auth/oauth2-callback",
@@ -53,7 +53,7 @@ func HandleCallback(c *gin.Context) {
 	code := c.Query("code")
 	token, err := oauth2Config.Exchange(context.Background(), code)
 	if err != nil {
-		gr.RJSON(c, nil, 400, 400, "Failed to exchange code for token", gr.H{})
+		gr.RJSON(c, err, 400, 400, "Failed to exchange code for token", gr.H{})
 		return
 	}
 	client := oauth2Config.Client(context.Background(), token)
