@@ -9,6 +9,6 @@ mkdir /app/data/cert/
 rm -rf /app/data/website/
 cp -R /app/website/ /app/data/
 cp -R /app/static/ /app/data/
-cp -R /app/sh/ /app/data/
-cp -R /app/script/ /app/data/
+cp -R -n /app/sh/ /app/data/
+cp -R -n /app/script/ /app/data/
 /app/server
