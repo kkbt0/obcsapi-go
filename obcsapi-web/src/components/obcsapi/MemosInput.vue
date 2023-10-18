@@ -5,6 +5,7 @@ import { ObcsapiPostMemos } from "@/api/obcsapi";
 import { memosData } from "@/stores/memos";
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 import { LocalSetting } from "@/stores/setting"
+import { Adjutant } from "@/stores/adjutant";
 
 const inputText = ref("");
 const memos = memosData();
@@ -21,7 +22,7 @@ function sendMemos() {
       memos.setMap(data.date, data)
       inputText.value = "";
       showUpload.value = false;
-      window.$message.success("Suceess Send");
+      Adjutant().success("Successfully Sent")
       localStorage.setItem("lastInput", "");
     }).catch(e => {
       console.log(e);

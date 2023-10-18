@@ -4,6 +4,7 @@ import { NButton } from "naive-ui";
 import { defineComponent, h, ref, render, type Ref } from "vue";
 import TBB from "@/components/talkpage/TBB.vue";
 import Basic from "@/components/talkpage/Basic.vue";
+import { Adjutant } from "@/stores/adjutant";
 // example
 // let obj = {
 //     "code": 200,
@@ -75,7 +76,7 @@ export default defineComponent({
                 switch (command) {
                     case "@web-save-memos":
                         ObcsapiPostMemos("", 9999, "", obj.data.parts[0].text).then(data => {
-                            window.$message.success("Suceess Send");
+                            Adjutant().success("Successfully Sent")
                         }).catch(e => {
                             console.log(e);
                         });

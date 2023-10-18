@@ -6,6 +6,7 @@ import { memosData } from "@/stores/memos";
 import { Marked, Renderer } from '@ts-stack/markdown';
 import MemosUpload from "@/components/obcsapi/MemosUpload.vue";
 import { LocalSetting } from "@/stores/setting"
+import { Adjutant } from "@/stores/adjutant";
 
 // filekey: string, line: number, oldText: string, newText: string
 const props = defineProps<{
@@ -51,7 +52,7 @@ function saveMemos() {
     ObcsapiPostMemos(props.dayKey, props.line, props.memosRaw, inputText.value).then(data => {
         if (data.md_text != undefined) {
             memos.setMap(data.date, data)
-            window.$message.success("Suceess Send");
+            Adjutant().success("Successfully Sent")
             edit.value = false;
             showUpload.value = false;
             localStorage.setItem("lastInput", "");

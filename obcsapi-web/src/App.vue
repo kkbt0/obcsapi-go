@@ -5,6 +5,7 @@ import { NConfigProvider, zhCN, dateZhCN, darkTheme, NMessageProvider } from 'na
 import { defineComponent, ref, onMounted } from 'vue';
 import usemessageComponents from '@/components/api/usemessageComponents.vue';
 import { LocalSetting } from "@/stores/setting"
+import { Adjutant } from "@/stores/adjutant";
 
 export default defineComponent({
   components: {
@@ -16,6 +17,7 @@ export default defineComponent({
 
   setup() {
     const setting = LocalSetting();
+    const adjutant = Adjutant();
 
     const theme: any = ref({
       isDarkTheme: darkTheme,
@@ -46,6 +48,7 @@ export default defineComponent({
       theme,
       zhCN,
       dateZhCN,
+      adjutant
     }
   }
 })
@@ -56,7 +59,7 @@ export default defineComponent({
   <!-- Main Header -->
   <header>
     <div class="wrapper">
-      <HelloWorld msg="Weclome!" @click="" />
+      <HelloWorld :msg="adjutant.showText" @click="" />
       <nav>
         <RouterLink to="/">🏠️</RouterLink>
         <RouterLink to="/form">☰</RouterLink>
