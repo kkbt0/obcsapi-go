@@ -48,6 +48,7 @@ function EditorInit() {
         initialEditType: 'wysiwyg',
         theme: darkTheme ? 'dark' : 'light',
         setHeight: "85vh",
+        autofocus: false,
     });
     editor.insertToolbarItem({ groupIndex: 0, itemIndex: 0 }, {
         el: createLastButton(),
@@ -60,7 +61,7 @@ function EditorInit() {
 
 function GetMdText() {
     ObcsapiTextGet(props.fileKey).then(text => {
-        editor.setMarkdown(text, true)
+        editor.setMarkdown(text, false)
         editor.setHeight("85vh");
     }).catch(e => {
         window.$message.warning(e)

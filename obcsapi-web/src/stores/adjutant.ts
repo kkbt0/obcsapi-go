@@ -17,7 +17,7 @@ export const Adjutant = defineStore('adjutant', () => {
             nowPoint.value = textList.value.length - 1;
         }
         const nowText = textList.value[nowPoint.value];
-        showText.value = nowText;  // 头部显示
+        // showText.value = nowText;  // 头部显示
         window.$message.success(nowText); // 弹窗显示
         clearTimeout(timer); // 3s 重新计数
         timer = setTimeout(function() {
