@@ -15,6 +15,9 @@ var appExports = map[string]lua.LGFunction{
 	"GetFileText":        GetFileText,        // 获取指定文件内容，返回字符串
 	"CoverStoreTextFile": CoverStoreTextFile, // 覆盖指定位置文件 纯文本使用
 	"GetTodayDaily":      GetTodayDaily,      // 获取今日日记 md 文件字符串 // 每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志
+
+	"TimeFmt":  TimeFmt,  // 时间格式化
+	"SendMail": SendMail, // 发送邮件
 }
 
 func LuaModuleAppLoader(L *lua.LState) int {
@@ -89,6 +92,24 @@ func GetTodayDaily(L *lua.LState) int {
 	}
 	L.Push(lua.LString(mdText))
 	return 1
+}
+
+func TimeFmt(L *lua.LState) int {
+	raw_time_str := L.ToString(1)
+	L.Push(lua.LString(tools.TimeFmt(raw_time_str)))
+	return 1
+}
+
+func SendMail(L *lua.LState) int {
+	toEmail := L.ToString(1)
+	subject := L.ToString(2)
+	html := L.ToString(3)
+	err := tools.SendMailBase(toEmail, subject, html)
+	if err != nil {
+		L.Push(lua.LString(err.Error()))
+		return 1
+	}
+	return 0
 }
 
 // ----------- Tools --------------

@@ -32,3 +32,26 @@ func SendMail(subjct string, content string) error {
 	log.Println("Send successfully ... Subject: ", subjct)
 	return nil
 }
+
+func SendMailBase(to string, subjct string, html string) error {
+	config := NowRunConfig.Mail
+
+	// 配置邮件
+	log.SetFlags(log.Lshortfile | log.LstdFlags)
+	em := email.NewEmail()
+	em.From = fmt.Sprintf("%s <%s>", config.SenderName, config.SenderEmail)
+	em.To = []string{to}
+	em.Subject = subjct
+	// em.Text = content
+	em.HTML = []byte(html)
+
+	// 发送邮件
+	sender_addr := fmt.Sprintf("%s:%d", config.SmtpHost, config.Port) // smtpdm.aliyun.com:80"
+	err := em.Send(sender_addr, smtp.PlainAuth("", config.UserName, config.Password, config.SmtpHost))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	log.Println("Send successfully ... Subject: ", subjct)
+	return nil
+}
