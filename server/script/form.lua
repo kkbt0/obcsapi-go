@@ -1,5 +1,5 @@
---- 用于处理 前端生成的表单 通用处理方法 会添加到日志中
---- @param app_input string 前端输入的内容，是一个字符串，内容是 json
+-- 用于处理 前端生成的表单 通用处理方法 会添加到日志中
+-- @param app_input string 前端输入的内容，是一个字符串，内容是 json
 -- @return string Lua 拼接字符串，最终给前端显示
 
 local app = require("app") -- 导入 obcsapi 模块
