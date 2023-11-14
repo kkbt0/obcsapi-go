@@ -34,6 +34,7 @@ func LuaCronJob() error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			tools.Debug("Error: Stat script/cron.lua")
+			return nil // 未检测到脚本 不运行 不报错
 		}
 		return err
 	}
