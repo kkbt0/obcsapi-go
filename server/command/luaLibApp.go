@@ -2,6 +2,7 @@ package command
 
 import (
 	"obcsapi-go/dao"
+	"obcsapi-go/skv"
 	"obcsapi-go/tools"
 	"time"
 
@@ -18,6 +19,10 @@ var appExports = map[string]lua.LGFunction{
 
 	"TimeFmt":  TimeFmt,  // 时间格式化
 	"SendMail": SendMail, // 发送邮件
+
+	// KVDB
+	"KVGet": KVGet,
+	"KVSet": KVSet,
 }
 
 func LuaModuleAppLoader(L *lua.LState) int {
@@ -105,6 +110,29 @@ func SendMail(L *lua.LState) int {
 	subject := L.ToString(2)
 	html := L.ToString(3)
 	err := tools.SendMailBase(toEmail, subject, html)
+	if err != nil {
+		L.Push(lua.LString(err.Error()))
+		return 1
+	}
+	return 0
+}
+
+func KVGet(L *lua.LState) int {
+	key := L.ToString(1)
+	bytes, err := skv.GetKv(key)
+	if err != nil {
+		L.Push(lua.LNil)
+		L.Push(lua.LString(err.Error()))
+		return 2
+	}
+	L.Push(lua.LString(string(bytes)))
+	return 1
+}
+
+func KVSet(L *lua.LState) int {
+	key := L.ToString(1)
+	val := L.ToString(2)
+	err := skv.UpdateKv(key, val)
 	if err != nil {
 		L.Push(lua.LString(err.Error()))
 		return 1
