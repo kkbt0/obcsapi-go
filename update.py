@@ -23,7 +23,7 @@ for file_path in file_paths:
     with fileinput.FileInput(file_path, inplace=True) as file:
         for line in file:
             # 读取每一行并替换其中的 '4.2.7' 为 '4.2.8'
-            print(line.replace('4.2.7', '4.2.8'), end='')
+            print(line.replace('4.2.8', '4.2.9'), end='')
 
 shutil.copy('server/config.example.yaml', 'server/tools/config.example.yaml')
 shutil.copy('server/config.example.yaml', 'docs/md/go-version/config.example.yaml')

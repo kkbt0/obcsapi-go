@@ -17,7 +17,7 @@ RUN mkdir app && mkdir app/static/ && \
 FROM alpine:latest
 LABEL maintainer="恐咖兵糖<0@ftls.xyz>"
 
-ENV VERSION 4.2.8
+ENV VERSION 4.2.9
 ENV GIN_MODE release
 ENV TZ=Asia/Shanghai
 
