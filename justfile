@@ -6,6 +6,8 @@ run-server:
 run-web:
     just obcsapi-web/run
 doc:
+    cd obcsapi-docs/ && pnpm docs:dev 
+doc-docsify:
     cd obcsapi-docs/docs && python3 -m http.server 8888
 build:
     bash step1.sh

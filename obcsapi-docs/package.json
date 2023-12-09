@@ -1,0 +1,17 @@
+{
+  "name": "obcsapi-go-docs",
+  "version": "1.0.0",
+  "description": "obcsapi",
+  "main": "index.js",
+  "author": "恐咖兵糖",
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/client": "2.0.0-rc.0",
+    "vue": "^3.3.11",
+    "vuepress": "2.0.0-rc.0"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  }
+}

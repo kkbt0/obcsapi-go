@@ -3,6 +3,7 @@ vendor
 node_modules
 .temp
 .cache
+dist
 # server
 server/config.yaml
 server/images
