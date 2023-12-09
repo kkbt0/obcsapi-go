@@ -1,4 +1,9 @@
 vendor
+# npm
+node_modules
+.temp
+.cache
+# server
 server/config.yaml
 server/images
 server/tem.txt
