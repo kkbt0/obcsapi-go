@@ -1,9 +1,7 @@
 ---
 title: Obcsapi 文档
 index: false
-icon: laptop-code
-category:
-  - 使用指南
+icon: laptop-code 
 ---
 
 Obsidian Cloud Storage API 文档

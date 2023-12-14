@@ -24,7 +24,7 @@ export default hopeTheme({
   // sidebar
   sidebar,
 
-  footer: "Obcsapi",
+  footer: '<a href="https://www.ftls.xyz/" target="_blank" rel="noopener noreferrer">恐咖兵糖</a>',
 
   displayFooter: true,
 
