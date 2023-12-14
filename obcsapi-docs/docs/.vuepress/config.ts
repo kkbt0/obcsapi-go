@@ -2,7 +2,7 @@ import { defineUserConfig } from "vuepress";
 import theme from "./theme.js";
 
 export default defineUserConfig({
-  base: "/",
+  base: "/obcsapi-go/",
 
   lang: "zh-CN",
   title: "Obcsapi Docs",
