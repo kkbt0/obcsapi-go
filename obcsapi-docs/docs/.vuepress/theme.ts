@@ -39,7 +39,7 @@ export default hopeTheme({
       provider: "Giscus",
       repo: "kkbt0/giscus",
       repoId: "R_kgDOIqRAow",
-      category: "Announcements",
+      category: "Obcsapi",
       categoryId: "DIC_kwDOIqRAo84CTNxi",
     },
 
