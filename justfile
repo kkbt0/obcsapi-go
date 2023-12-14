@@ -12,7 +12,7 @@ doc-build:
     cd obcsapi-docs/ && pnpm docs:build
     rm -rf /home/kkbt/gitee-website/kkbt/obcsapi-go
     cp -r docs/.vuepress/dist /home/kkbt/gitee-website/kkbt/obcsapi-go
-    cp -r docs/ /home/kkbt/gitee-website/kkbt/obcsapi-go/docsify/
+
 doc-docsify:
     cd obcsapi-docs/docs && python3 -m http.server 8888
 build:

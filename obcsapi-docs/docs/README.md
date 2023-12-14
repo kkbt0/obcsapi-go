@@ -82,5 +82,5 @@ highlights:
         details: 使用 JSONSchema 自定义表单，用户编写 Lua 脚本处理自定义表单     
 
 copyright: false
-footer: 使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议, 版权所有 © 2023 恐咖兵糖
+footer: 使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议, 版权所有 © 2023 <a href="https://www.ftls.xyz/" target="_blank" rel="noopener noreferrer">恐咖兵糖</a>
 ---

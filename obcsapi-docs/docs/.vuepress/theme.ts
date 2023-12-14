@@ -37,14 +37,16 @@ export default hopeTheme({
     // You should generate and use your own comment service
     comment: {
       provider: "Giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
+      repo: "kkbt0/giscus",
+      repoId: "R_kgDOIqRAow",
       category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
+      categoryId: "DIC_kwDOIqRAo84CTNxi",
     },
 
     // All features are enabled for demo, only preserve features you need here
     mdEnhance: {
+      breaks: true,
+      linkify: true,
       align: true,
       attrs: true,
 
