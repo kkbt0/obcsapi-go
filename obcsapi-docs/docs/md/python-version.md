@@ -1,3 +1,7 @@
+---
+title: Python 版本
+---
+
 ## Python 版本部署
 
 [Obsidian S3 存储的后端 API python 版本](https://gitee.com/kkbt/obsidian-csapi)  
