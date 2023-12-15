@@ -12,6 +12,11 @@ export default sidebar({
       link: "md/go-version",
     },
     {
+      text: "Go 版本 Swagger(Scalar)",
+      icon: "book",
+      link: "https://kkbt.gitee.io/obcsapi-go/swagger/swagger.html",
+    },
+    {
       text: "Python 版本",
       icon: "book",
       link: "md/python-version",
