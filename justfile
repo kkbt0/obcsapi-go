@@ -20,7 +20,6 @@ doc-build:
 doc-delopy:
     #!/bin/bash
     cd /home/kkbt/gitee-website/kkbt/
-    git pull
     git add .
     git commit -m "docs: obcsapi-go"
     git push
