@@ -6,12 +6,24 @@ run-server:
 run-web:
     just obcsapi-web/run
 doc:
-    cd obcsapi-docs/ && pnpm docs:dev 
+    #!/bin/bash
+    cp server/docs/swagger.json obcsapi-docs/docs/.vuepress/public/swagger/swgger.json  
+    cd obcsapi-docs/
+    pnpm docs:dev 
 doc-build:
     #!/bin/bash
-    cd obcsapi-docs/ && pnpm docs:build
+    cp server/docs/swagger.json obcsapi-docs/docs/.vuepress/public/swagger/swgger.json 
+    cd obcsapi-docs/
+    pnpm docs:build
     rm -rf /home/kkbt/gitee-website/kkbt/obcsapi-go
     cp -r docs/.vuepress/dist /home/kkbt/gitee-website/kkbt/obcsapi-go
+doc-delopy:
+    #!/bin/bash
+    cd /home/kkbt/gitee-website/kkbt/
+    git pull
+    git add .
+    git commit -m "docs: obcsapi-go"
+    git push
 
 doc-docsify:
     cd obcsapi-docs/docs && python3 -m http.server 8888

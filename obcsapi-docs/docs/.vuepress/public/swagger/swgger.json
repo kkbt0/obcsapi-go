@@ -1,0 +1,810 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "基于 Obsidian S3 存储， CouchDb ，本地存储和 WebDAV 的后端 API ,可借助 Obsidian 插件 Remotely-Save 插件，或者 Self-hosted LiveSync (ex:Obsidian-livesync) 插件 CouchDb 方式同步，保存消息到 Obsidian 库。该调试页面大部分仅提供对 Headers-Token 验证方式的支持，其他如 Query-token，Headers-Authorization 除了特殊的几个其他并不支持。可以使用 https://hoppscotch.io/ 或者 Postman 之类的工具，或者使用 VsCode 插件 REST Client ，使用 REST Client 可以在 https://gitee.com/kkbt/obcsapi-go/tree/master/http ，找到测试文件",
+        "title": "Obcsapi",
+        "contact": {
+            "url": "https://gitee.com/kkbt/obcsapi-go"
+        },
+        "version": "v4.2.9 版本"
+    },
+    "paths": {
+        "/api/sendmail": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知"
+                ],
+                "summary": "邮件通知",
+                "parameters": [
+                    {
+                        "description": "SendMailStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.SendMailStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/cacheupdate": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "更新文件的缓存",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "更新文件 FileKey 完整的",
+                        "name": "key",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/daily": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "默认一周以前的查找缓存返回 即 \u003c= -7 且不允许请求 一年之前的日记",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "Memos 请求",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求几天前的",
+                        "name": "day",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/daily/nocache": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "Memos 请求 (无缓存)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "请求几天前的",
+                        "name": "day",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/line": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "根据行号修改内容，line_num 大于原文件行数，如 9999 新增 Memos 。需要原文件不完整 FileKey 和原来的行的内容进行校验。成功后返回更新后的内容。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "根据行号修改内容",
+                "parameters": [
+                    {
+                        "description": "根据行号修改内容",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.ObV1ModMdText"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/random": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "随机回顾",
+                "responses": {}
+            }
+        },
+        "/api/v1/sayHello": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "consumes": [
+                    "text/plain",
+                    "application/octet-stream"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "JWT 测试接口",
+                "responses": {}
+            }
+        },
+        "/api/v1/talk": {
+            "post": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "指令模式接口",
+                "parameters": [
+                    {
+                        "description": "TalkStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/talk.TalkStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/wechatmpmsg": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知"
+                ],
+                "summary": "微信通知",
+                "parameters": [
+                    {
+                        "description": "WeChatInfoStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.WeChatInfoStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/workwechatmsg": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "通知"
+                ],
+                "summary": "企业微信通知",
+                "parameters": [
+                    {
+                        "description": "WeChatInfoStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.WeChatInfoStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/info": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "服务器信息与测试接口",
+                "responses": {}
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "前端登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端"
+                ],
+                "summary": "前端登录",
+                "parameters": [
+                    {
+                        "description": "User",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.User"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/fv": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "安卓软件 fv 悬浮球使用的 API 用于自定义任务的 图片、文字",
+                "consumes": [
+                    "text/plain",
+                    "application/octet-stream"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "fv 悬浮球使用的 API",
+                "parameters": [
+                    {
+                        "description": "fv payload 內容",
+                        "name": "內容",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/general": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "通用 API 接口,添加 Memos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "通用 API 接口 Memos",
+                "parameters": [
+                    {
+                        "description": "MemosData",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dao.MemosData"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/general/{token}": {
+            "post": {
+                "description": "通用 API 接口,添加 Memos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "通用 API 接口 (Memos Flomo Like API)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "设定的 token 值",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "MemosData",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dao.MemosData"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/generalall": {
+            "get": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "通用 API 接口，获取所有文件。需要配置声明允许使用该接口",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "通用 API 接口 All",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "文件名，有路径，如 dir/text.md",
+                        "name": "filekey",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "通用 API 接口，覆盖修改或增添所有文件。需要配置声明允许使用该接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "通用 API 接口 All",
+                "parameters": [
+                    {
+                        "description": "GeneralAllStruct",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.GeneralAllStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/moonreader": {
+            "post": {
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ],
+                "description": "静读天下使用的 API，标注-设置-ReadWise 设置该路径和 token 值即可",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "静读天下使用的 API",
+                "parameters": [
+                    {
+                        "description": "MoodReader",
+                        "name": "划线和标注",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/apps.MoodReader"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/sr/webhook": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "SimpRead 简悦 WebHook POST 简悦 WebHook 保存文章",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "简悦 WebHook 保存文章",
+                "parameters": [
+                    {
+                        "description": "SimpRead 简悦 POST",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/apps.SimpReadWebHookStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/today": {
+            "get": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Today Daily Get 今日日志获取 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "Today Daily Get 今日日志获取",
+                "responses": {}
+            },
+            "put": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Today Daily Put 完全覆盖内容 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "Today Daily Put 今日日志覆写",
+                "parameters": [
+                    {
+                        "description": "完全覆盖 内容",
+                        "name": "內容",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Today Daily Post 新增内容，末尾添加 注意：每天凌晨 00:00 - 03:59  判断为 today daily 为 昨天的日志",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "Today Daily Post 今日日志新增",
+                "parameters": [
+                    {
+                        "description": "新增内容，末尾添加",
+                        "name": "內容",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/ob/url": {
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "裁剪网页",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ob"
+                ],
+                "summary": "裁剪网页",
+                "parameters": [
+                    {
+                        "description": "MemosData",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dao.UrlStruct"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "apps.MoodReader": {
+            "type": "object",
+            "properties": {
+                "highlights": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/apps.MoodReaderHighlights"
+                    }
+                }
+            }
+        },
+        "apps.MoodReaderHighlights": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "apps.SimpReadWebHookStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dao.MemosData": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "dao.UrlStruct": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.GeneralAllStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "file_key": {
+                    "type": "string",
+                    "default": "test.md"
+                },
+                "mod": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "cover"
+                    ]
+                }
+            }
+        },
+        "main.ObV1ModMdText": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "line_num": {
+                    "type": "integer"
+                },
+                "old": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.SendMailStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.WeChatInfoStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "talk.TalkStruct": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "AuthorizationToken": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "JWT": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "Token": {
+            "type": "apiKey",
+            "name": "Token",
+            "in": "header"
+        }
+    },
+    "externalDocs": {
+        "url": "https://kkbt.gitee.io/obcsapi-go/"
+    }
+}
