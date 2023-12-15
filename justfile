@@ -7,12 +7,12 @@ run-web:
     just obcsapi-web/run
 doc:
     #!/bin/bash
-    cp server/docs/swagger.json obcsapi-docs/docs/.vuepress/public/swagger/swgger.json  
+    cp server/docs/swagger.json obcsapi-docs/docs/.vuepress/public/swagger/swagger.json  
     cd obcsapi-docs/
     pnpm docs:dev 
 doc-build:
     #!/bin/bash
-    cp server/docs/swagger.json obcsapi-docs/docs/.vuepress/public/swagger/swgger.json 
+    cp server/docs/swagger.json obcsapi-docs/docs/.vuepress/public/swagger/swagger.json 
     cd obcsapi-docs/
     pnpm docs:build
     rm -rf /home/kkbt/gitee-website/kkbt/obcsapi-go
