@@ -34,11 +34,11 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 文档 Docs : [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
 如果你不使用 Obsidian ，也可以借助坚果云，或者 WebDav 进行文件同步，配合其他文本编辑器使用。
 
-![](docs/images/default_canvas.svg)
+![](obcsapi-docs/docs/images/default_canvas.svg)
 
 绘图 PowerBy [Handraw](https://handraw.top/)
 
-![](docs/images/canvas_2_show.svg)
+![](obcsapi-docs/docs/images/canvas_2_show.svg)
 
 
 
@@ -46,19 +46,19 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 
 ### PWA Web 应用
 
-![](docs/images/Snipaste_2023-05-09_21-21-34.png)
+![](obcsapi-docs/docs/images/Snipaste_2023-05-09_21-21-34.png)
 
-![](docs/images/Snipaste_2023-05-09_21-22-36.png)
+![](obcsapi-docs/docs/images/Snipaste_2023-05-09_21-22-36.png)
 
-![](docs/images/Snipaste_2023-05-09_21-26-04.png)
+![](obcsapi-docs/docs/images/Snipaste_2023-05-09_21-26-04.png)
 
-![](docs/images/Snipaste_2023-05-09_21-26-13.png)
+![](obcsapi-docs/docs/images/Snipaste_2023-05-09_21-26-13.png)
 
 ### Tauri 桌面端应用 
 
 [Tauri 可以构建跨平台的快速、安全、前端隔离应用](https://tauri.app/zh-cn/)。图片为 桌面端应用  - Windows - 虽然大概直接用 Obsidian 更方便一些。
 
-![](docs/images/Snipaste_2023-08-01_12-57-50-tauri-windows.png)
+![](obcsapi-docs/docs/images/Snipaste_2023-08-01_12-57-50-tauri-windows.png)
 
 可从 [https://gitee.com/kkbt/obcsapi-go/releases](https://gitee.com/kkbt/obcsapi-go/releases) 下载
 
