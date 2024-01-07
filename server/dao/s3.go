@@ -20,8 +20,14 @@ import (
 )
 
 func GetS3Client() (*s3.Client, error) {
+	customResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+		return aws.Endpoint{
+			URL: tools.ConfigGetString("end_point"),
+		}, nil
+	})
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(tools.ConfigGetString("region")),
+		config.WithEndpointResolverWithOptions(customResolver),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(tools.ConfigGetString("access_key"), tools.ConfigGetString("secret_key"), "")),
 	)
 	if err != nil {
