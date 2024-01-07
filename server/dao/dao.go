@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	_ "github.com/go-kivik/couchdb/v3"
 	"github.com/go-kivik/kivik/v3"
 	"github.com/spf13/viper"
@@ -23,7 +23,7 @@ import (
 type DataSource int
 
 var dataSource DataSource
-var sess *session.Session
+var s3Client *s3.Client
 var couchDb *kivik.DB
 var webDavDirPath string
 var webDavClient *gowebdav.Client
@@ -46,7 +46,7 @@ func init() {
 		log.Println("Data Source: S3")
 		dataSource = S3
 		var err error
-		sess, err = NewS3Session()
+		s3Client, err = GetS3Client()
 		if err != nil {
 			log.Panicln("S3 Session Create Error,Please Check your Config file")
 		}
@@ -90,7 +90,7 @@ func GetMoreDailyFileKey(addDateDay int) string {
 func GetFileText(text_file_key string) (string, error) {
 	switch dataSource {
 	case S3:
-		return S3GetFileText(sess, text_file_key)
+		return S3GetFileText(s3Client, text_file_key)
 	case CouchDb:
 		return CouchDbGetFileText(couchDb, text_file_key)
 	case LocalStorage:
@@ -105,7 +105,7 @@ func GetFileText(text_file_key string) (string, error) {
 func GetObject(fileKey string) ([]byte, error) {
 	switch dataSource {
 	case S3:
-		return S3GetObject(sess, fileKey)
+		return S3GetObject(s3Client, fileKey)
 	case CouchDb:
 		return CouchDbGetObject(couchDb, fileKey)
 	case LocalStorage:
@@ -119,7 +119,7 @@ func GetObject(fileKey string) ([]byte, error) {
 func CheckObject(file_key string) (bool, error) {
 	switch dataSource {
 	case S3:
-		file, _ := S3GetObject(sess, file_key)
+		file, _ := S3GetObject(s3Client, file_key)
 		if file != nil {
 			return true, nil
 		} else {
@@ -140,7 +140,7 @@ func CheckObject(file_key string) (bool, error) {
 func StoreObject(file_key string, file_bytes []byte) error {
 	switch dataSource {
 	case S3:
-		return S3StoreObject(sess, file_key, file_bytes)
+		return S3StoreObject(s3Client, file_key, file_bytes)
 	case CouchDb:
 		return CouchDbFileStorage(couchDb, file_key, file_bytes)
 	case LocalStorage:
@@ -155,7 +155,7 @@ func StoreObject(file_key string, file_bytes []byte) error {
 func CoverStoreTextFile(file_key string, text string) error {
 	switch dataSource {
 	case S3:
-		return S3StoreObject(sess, file_key, []byte(text))
+		return S3StoreObject(s3Client, file_key, []byte(text))
 	case CouchDb:
 		return CouchDbMdFiletorage(couchDb, file_key, text)
 	case LocalStorage:
@@ -170,7 +170,7 @@ func CoverStoreTextFile(file_key string, text string) error {
 func AppendText(file_key string, text string) error {
 	switch dataSource {
 	case S3:
-		return S3AppendText(sess, file_key, text)
+		return S3AppendText(s3Client, file_key, text)
 	case CouchDb:
 		return CouchDbAppendText(couchDb, file_key, text)
 	case LocalStorage:
@@ -185,7 +185,7 @@ func AppendText(file_key string, text string) error {
 func AppendDailyText(text string) error {
 	switch dataSource {
 	case S3:
-		return S3AppendDailyText(sess, text)
+		return S3AppendDailyText(s3Client, text)
 	case CouchDb:
 		return CouchDbAppendDailyText(couchDb, text)
 	case LocalStorage:
@@ -222,7 +222,7 @@ func AppendDailyMemos(text string) error {
 func GetTodayDaily() string {
 	switch dataSource {
 	case S3:
-		return S3GetTodayDaily(sess)
+		return S3GetTodayDaily(s3Client)
 	case CouchDb:
 		return CouchDbGetTodayDaily(couchDb)
 	case LocalStorage:
@@ -236,7 +236,7 @@ func GetTodayDaily() string {
 func Get3DaysList() [3]string {
 	switch dataSource {
 	case S3:
-		return S3Get3DaysList(sess)
+		return S3Get3DaysList(s3Client)
 	case CouchDb:
 		return CouchDbGet3DaysList(couchDb)
 	case LocalStorage:
@@ -252,7 +252,7 @@ func Get3DaysList() [3]string {
 func GetMoreDaliyMdText(addDateDay int) (string, error) {
 	switch dataSource {
 	case S3:
-		return S3GetMoreDaliyMdText(sess, addDateDay)
+		return S3GetMoreDaliyMdText(s3Client, addDateDay)
 	case CouchDb:
 		return CouchDbGetMoreDaliyMdText(couchDb, addDateDay)
 	case LocalStorage:
@@ -288,7 +288,7 @@ func ListObject(prefix string) ([]string, error) {
 	switch dataSource {
 	case S3:
 		// all objects filtered -r
-		return S3ListObject(sess, prefix)
+		return S3ListObject(s3Client, prefix)
 	case CouchDb:
 		// all objects filtered -r
 		return CouchDbListObject(couchDb, prefix)

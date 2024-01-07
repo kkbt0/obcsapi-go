@@ -74,14 +74,6 @@ func CheckFiles() {
 			log.Panicln("Error: Stat token/token2.json")
 		}
 	}
-	_, err = os.Stat("tem.txt")
-	if err != nil {
-		if os.IsNotExist(err) {
-			os.WriteFile("tem.txt", []byte("Hello,World!"), 0666)
-		} else {
-			log.Panicln("Error: Stat tem.txt")
-		}
-	}
 }
 
 // 从配置中获取 参数

@@ -7,7 +7,6 @@ dist
 # server
 server/config.yaml
 server/images
-server/tem.txt
 server/tem.file
 # 可执行文件
 server/server

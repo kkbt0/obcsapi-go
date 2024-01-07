@@ -1,126 +1,110 @@
 package dao
 
 import (
+	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/url"
 	"obcsapi-go/tools"
-	"os"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-func NewS3Session() (*session.Session, error) {
-	sess, err := session.NewSession(&aws.Config{
-		Credentials: credentials.NewStaticCredentials(tools.ConfigGetString("access_key"), tools.ConfigGetString("secret_key"), ""),
-		Endpoint:    aws.String(tools.ConfigGetString("end_point")),
-		Region:      aws.String(tools.ConfigGetString("region")),
-	})
-	return sess, err
+func GetS3Client() (*s3.Client, error) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(tools.ConfigGetString("region")),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(tools.ConfigGetString("access_key"), tools.ConfigGetString("secret_key"), "")),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s3.NewFromConfig(cfg), nil
 }
 
 // get text used
-func S3GetFileText(sess *session.Session, text_file_key string) (string, error) {
-	tem, err := S3GetObject(sess, text_file_key)
+func S3GetFileText(s3Client *s3.Client, fileKey string) (string, error) {
+	tem, err := S3GetObject(s3Client, fileKey)
 	if tem == nil {
-		return "No such file: " + text_file_key, nil
+		return "No such file: " + fileKey, nil
 	}
 	return string(tem), err
 }
 
 // get_object
-func S3GetObject(sess *session.Session, file_key string) ([]byte, error) {
-	file, err := os.Create("tem.txt")
+func S3GetObject(s3Client *s3.Client, objectKey string) ([]byte, error) {
+	buffer := manager.NewWriteAtBuffer([]byte{})
+	downloader := manager.NewDownloader(s3Client)
+	numBytes, err := downloader.Download(context.TODO(), buffer, &s3.GetObjectInput{
+		Bucket: aws.String(tools.ConfigGetString("bucket")),
+		Key:    aws.String(objectKey),
+	})
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
-	downloader := s3manager.NewDownloader(sess)
-	numBytes, err := downloader.Download(
-		file,
-		&s3.GetObjectInput{
-			Bucket: aws.String(tools.ConfigGetString("bucket")),
-			Key:    aws.String(file_key),
-		})
-	if err != nil {
-		return nil, err
+	if numBytes < 1 {
+		return nil, errors.New("zero bytes written to memory")
 	}
-	if numBytes == 0 {
-		return nil, nil
-	}
-	buf, err := os.ReadFile("tem.txt")
-	if err != nil {
-		return nil, err
-	}
-	// 对图片 url 进行预签名
-	return buf, nil
+	return buffer.Bytes(), nil
 }
 
 // 直接上传存储,覆盖
-func S3StoreObject(sess *session.Session, file_key string, file_bytes []byte) error {
-	file, err := os.Create("tem.txt")
-	if err != nil {
-		return err
-	}
-	_, err = file.Write(file_bytes)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	fp, err := os.Open("tem.txt")
-	if err != nil {
-		return err
-	}
-	defer fp.Close()
-	uploader := s3manager.NewUploader(sess)
-	_, err = uploader.Upload(&s3manager.UploadInput{
+func S3StoreObject(s3Client *s3.Client, fileKey string, fileBytes []byte) error {
+	uploader := manager.NewUploader(s3Client)
+	_, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
 		Bucket: aws.String(tools.ConfigGetString("bucket")),
-		Key:    aws.String(file_key),
-		Body:   fp,
+		Key:    aws.String(fileKey),
+		Body:   bytes.NewReader(fileBytes),
 	})
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
-func S3AppendText(sess *session.Session, file_key string, text string) error {
-	try_get_file, err := S3GetObject(sess, file_key)
+
+func S3AppendText(s3Client *s3.Client, fileKey string, text string) error {
+	try_get_file, err := S3GetObject(s3Client, fileKey)
 	if try_get_file == nil && err != nil {
-		err = S3StoreObject(sess, file_key, []byte(text))
+		err = S3StoreObject(s3Client, fileKey, []byte(text))
 	} else {
-		err = S3StoreObject(sess, file_key, []byte(string(try_get_file)+text))
+		err = S3StoreObject(s3Client, fileKey, []byte(string(try_get_file)+text))
 	}
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	return nil
 }
 
-func S3AppendDailyText(sess *session.Session, text string) error {
-	return S3AppendText(sess, GetDailyFileKey(), text)
-}
-
-func S3GetTodayDaily(sess *session.Session) string {
-	tem, err := S3GetFileText(sess, GetDailyFileKey())
+func S3GetTodayDaily(s3Client *s3.Client) string {
+	tem, err := S3GetFileText(s3Client, GetDailyFileKey())
 	if err != nil {
 		log.Println(err)
 		return "Have Error!"
 	}
 	return tem
 }
-
-func S3Get3DaysList(sess *session.Session) [3]string {
+func S3AppendDailyText(s3Client *s3.Client, text string) error {
+	return S3AppendText(s3Client, GetDailyFileKey(), text)
+}
+func S3GetTodayDaily2(s3Client *s3.Client) string {
+	tem, err := S3GetFileText(s3Client, GetDailyFileKey())
+	if err != nil {
+		log.Println(err)
+		return "Have Error!"
+	}
+	return tem
+}
+func S3Get3DaysList(s3Client *s3.Client) [3]string {
 	var ans [3]string
 	for i := 0; i < 3; i++ { // 0 1 2 -> -2 -1 0
-		day, err := S3GetFileText(sess, tools.NowRunConfig.DailyFileKeyMore(i-2))
+		day, err := S3GetFileText(s3Client, tools.NowRunConfig.DailyFileKeyMore(i-2))
 		if err != nil {
 			log.Println(err)
 		}
@@ -129,8 +113,8 @@ func S3Get3DaysList(sess *session.Session) [3]string {
 	return ans
 }
 
-func S3GetMoreDaliyMdText(sess *session.Session, addDateDay int) (string, error) {
-	day, err := S3GetFileText(sess, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
+func S3GetMoreDaliyMdText(s3Client *s3.Client, addDateDay int) (string, error) {
+	day, err := S3GetFileText(s3Client, tools.NowRunConfig.DailyFileKeyMore(addDateDay))
 	if err != nil {
 		log.Println(err)
 		return "", err
@@ -139,22 +123,21 @@ func S3GetMoreDaliyMdText(sess *session.Session, addDateDay int) (string, error)
 }
 
 // 获取文件预先签名 5 min 有效期 即使 file 不存在也会返回 URL
-func S3GetPreSignURL(sess *session.Session, file_key string) (string, error) {
-	svc := s3.New(sess)
-	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
+func S3GetPreSignURL(s3Client *s3.Client, fileKey string) (string, error) {
+	client := s3.NewPresignClient(s3Client)
+	req, err := client.PresignGetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket: aws.String(tools.ConfigGetString("bucket")),
-		Key:    aws.String(file_key),
-	})
-	urlStr, err := req.Presign(5 * time.Minute)
+		Key:    aws.String(fileKey),
+	}, s3.WithPresignExpires(time.Minute*5)) // 生成 5 分钟的预签名 URL
 	if err != nil {
 		return "", err
 	}
-	return urlStr, nil
+	return req.URL, nil
 }
 
 // md text img url to preSigned url ![](a.jpg) -> ![](a.jpg&signed)
 func S3ReplaceMdUrl2PreSignedUrl(in_md []byte) []byte {
-	sess, err := NewS3Session()
+	client, err := GetS3Client()
 	if err != nil {
 		log.Println(err)
 	}
@@ -176,7 +159,7 @@ func S3ReplaceMdUrl2PreSignedUrl(in_md []byte) []byte {
 		if strings.HasSuffix(link, ".md") {
 			link2 = link
 		} else {
-			link2, err = S3GetPreSignURL(sess, link)
+			link2, err = S3GetPreSignURL(client, link)
 			if err != nil {
 				log.Println(err)
 				return []byte(fmt.Sprintf("![%s](%s)", description, link))
@@ -189,22 +172,19 @@ func S3ReplaceMdUrl2PreSignedUrl(in_md []byte) []byte {
 	return pattern.ReplaceAllFunc(in_md, replaceFunc)
 }
 
-func S3ListObject(sess *session.Session, prefix string) ([]string, error) {
+func S3ListObject(s3Client *s3.Client, prefix string) ([]string, error) {
 	var result []string
-	svc := s3.New(sess)
-
 	input := &s3.ListObjectsV2Input{
 		Bucket: aws.String(tools.ConfigGetString("bucket")),
+		Prefix: aws.String(prefix),
 	}
-	resultList, err := svc.ListObjectsV2(input)
+	resultList, err := s3Client.ListObjectsV2(context.Background(), input)
 	if err != nil {
-		fmt.Println("Error", err)
-		return nil, err
+		log.Fatal(err)
 	}
+
 	for _, object := range resultList.Contents {
-		if strings.HasPrefix(*object.Key, prefix) && strings.Replace(*object.Key, prefix, "", 1) != "" {
-			result = append(result, *object.Key)
-		}
+		result = append(result, *object.Key)
 	}
 	return result, nil
 }

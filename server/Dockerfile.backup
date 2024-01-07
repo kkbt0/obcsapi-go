@@ -12,7 +12,6 @@ VOLUME ["/apps/token"]
 COPY server /app/server
 COPY token/ /app/token/
 COPY config.example.yaml /app/config.yaml
-COPY tem.txt /app/tem.txt
 
 ENV LANG C.UTF-8
 EXPOSE 8900
