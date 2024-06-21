@@ -14,7 +14,7 @@ export default sidebar({
     {
       text: "Go 版本 Swagger(Scalar)",
       icon: "book",
-      link: "https://kkbt.gitee.io/obcsapi-go/swagger/swagger.html",
+      link: "https://www.ftls.xyz/docs/obcsapi/swagger/swagger.html",
     },
     {
       text: "Python 版本",

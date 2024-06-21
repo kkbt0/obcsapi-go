@@ -27,11 +27,11 @@ Back-end APIs based on Obsidian S3 storage , CouchDb Local and WebDAV can save m
 - 云函数 或者 Dokcer 部署
 
 
-更多功能说明见文档: [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
+更多功能说明见文档: [https://www.ftls.xyz/docs/obcsapi/](https://www.ftls.xyz/docs/obcsapi/)
 
 ---
 
-文档 Docs : [https://kkbt.gitee.io/obcsapi-go/#/](https://kkbt.gitee.io/obcsapi-go/#/)
+文档 Docs : [https://www.ftls.xyz/docs/obcsapi/](https://www.ftls.xyz/docs/obcsapi/)
 如果你不使用 Obsidian ，也可以借助坚果云，或者 WebDav 进行文件同步，配合其他文本编辑器使用。
 
 ![](obcsapi-docs/docs/images/default_canvas.svg)

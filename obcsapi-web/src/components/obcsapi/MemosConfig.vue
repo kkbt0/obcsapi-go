@@ -416,7 +416,7 @@ function setOAuth2() {
     <h1 @click="showInfo = !showInfo"><a>Server Setting</a></h1>
     <div v-if="showInfo && info">
         <a href="https://gitee.com/kkbt/obcsapi-go">Obsidian 云存储后端 API Go 版本项目地址 </a>
-        <a href="https://kkbt.gitee.io/obcsapi-go/#/"> 📄文档</a><br>
+        <a href="https://www.ftls.xyz/docs/obcsapi/"> 📄文档</a><br>
         ServerTime: {{ info.server_time }}<br>
         ServerVersion: {{ info.server_version }}<br>
         ServerConfigVersion: {{ info.config_version }} <br>

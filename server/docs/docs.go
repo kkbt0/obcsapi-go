@@ -814,7 +814,7 @@ const docTemplate = `{
         }
     },
     "externalDocs": {
-        "url": "https://kkbt.gitee.io/obcsapi-go/"
+        "url": "https://www.ftls.xyz/docs/obcsapi/"
     }
 }`
 

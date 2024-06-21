@@ -3,7 +3,7 @@ import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
 
 export default hopeTheme({
-  hostname: "https://kkbt.gitee.io/obcsapi-go/",
+  hostname: "https://www.ftls.xyz/docs/obcsapi/",
 
   author: {
     name: "恐咖兵糖",
