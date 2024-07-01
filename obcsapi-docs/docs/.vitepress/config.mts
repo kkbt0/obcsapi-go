@@ -33,7 +33,8 @@ export default defineConfig({
       },
       {
         text: 'Go 版本 Swagger(Scalar)',
-        link: '/swagger/swagger'
+        link: '/swagger/swagger',
+        target: '_blank'
       },
       {
         text: 'Python 版本',
@@ -47,7 +48,10 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/kkbt0/obcsapi-go' },
-    ]
+    ],
+    footer: {
+      copyright: '版权所有 © 2024 <a href="https://www.ftls.xyz/" target="_blank">恐咖兵糖</a>'
+    }
   },
     // TODO
     ignoreDeadLinks: true
