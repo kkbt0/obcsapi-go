@@ -10,7 +10,9 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
     ],
-
+    search: {
+      provider: 'local'
+    },
     sidebar: [
       { text: '概述', link: '/md/README' },
       {
