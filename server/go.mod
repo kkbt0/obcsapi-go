@@ -23,7 +23,7 @@ require (
 	github.com/swaggo/swag v1.16.2
 	github.com/vadv/gopher-lua-libs v0.5.0
 	github.com/yuin/gopher-lua v1.1.0
-	golang.org/x/net v0.25.0
+	golang.org/x/net v0.33.0
 	golang.org/x/oauth2 v0.12.0
 	golang.org/x/time v0.3.0
 )
