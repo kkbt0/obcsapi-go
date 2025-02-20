@@ -35,6 +35,19 @@ SecretKey = xxx
 bucket = root
 ```
 
+如果是 Minio ，参考配置如下，配置 path_style: true 即可。 
+
+```
+# S3 配置
+access_key: xxxxx
+secret_key: xxxxx
+end_point: http://127.0.0.1:9000
+region: cn-e-0
+bucket: obsidian
+path_style: true
+s3_wiki_link_use_presign: false
+```
+
 ### Q: go 版本 https 问题
 
 内网可申请自签名证书，放到容器里，配置中指定证书和私钥容器目录位置，开启 https 。

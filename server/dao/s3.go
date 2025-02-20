@@ -33,8 +33,19 @@ func GetS3Client() (*s3.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	
+	// 是否启用路径样式
+	if(tools.ConfigGetString("path_style") == "true") {
+		log.Println("S3 Use Path style URL")
+		s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+			o.UsePathStyle = true 
+		})
+		return s3Client, nil
+	} else {
+		log.Println("S3 Use Virtual-hosted style URL")
+		return s3.NewFromConfig(cfg), nil
+	}
 
-	return s3.NewFromConfig(cfg), nil
 }
 
 // get text used
