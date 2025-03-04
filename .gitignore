@@ -29,3 +29,11 @@ server/workwechat_access_token.txt
 .xwin-cache
 # 配置
 config.yaml
+config.run.json
+/token
+
+# 本地测试文件
+mykv.db
+mykv.db.lock
+gin.log
+tem.file
