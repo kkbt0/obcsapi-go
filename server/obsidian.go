@@ -9,6 +9,7 @@ import (
 	"obcsapi-go/gr"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
+	"regexp"
 	"strings"
 	"time"
 
@@ -16,6 +17,35 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
+
+// 提取标题的函数
+func extractTitle(html string) string {
+	// 1. 首先尝试从 meta 标签中获取（微信文章通常在这里）
+	metaTitleRegex := regexp.MustCompile(`<meta[^>]*property="og:title"[^>]*content="([^"]*)"`)
+	if matches := metaTitleRegex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	// 2. 尝试从 <title> 标签中获取
+	titleRegex := regexp.MustCompile(`<title[^>]*>(.*?)</title>`)
+	if matches := titleRegex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	// 3. 尝试从 h1 标签中获取
+	h1Regex := regexp.MustCompile(`<h1[^>]*>(.*?)</h1>`)
+	if matches := h1Regex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	// 4. 尝试从 #activity-name 中获取（微信文章特有的标题类）
+	activityNameRegex := regexp.MustCompile(`<h1 class="rich_media_title"[^>]*>(.*?)</h1>`)
+	if matches := activityNameRegex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	return ""
+}
 
 // @Summary 通用 API 接口 Memos
 // @Description 通用 API 接口,添加 Memos
@@ -103,6 +133,27 @@ func Url2MdHandler(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
+
+	// 使用更强大的标题提取方法
+	title := extractTitle(string(text))
+	if title == "" {
+		// 如果提取失败，回退到使用 Markdown 第一行
+		converter := md.NewConverter("", true, nil)
+		var markdown string
+		if markdown, err = converter.ConvertString(string(text)); err != nil {
+			gr.ErrServerError(c, err)
+			return
+		}
+		title = strings.Split(markdown, "\n")[0]
+	}
+
+	serverTime := tools.TimeFmt("200601021504")
+	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n", 
+		urlStruct.Url, 
+		tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), 
+		serverTime)
+
+	// 转换 HTML 为 Markdown
 	converter := md.NewConverter("", true, nil)
 	var markdown string
 	if markdown, err = converter.ConvertString(string(text)); err != nil {
@@ -110,10 +161,10 @@ func Url2MdHandler(c *gin.Context) {
 		return
 	}
 
-	title := strings.Split(markdown, "\n")[0]
-	serverTime := tools.TimeFmt("200601021504")
-	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n", urlStruct.Url, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), serverTime)
-	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", tools.NowRunConfig.OtherDataDir(), serverTime, tools.ReplaceUnAllowedChars(strings.TrimSpace(title)))
+	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", 
+		tools.NowRunConfig.OtherDataDir(), 
+		serverTime, 
+		tools.ReplaceUnAllowedChars(strings.TrimSpace(title)))
 	if err = CoverStoreTextFile(file_key, yaml+markdown); err != nil {
 		gr.ErrServerError(c, err)
 		return

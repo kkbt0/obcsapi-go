@@ -349,7 +349,6 @@ func MdShowTextDailyZk(fromFileKey string, text string) string {
 		return []byte(fmt.Sprintf("[zk] %s", ans))
 	}
 	return string(pattern.ReplaceAllFunc([]byte(text), replaceFunc))
-
 }
 
 func ObFileUrl(fromFileKey string, text string) string {
@@ -370,4 +369,33 @@ func ObFileUrl(fromFileKey string, text string) string {
 		return []byte(fmt.Sprintf("![%s](%s)", description, link2))
 	}
 	return string(pattern.ReplaceAllFunc([]byte(text), replaceFunc))
+}
+
+// 提取标题的函数
+func extractTitle(html string) string {
+	// 1. 首先尝试从 meta 标签中获取（微信文章通常在这里）
+	metaTitleRegex := regexp.MustCompile(`<meta[^>]*property="og:title"[^>]*content="([^"]*)"`)
+	if matches := metaTitleRegex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	// 2. 尝试从 <title> 标签中获取
+	titleRegex := regexp.MustCompile(`<title[^>]*>(.*?)</title>`)
+	if matches := titleRegex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	// 3. 尝试从 h1 标签中获取
+	h1Regex := regexp.MustCompile(`<h1[^>]*>(.*?)</h1>`)
+	if matches := h1Regex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	// 4. 尝试从 #activity-name 中获取（微信文章特有的标题类）
+	activityNameRegex := regexp.MustCompile(`<h1 class="rich_media_title"[^>]*>(.*?)</h1>`)
+	if matches := activityNameRegex.FindStringSubmatch(html); len(matches) > 1 {
+		return strings.TrimSpace(matches[1])
+	}
+
+	return ""
 }

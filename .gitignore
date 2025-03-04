@@ -27,3 +27,5 @@ server/pktoken
 server/server.exe
 server/workwechat_access_token.txt
 .xwin-cache
+# 配置
+config.yaml
