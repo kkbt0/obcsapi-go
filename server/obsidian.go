@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"obcsapi-go/dao"
-	. "obcsapi-go/dao"
 	"obcsapi-go/gr"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
@@ -15,6 +13,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"obcsapi-go/dao"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
@@ -61,13 +61,13 @@ func extractTitle(html string) string {
 // @Router /ob/general [post]
 func GeneralHeader(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
-	var memosData MemosData
+	var memosData dao.MemosData
 	var err error
 	if err = decoder.Decode(&memosData); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = AppendDailyMemos(memosData.Content); err != nil {
+	if err = dao.AppendDailyMemos(memosData.Content); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -101,13 +101,13 @@ func GeneralHeader2(c *gin.Context) {
 		return
 	}
 	decoder := json.NewDecoder(c.Request.Body)
-	var memosData MemosData
+	var memosData dao.MemosData
 	var err error
 	if err = decoder.Decode(&memosData); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = AppendDailyMemos(memosData.Content); err != nil {
+	if err = dao.AppendDailyMemos(memosData.Content); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -126,7 +126,7 @@ func GeneralHeader2(c *gin.Context) {
 func Url2MdHandler(c *gin.Context) {
 	var err error
 	decoder := json.NewDecoder(c.Request.Body)
-	var urlStruct UrlStruct
+	var urlStruct dao.UrlStruct
 	if err := decoder.Decode(&urlStruct); err != nil {
 		gr.ErrServerError(c, err)
 		return
@@ -188,6 +188,11 @@ func Url2MdHandler(c *gin.Context) {
 		return
 	}
 
+	// 清理微信公众号文章末尾的无用内容
+	if strings.Contains(urlStruct.Url, "mp.weixin.qq.com") {
+		markdown = cleanWechatArticle(markdown)
+	}
+
 	// 保存转换后的 Markdown
 	if viper.GetBool("debug") {
 		if err = os.WriteFile(filepath.Join("debug", "debug_result.md"), []byte(markdown), 0644); err != nil {
@@ -218,7 +223,7 @@ func Url2MdHandler(c *gin.Context) {
 		tools.NowRunConfig.OtherDataDir(),
 		serverTime,
 		tools.ReplaceUnAllowedChars(strings.TrimSpace(title)))
-	if err = CoverStoreTextFile(file_key, yaml+markdown); err != nil {
+	if err = dao.CoverStoreTextFile(file_key, yaml+markdown); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -268,9 +273,9 @@ func GeneralPostAllHandler(c *gin.Context) {
 	}
 	var err error
 	if mod == "cover" {
-		err = CoverStoreTextFile(fileKey, generalJson.Content)
+		err = dao.CoverStoreTextFile(fileKey, generalJson.Content)
 	} else {
-		err = AppendText(fileKey, generalJson.Content)
+		err = dao.AppendText(fileKey, generalJson.Content)
 	}
 	if err != nil {
 		gr.ErrServerError(c, err)
@@ -308,7 +313,7 @@ func GeneralGetAllHandler(c *gin.Context) {
 // @Produce plain
 // @Router /ob/today [get]
 func ObGetTodayDailyHandler(c *gin.Context) {
-	if mdText, err := GetFileText(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
+	if mdText, err := dao.GetFileText(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
 		gr.ErrServerError(c, err)
 	} else {
 		c.String(200, mdText)
@@ -331,7 +336,7 @@ func ObTodayPutHandler(c *gin.Context) {
 		return
 	}
 	skv.PutFile(fileKey, string(bodyBytes))
-	if err = CoverStoreTextFile(fileKey, string(bodyBytes)); err != nil {
+	if err = dao.CoverStoreTextFile(fileKey, string(bodyBytes)); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -353,7 +358,7 @@ func ObTodayPostHandler(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = AppendText(fileKey, string(bodyBytes)); err != nil {
+	if err = dao.AppendText(fileKey, string(bodyBytes)); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -367,4 +372,16 @@ func ObTodayAddDateNum() int {
 		return -1
 	}
 	return 0
+}
+
+// 清理微信公众号文章末尾的无用内容
+func cleanWechatArticle(content string) string {
+	// 查找截断词的位置
+	cutPoint := strings.Index(content, "预览时标签不可点")
+	if cutPoint == -1 {
+		return content
+	}
+
+	// 截取有效内容
+	return strings.TrimSpace(content[:cutPoint])
 }
