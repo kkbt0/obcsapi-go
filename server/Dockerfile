@@ -11,7 +11,9 @@ RUN mkdir app && mkdir app/static/ && \
     cp -R static/ app/ && \
     cp -R website/ app/ && \
     cp -R sh/ app/ && \
-    cp -R script/ app/
+    cp -R script/ app/ && \
+    chmod +x app/docker-entrypoint.sh && \
+    sed -i 's/\r$//' app/docker-entrypoint.sh
     # cp zoneinfo.zip app/
     # docker-entrypoint.sh 运行后还会复制 static/ 到相应目录
 FROM alpine:latest
@@ -23,7 +25,7 @@ ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 COPY --from=builder /home/workspace/app/ .
-RUN chmod +x docker-entrypoint.sh && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \ 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
     apk add --no-cache tzdata bash curl jq
 # bash curl about +5MB jq: a json cli
 # RUN pwd && ls
