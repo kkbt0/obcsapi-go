@@ -37,3 +37,6 @@ mykv.db
 mykv.db.lock
 gin.log
 tem.file
+
+# Debug files
+debug/

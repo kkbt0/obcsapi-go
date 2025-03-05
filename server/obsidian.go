@@ -4,16 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"obcsapi-go/dao"
-	. "obcsapi-go/dao"
+	"log"
 	"obcsapi-go/gr"
 	"obcsapi-go/skv"
 	"obcsapi-go/tools"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
+	"obcsapi-go/dao"
+
 	md "github.com/JohannesKaufmann/html-to-markdown"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -57,13 +61,13 @@ func extractTitle(html string) string {
 // @Router /ob/general [post]
 func GeneralHeader(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
-	var memosData MemosData
+	var memosData dao.MemosData
 	var err error
 	if err = decoder.Decode(&memosData); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = AppendDailyMemos(memosData.Content); err != nil {
+	if err = dao.AppendDailyMemos(memosData.Content); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -97,13 +101,13 @@ func GeneralHeader2(c *gin.Context) {
 		return
 	}
 	decoder := json.NewDecoder(c.Request.Body)
-	var memosData MemosData
+	var memosData dao.MemosData
 	var err error
 	if err = decoder.Decode(&memosData); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = AppendDailyMemos(memosData.Content); err != nil {
+	if err = dao.AppendDailyMemos(memosData.Content); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -122,7 +126,7 @@ func GeneralHeader2(c *gin.Context) {
 func Url2MdHandler(c *gin.Context) {
 	var err error
 	decoder := json.NewDecoder(c.Request.Body)
-	var urlStruct UrlStruct
+	var urlStruct dao.UrlStruct
 	if err := decoder.Decode(&urlStruct); err != nil {
 		gr.ErrServerError(c, err)
 		return
@@ -132,6 +136,68 @@ func Url2MdHandler(c *gin.Context) {
 	if text, err = tools.Downloader(urlStruct.Url); err != nil {
 		gr.ErrServerError(c, err)
 		return
+	}
+
+	// 提取所有图片链接并修改 HTML
+	imgRegex := regexp.MustCompile(`data-src="([^"]*)"`)
+	matches := imgRegex.FindAllStringSubmatch(string(text), -1)
+	modifiedHTML := imgRegex.ReplaceAllStringFunc(string(text), func(match string) string {
+		return strings.Replace(match, "data-src", "src", 1)
+	})
+
+	// 保存调试文件
+	if viper.GetBool("debug") {
+		debugDir := "debug"
+		if err := os.MkdirAll(debugDir, 0755); err != nil {
+			log.Printf("创建调试目录失败: %v", err)
+		} else {
+			if err = os.WriteFile(filepath.Join(debugDir, "debug_original.html"), text, 0644); err != nil {
+				log.Printf("保存原始HTML失败: %v", err)
+			}
+
+			// 保存图片链接
+			var imgLinks []string
+			for _, match := range matches {
+				if len(match) > 1 {
+					imgLinks = append(imgLinks, match[1])
+				}
+			}
+			if err = os.WriteFile(filepath.Join(debugDir, "debug_images.txt"), []byte(strings.Join(imgLinks, "\n")), 0644); err != nil {
+				log.Printf("保存图片链接失败: %v", err)
+			}
+
+			// 保存修改后的 HTML
+			if err = os.WriteFile(filepath.Join(debugDir, "debug_modified.html"), []byte(modifiedHTML), 0644); err != nil {
+				log.Printf("保存修改后HTML失败: %v", err)
+			}
+		}
+	}
+
+	// 配置 HTML 到 Markdown 的转换器
+	converter := md.NewConverter("", true, &md.Options{
+		// 使用默认配置，但确保图片链接被保留
+		GetAbsoluteURL: func(selec *goquery.Selection, rawURL string, domain string) string {
+			return rawURL
+		},
+	})
+
+	// 转换为 Markdown
+	markdown, err := converter.ConvertString(modifiedHTML)
+	if err != nil {
+		gr.ErrServerError(c, err)
+		return
+	}
+
+	// 清理微信公众号文章末尾的无用内容
+	if strings.Contains(urlStruct.Url, "mp.weixin.qq.com") {
+		markdown = cleanWechatArticle(markdown)
+	}
+
+	// 保存转换后的 Markdown
+	if viper.GetBool("debug") {
+		if err = os.WriteFile(filepath.Join("debug", "debug_result.md"), []byte(markdown), 0644); err != nil {
+			log.Printf("保存Markdown失败: %v", err)
+		}
 	}
 
 	// 使用更强大的标题提取方法
@@ -148,24 +214,16 @@ func Url2MdHandler(c *gin.Context) {
 	}
 
 	serverTime := tools.TimeFmt("200601021504")
-	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n", 
-		urlStruct.Url, 
-		tools.ReplaceUnAllowedChars(strings.TrimSpace(title)), 
+	yaml := fmt.Sprintf("---\nurl: %s\ntitle: %s\nsctime: %s\n---\n[[ObSavePage]]\n",
+		urlStruct.Url,
+		tools.ReplaceUnAllowedChars(strings.TrimSpace(title)),
 		serverTime)
 
-	// 转换 HTML 为 Markdown
-	converter := md.NewConverter("", true, nil)
-	var markdown string
-	if markdown, err = converter.ConvertString(string(text)); err != nil {
-		gr.ErrServerError(c, err)
-		return
-	}
-
-	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md", 
-		tools.NowRunConfig.OtherDataDir(), 
-		serverTime, 
+	file_key := fmt.Sprintf("%sHtmlPages/%s %s.md",
+		tools.NowRunConfig.OtherDataDir(),
+		serverTime,
 		tools.ReplaceUnAllowedChars(strings.TrimSpace(title)))
-	if err = CoverStoreTextFile(file_key, yaml+markdown); err != nil {
+	if err = dao.CoverStoreTextFile(file_key, yaml+markdown); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -215,9 +273,9 @@ func GeneralPostAllHandler(c *gin.Context) {
 	}
 	var err error
 	if mod == "cover" {
-		err = CoverStoreTextFile(fileKey, generalJson.Content)
+		err = dao.CoverStoreTextFile(fileKey, generalJson.Content)
 	} else {
-		err = AppendText(fileKey, generalJson.Content)
+		err = dao.AppendText(fileKey, generalJson.Content)
 	}
 	if err != nil {
 		gr.ErrServerError(c, err)
@@ -255,7 +313,7 @@ func GeneralGetAllHandler(c *gin.Context) {
 // @Produce plain
 // @Router /ob/today [get]
 func ObGetTodayDailyHandler(c *gin.Context) {
-	if mdText, err := GetFileText(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
+	if mdText, err := dao.GetFileText(tools.NowRunConfig.DailyFileKeyMore(ObTodayAddDateNum())); err != nil {
 		gr.ErrServerError(c, err)
 	} else {
 		c.String(200, mdText)
@@ -278,7 +336,7 @@ func ObTodayPutHandler(c *gin.Context) {
 		return
 	}
 	skv.PutFile(fileKey, string(bodyBytes))
-	if err = CoverStoreTextFile(fileKey, string(bodyBytes)); err != nil {
+	if err = dao.CoverStoreTextFile(fileKey, string(bodyBytes)); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -300,7 +358,7 @@ func ObTodayPostHandler(c *gin.Context) {
 		gr.ErrServerError(c, err)
 		return
 	}
-	if err = AppendText(fileKey, string(bodyBytes)); err != nil {
+	if err = dao.AppendText(fileKey, string(bodyBytes)); err != nil {
 		gr.ErrServerError(c, err)
 		return
 	}
@@ -314,4 +372,16 @@ func ObTodayAddDateNum() int {
 		return -1
 	}
 	return 0
+}
+
+// 清理微信公众号文章末尾的无用内容
+func cleanWechatArticle(content string) string {
+	// 查找截断词的位置
+	cutPoint := strings.Index(content, "预览时标签不可点")
+	if cutPoint == -1 {
+		return content
+	}
+
+	// 截取有效内容
+	return strings.TrimSpace(content[:cutPoint])
 }

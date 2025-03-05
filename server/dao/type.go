@@ -17,12 +17,14 @@ type PostJson struct {
 type FileDoc struct {
 	ID       string   `json:"_id"`
 	Rev      string   `json:"_rev,omitempty"`
+	Path     string   `json:"path"`
 	Children []string `json:"children"`
 	Ctime    int64    `json:"ctime"`
 	Mtime    int64    `json:"mtime"`
 	Size     int      `json:"size"`
 	Type     string   `json:"type"`
 	Deleted  bool     `json:"deleted"`
+	Eden     struct{} `json:"eden"`
 }
 
 // CouchDB Json struct

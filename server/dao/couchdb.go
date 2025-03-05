@@ -163,7 +163,8 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 	if !exist && !delSign { // 数据库没这条记录
 		tools.Debug("数据库没这条记录")
 		fileDoc := FileDoc{
-			ID:       file_key,
+			ID:       strings.ToLower(file_key),
+			Path:     file_key,
 			Children: []string{leftId},
 			Ctime:    now,
 			Mtime:    now,
@@ -171,17 +172,18 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 			Type:     "plain",
 			Deleted:  false,
 		}
-		_, err = db.Put(context.TODO(), file_key, fileDoc)
+		_, err = db.Put(context.TODO(), strings.ToLower(file_key), fileDoc)
 		if err != nil {
 			return err
 		}
 	} else if (!exist && delSign) || (exist && !delSign) { // 数据库有记录
 		var fileNodeDoc FileDoc
-		db.Get(context.TODO(), file_key).ScanDoc(&fileNodeDoc)
+		db.Get(context.TODO(), strings.ToLower(file_key)).ScanDoc(&fileNodeDoc)
 		tools.Debug("数据库有记录")
 		fileDoc := FileDoc{
 			Rev:      fileNodeDoc.Rev,
-			ID:       file_key,
+			ID:       strings.ToLower(file_key),
+			Path:     file_key,
 			Children: []string{leftId},
 			Ctime:    now,
 			Mtime:    now,
@@ -189,7 +191,7 @@ func CouchDbMdFiletorage(db *kivik.DB, file_key string, text string) error {
 			Type:     "plain",
 			Deleted:  false,
 		}
-		_, err := db.Put(context.TODO(), file_key, fileDoc)
+		_, err := db.Put(context.TODO(), strings.ToLower(file_key), fileDoc)
 		if err != nil {
 			return err
 		}
